@@ -6,9 +6,12 @@ import router from './router'
 
 import './assets/main.scss'
 
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(CKEditor)
 
 app.mount('#app')
