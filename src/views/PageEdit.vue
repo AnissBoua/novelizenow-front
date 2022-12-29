@@ -8,25 +8,27 @@
 </template>
 
 <script>
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CustomEditor from 'ckeditor5-custom-build';
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// const CustomEditor = require( '../../ckeditor/build/ckeditor' );
 
 export default {
     data() {
         return {
-            editor: ClassicEditor,
+            editor: CustomEditor,
             editorData: '<p>Votre première page.</p>',
             editorConfig: {
-                toolbar: [
-                    'heading', 'bulletedList', 'numberedList', 'undo', 'redo'
-                ],
-                fontSize: {
-                    options: [
-                        'tiny',
-                        'default',
-                        'big'
-                    ],
-                    supportAllValues: true
-                },
+                // toolbar: [
+                //     'heading', 'bulletedList', 'numberedList', 'undo', 'redo'
+                // ],
+                // fontSize: {
+                //     options: [
+                //         'tiny',
+                //         'default',
+                //         'big'
+                //     ],
+                //     supportAllValues: true
+                // },
             }
         }
     },
