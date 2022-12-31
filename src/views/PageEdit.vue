@@ -1,7 +1,6 @@
 <template>
     <div>
-        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
-        
+        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig" @ready="onEditorReady" ></ckeditor>
     </div>
     <textarea v-model="editorData"></textarea>
     <button @click="showOutput">show</button>
@@ -15,6 +14,7 @@ import CustomEditor from 'ckeditor5-custom-build';
 export default {
     data() {
         return {
+            editorInstance:null,
             editor: CustomEditor,
             editorData: '<p>Votre première page.</p>',
             editorConfig: {
@@ -33,16 +33,30 @@ export default {
         }
     },
     mounted(){
-        console.log(this.editorData);
+        console.log(this.editor);
     },
     methods:{
         showOutput(){
             console.log(this.editor.getData());
         },
+        onEditorReady (editor) {
+            editor.model.change( writer => {
+                const p = writer.createElement( 'p' );
+                writer.setAttribute( 'class', 'my-class', p );
+                // console.log(editor.model.document.getRoot(),'writer');
+                // writer.insert( p, editor.model.document.getRoot() );
+            } );
+            this.editorInstance = editor;
+        },
     }
     }
 </script>
 
-<style>
-
+<style lang="scss">
+// .ck-editor__editable{
+//     height: 35rem;
+// }    
+.test > .ck-editor{
+    height: 35rem;
+}
 </style>
