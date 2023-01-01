@@ -1,7 +1,3 @@
-<script setup>
-import { RouterLink } from 'vue-router'
-</script>
-
 <template>
   <header class="header">
         <div>
@@ -10,10 +6,34 @@ import { RouterLink } from 'vue-router'
         <nav class="header_nav">
             <RouterLink to="/">Home</RouterLink>
             <RouterLink to="/about">About</RouterLink>
-            <RouterLink to="/register">Sign up</RouterLink>
+
+            <RouterLink v-if="!token" to="/login">Sign in</RouterLink>
+            <RouterLink v-else to="/account">Account</RouterLink>
         </nav>
   </header>
 </template>
+
+<script>
+import { RouterLink } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useAuth } from '@/stores/auth.js'
+
+export default {
+    setup() {
+        const store = useAuth()
+        const { token } = storeToRefs(store)
+
+        return {
+            token
+        }
+    },
+    watch: {
+        token(token){
+            this.token = token;
+        }
+    },
+};
+</script>
 
 <style scoped lang="scss">
 .header{

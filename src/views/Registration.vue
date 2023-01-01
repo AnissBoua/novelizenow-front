@@ -1,5 +1,6 @@
 <template>
   <section class="registerform">
+    <h3>Register</h3>
     <div class="registerform_wrap">
       <div class="registerform_block">
           <input v-model="name" class="registerform_input" type="text" name="name" id="name" placeholder="Name">
@@ -28,6 +29,9 @@
       <div class="registerform_block_btn">
           <input @click="register()" class="btn_primary registerform_submit" type="submit" name="submit" id="submit" value="Sign up">
       </div>
+    </div>
+    <div>
+      <p>You already have an account ? <RouterLink to="/login">Login</RouterLink> </p>
     </div>
   </section>
 </template>
@@ -59,11 +63,12 @@ export default {
         "password": this.password,
         "confirmpassword": this.confirmpassword,
       }
-      // TODO 
       try {
         const response = await axios.post(helper.path + 'registration', data);
-        console.log(response);
-        console.log(response.data);
+        if (response.status === 201) {
+          this.$router.push({name: 'login'})
+        }
+        // TODO handle other cases
       } catch (error) {
         this.errors.general = "Registration failed"
       }
