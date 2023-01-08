@@ -18,7 +18,11 @@
                             <p>By : <span class="novel_author_name">{{ novel.author.name }}</span></p>
                         </div>
                         <div>
-                            <button class="novel_bottom_btn">Read it</button>
+                            <Button 
+                            label="Read it"
+                            :btnStyle="2"
+                            @click="hello()"
+                            ></Button>
                         </div>
                     </div>
                 </div>
@@ -31,6 +35,7 @@
 </template>
 <script>
 import helper from '../config/helper';
+import Button from './Button.vue';
     export default {
         props: {
             novels: {
@@ -64,6 +69,9 @@ import helper from '../config/helper';
             }
             
         },
+        components: {
+            Button
+        },
         data() {
             return {
                 pathImg: helper.pathImg,
@@ -79,6 +87,9 @@ import helper from '../config/helper';
         methods: {
             setSlide(index){
                 this.slide = index;
+            },
+            hello(){
+                console.log('hello');
             }
         }
         
@@ -145,20 +156,6 @@ import helper from '../config/helper';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        &_btn{
-            font-weight: 600;
-            border: 0;
-            border-radius: 0.5em;
-            background-color: $color-primary;
-            color: white;
-            cursor: pointer;
-            padding: 0.7em 1.2em;
-            transition: all ease-in-out 0.3s;
-            &:hover{
-                background-color: white;
-                color: $color-primary;
-            }
-        }
     }
     &_author{
         display: flex;
