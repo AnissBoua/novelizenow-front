@@ -1,62 +1,67 @@
 <template>
-    <div>
-        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig" @ready="onEditorReady" ></ckeditor>
+    <div class="edit_page">
+        <QuillEditor v-model:content="editorData" ref="myQuillEditor" theme="snow" contentType="html" @ready="onEditorReady" @textChange="onEditorInput"/>
+        <!-- <textarea v-model="editorData"></textarea> -->
+        <button @click="showOutput">log</button>
     </div>
-    <textarea v-model="editorData"></textarea>
-    <button @click="showOutput">show</button>
 </template>
 
 <script>
-import CustomEditor from 'ckeditor5-custom-build';
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-// const CustomEditor = require( '../../ckeditor/build/ckeditor' );
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 export default {
     data() {
         return {
-            editorInstance:null,
-            editor: CustomEditor,
+            disabled:false,
+            quillInstance:null,
             editorData: '<p>Votre première page.</p>',
-            editorConfig: {
-                // toolbar: [
-                //     'heading', 'bulletedList', 'numberedList', 'undo', 'redo'
-                // ],
-                // fontSize: {
-                //     options: [
-                //         'tiny',
-                //         'default',
-                //         'big'
-                //     ],
-                //     supportAllValues: true
-                // },
-            }
         }
     },
     mounted(){
-        console.log(this.editor);
     },
     methods:{
+        onEditorReady(editor) {
+            this.quillInstance = editor;
+            if(this.disabled === false){
+                this.quillInstance.enable();
+            } else {
+                this.quillInstance.disable();
+            }
+        },
         showOutput(){
-            console.log(this.editor.getData());
+            console.log(this.editorData);
         },
-        onEditorReady (editor) {
-            editor.model.change( writer => {
-                const p = writer.createElement( 'p' );
-                writer.setAttribute( 'class', 'my-class', p );
-                // console.log(editor.model.document.getRoot(),'writer');
-                // writer.insert( p, editor.model.document.getRoot() );
-            } );
-            this.editorInstance = editor;
-        },
+        onEditorInput(){
+            let text = this.quillInstance.getText();
+            //décider d'une limite /!\
+            if(text.length > 3000){
+                this.quillInstance.disable();
+                this.disabled = true;
+            } else {
+                this.quillInstance.enable();
+                this.disabled = false;
+            }
+        }
     }
     }
 </script>
 
 <style lang="scss">
-// .ck-editor__editable{
-//     height: 35rem;
-// }    
-.test > .ck-editor{
-    height: 35rem;
+
+// .edit_page{
+//     background-color:rgb(0 0 0 / 12%) ;
+//     height: 100%;
+// }
+.editor_container{
+    width: 30%;
+    margin: auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
+.ck-editor__editable{
+    height: 50rem;
+}
+// .test > .ck-editor{
+//     height: 35rem;
+// }
 </style>
