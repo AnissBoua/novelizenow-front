@@ -1,8 +1,10 @@
 <template>
     <div class="edit_page">
-        <QuillEditor v-model:content="editorData" ref="myQuillEditor" theme="snow" contentType="html" @ready="onEditorReady" @textChange="onEditorInput"/>
-        <!-- <textarea v-model="editorData"></textarea> -->
         <button @click="showOutput">log</button>
+        <div class="editor_container">
+            <QuillEditor v-model:content="editorData" ref="myQuillEditor" theme="snow" contentType="html" @ready="onEditorReady" @textChange="onEditorInput"/>
+        </div>
+        <!-- <textarea v-model="editorData"></textarea> -->
     </div>
 </template>
 
@@ -47,21 +49,22 @@ export default {
 </script>
 
 <style lang="scss">
-
-// .edit_page{
-//     background-color:rgb(0 0 0 / 12%) ;
-//     height: 100%;
-// }
+.ql-{
+    &snow{
+        background-color: white;
+    }
+    &container{
+        height: 47.5rem;
+    }
+}
+.edit_page{
+    background-color:rgb(0 0 0 / 12%) ;
+    height: 100%;
+}
 .editor_container{
     width: 30%;
     margin: auto;
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
-.ck-editor__editable{
-    height: 50rem;
-}
-// .test > .ck-editor{
-//     height: 35rem;
-// }
 </style>
