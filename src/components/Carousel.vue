@@ -6,9 +6,6 @@
                 <div class="carousel_layer"></div>
                 <div class="carousel_novel">
                     <div>
-                        <p>{{ novel.score }}</p>
-                    </div>
-                    <div>
                         <h2>{{ novel.title }}</h2>
                         <p>{{ novel.description }}</p>
                     </div>
@@ -46,7 +43,6 @@ import Button from './Button.vue';
                         img: "2.jpg",
                         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
                         caregoty: ["hello", "action", "fantasy"],
-                        score: 4.7,
                         author: {
                                 avatar: '1.jpg',
                                 name: "Anisse Boua"
@@ -58,7 +54,6 @@ import Button from './Button.vue';
                         img: "1.jpg",
                         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
                         caregoty: ["hello", "action", "fantasy"],
-                        score: 4.7,
                         author: {
                                 avatar: '2.jpg',
                                 name: "Anisse Boua"
@@ -105,6 +100,8 @@ import Button from './Button.vue';
     }
     &_item{
         position: absolute;
+        display: flex;
+        align-items: flex-end;
         width: 100%;
         max-width: 100%;
         height: 100%;

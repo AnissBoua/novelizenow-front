@@ -1,5 +1,6 @@
 <template>
   <header class="header">
+    <div class="header_block">
         <div>
             <img class="header_logo" src="@/assets/logos/novelizelogo.svg" alt="logo" >
         </div>
@@ -10,6 +11,17 @@
             <RouterLink v-if="!token" to="/login">Sign in</RouterLink>
             <RouterLink v-else to="/account">Account</RouterLink>
         </nav>
+    </div>
+    <div class="header_user">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <Button
+            class="header_user_button"
+            :label="!token ? 'Sign in' : 'Account'"
+            :btnStyle="1"
+            :href="!token ? '/login' : '/account'"
+        >
+        </Button>
+    </div>
   </header>
 </template>
 
@@ -17,7 +29,7 @@
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuth } from '@/stores/auth.js'
-
+import Button from './Button.vue';
 export default {
     setup() {
         const store = useAuth()
@@ -32,6 +44,9 @@ export default {
             this.token = token;
         }
     },
+    components: {
+        Button
+    },
 };
 </script>
 
@@ -41,16 +56,27 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 1em 3em;
+    &_block{
+        display: flex;
+        align-items: center;
+    }
     &_logo {
         width: 10em;
     }
     &_nav {
+        margin: 0 2em;
         & a {
             margin: 0 0.5em;
             &.router-link-exact-active{
-                color: $color-test;
+                color: $color-primary;
             }
         }
+    }
+    &_user_button{
+        margin: 0 1em;
+    }
+    & .fa-cart-shopping{
+        color: $color-primary;
     }
 }
 // .logo {

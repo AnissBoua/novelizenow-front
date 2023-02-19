@@ -1,11 +1,11 @@
 <template>
     <a v-if="href" :href="href">
-        <button :class="'btn ' +  (btnStyle ? (btnStyle === '1' ? 'btn_primary' : 'btn_secondary') : '' )">
+        <button :class="'btn ' +  (btnStyle ? (btnStyle === 1 ? 'btn_primary' : 'btn_secondary') : '' )">
             <i v-if="icon" :class="'btn_icon ' + icon"></i>
             {{ label }}
         </button>
     </a>
-    <button v-else :class="'btn ' +  (btnStyle ? (btnStyle === '1' ? 'btn_primary' : 'btn_secondary') : '' )">
+    <button v-else :class="'btn ' +  (btnStyle ? (btnStyle === 1 ? 'btn_primary' : 'btn_secondary') : '' )">
         <i v-if="icon" :class="'btn_icon ' + icon"></i>
         {{ label }}
     </button>
@@ -46,7 +46,7 @@ export default {
     background-color: $color-primary;
     color: white;
     cursor: pointer;
-    padding: 0.8em 1.5em;
+    padding: 0.5em 1em;
     transition: all ease-in-out 0.3s;
     &_primary:hover {
         background-color: white;
@@ -61,6 +61,20 @@ export default {
     }
     &_icon{
         margin:  0 0.5em 0 0;
+    }
+    &_primary {
+        font-family: $font-family;
+        font-weight: 500;
+        color: $color-text-primary;
+        background-color: $color-primary;
+        border: 0;
+        border-radius: $border-radius;
+        cursor: pointer;
+        padding: 0.5em 1em;
+        transition: all ease-in-out 0.2s;
+        &:hover {
+            background-color: $color-primary-light;
+        }
     }
 }
 

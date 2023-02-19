@@ -22,8 +22,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 } */
 body {
+  background-color: $dark-theme;
+  color: $color-text-primary;
   font-family: 'Quicksand', sans-serif; 
   font-weight: 500;
+  font-size: 14px;
   margin: 0;
 }
 
@@ -32,5 +35,9 @@ a {
 }
 
 a:visited {
-  color: #2c3e50;
+  color: $color-text-primary;
+}
+
+.fa-solid{
+  color: $color-primary
 }
