@@ -1,45 +1,12 @@
-<template>
-    <div class="novel">
-        <img class="novel_img" :src="pathImg + novel.img" alt="">
-        <div class="novel_data">
-            <div class="novel_head">
-                <Button
-                :label="novel.category[0]"
-                :btnStyle="1"
-                >
-                </Button>
-                <div class="novel_head_score">
-                    <p>{{ novel.score }}</p>
-                    <i class="fa-solid fa-star"></i>
-                </div>
-            </div>
-            <div>
-                <h3>{{ novel.title }}</h3>
-            </div>
-            <div class="novel_details">
-                <Author
-                :followers="4586"
-                >
-                </Author>
-                <Button
-                :label="'Read it'"
-                :btnStyle="1"
-                >
-                </Button>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script>
 import helper from '../config/helper';
-import Button from './Button.vue';
+import Score from './Score.vue';
 import Author from './Author.vue';
 
 export default {
     components: {
-        Button,
-        Author
+        Score,
+        Author,
     },
     props: {
         novel: {
@@ -49,10 +16,11 @@ export default {
                 img: "2.jpg",
                 description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
                 category: ["hello", "action", "fantasy"],
-                score: 4.7,
+                score: 4.6,
                 author: {
                     avatar: '1.jpg',
-                    name: "Anisse Boua"
+                    name: "Anisse",
+                    surname: "Boua",
                 },
                 price: 8,
             }
@@ -60,48 +28,35 @@ export default {
     },
     data(){
         return {
-            pathImg: helper.pathImg,
+            BASE_IMG_PATH: helper.pathImg
         }
     }
 }
 </script>
 
-<style lang="scss" scoped>
-.novel{
-    display: flex;
-    background-color: $dark-theme;
-    border-radius: $border-radius;
-    padding: 0.5em;
-    &_img{
-        width: 18%;
-        height: 12em;
-        object-fit: cover;
-        border-radius: $border-radius;
-    }
-    &_data{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        flex-basis: 80%;
-        padding: 0.5em 1em;
-    }
-    &_head{
-        flex-basis: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        &_score{
-            display: flex;
-            align-items: center;
-            & p {
-                margin: 0 1em;
-            }
-        }
-    }
-    &_details{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-}
-</style>
+<template>
+    <div class="w-1/2 flex bg-gradient-to-br from-novelize-dark to-zinc-900 rounded-md">
+        <div class="w-40 h-48">
+            <img class="w-full h-full object-cover rounded-md rounded-r-none" :src="BASE_IMG_PATH + novel.img" alt="">
+        </div>
+        <div class="basis-3/4 flex flex-col justify-between py-3 px-2">
+            <div>
+                <div class="flex justify-between">
+                    <h4 class="text-lg font-semibold">{{ novel.title }}</h4>
+                    <Score 
+                    :score="novel.score"
+                    />
+                </div>
+                <p class="my-3">{{ novel.description.length > 120 ? novel.description.slice(0, 120) + '...' :  novel.description }}</p>
+            </div>
+            <div >
+                <Author
+                :name="novel.author.name"
+                :surname="novel.author.surname"
+                :followers="4586"
+                :img="false"
+                />
+            </div>
+        </div>
+    </div>
+</template>
