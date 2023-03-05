@@ -8,6 +8,8 @@ module.exports = {
     extend: {
       colors: {
         novelize: {
+          primary: '#3138B0',
+          primarylight: '#5966C9',
           dark: '#141414',
           darklight: '#1E1E1E',
         }

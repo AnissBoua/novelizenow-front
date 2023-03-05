@@ -1,3 +1,26 @@
+:root {
+    --novelize-primary: #3138B0;
+    --novelize-primary-light: #5966C9;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .scrollbar::-webkit-scrollbar {
+      height: 5px;
+    }
+  
+    .scrollbar::-webkit-scrollbar-track {
+      border-radius: 100vh;
+    }
+  
+    .scrollbar::-webkit-scrollbar-thumb {
+      background: var(--novelize-primary);
+      border-radius: 100em;
+    }
+  
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--novelize-primary-light);
+    }
+  }

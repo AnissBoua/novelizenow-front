@@ -3,15 +3,13 @@
         <img class="w-1/3 h-40 rounded-lg object-cover" :src="pathImg + novel.img" alt="">
         <div class="novel_data">
             <div class="novel_head">
-                <Button
-                :label="novel.category[0]"
-                :btnStyle="1"
-                >
-                </Button>
-                <div class="novel_head_score">
-                    <p>{{ novel.score }}</p>
-                    <i class="fa-solid fa-star"></i>
-                </div>
+                <Category
+                :category="novel.category[0]"
+                :btnStyle="false"
+                />
+                <Score 
+                :score="novel.score"
+                />
             </div>
             <div>
                 <h3>{{ novel.title }}</h3>
@@ -33,13 +31,17 @@
 
 <script>
 import helper from '../config/helper';
+import Category from './Category.vue';
 import Button from './Button.vue';
 import Author from './Author.vue';
+import Score from './Score.vue';
 
 export default {
     components: {
+        Category,
         Button,
-        Author
+        Author,
+        Score,
     },
     props: {
         novel: {
