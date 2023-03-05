@@ -1,13 +1,13 @@
 <template>
-    <div class="author">
-        <div>
-            <img class="author_img" :src="pathImg + img" alt="">
+    <div class="flex items-center">
+        <div v-if="img">
+            <img class="w-14 h-14 object-cover rounded-full" :src="pathImg + img" alt="">
         </div>
-        <div class="author_info">
+        <div :class="img ? 'mx-2' : ''">
             <div>
                 <p>{{ name + " " + surname }}</p>
             </div>
-            <div class="author_followers" v-if="followers !== false">
+            <div class="text-xs text-zinc-400" v-if="followers !== false">
                 <p> {{followers }} followers</p>
             </div>
         </div>
@@ -42,26 +42,3 @@ export default {
     },
 }
 </script>
-
-<style lang="scss" scoped>
-.author{
-    display: flex;
-    align-items: center;
-    &_img {
-        width: 3.5em;
-        height: 3.5em;
-        object-fit: cover;
-        border-radius: 100%;
-    }
-    &_info{
-        margin: 0 1em;
-    }
-    &_info p {
-        margin: 0.2em 0;
-    }
-    &_followers {
-        font-size: 0.9em;
-        color: $color-gray;
-    }
-}
-</style>
