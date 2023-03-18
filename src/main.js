@@ -5,8 +5,8 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 import App from './App.vue'
 import router from './router'
-
 import './assets/main.scss'
+import './assets/style.css'
 
 
 const app = createApp(App)
