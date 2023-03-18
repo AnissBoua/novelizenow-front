@@ -14,6 +14,9 @@ module.exports = {
           darklight: '#1E1E1E',
         }
       },
+      backgroundImage: {
+        'darklayer': 'radial-gradient(circle, rgba(113, 115, 118, 0), rgba(87, 88, 90, 0.1), rgba(61, 61, 63, 0.4), #252526, #0d0d0d)',
+      }
     },
   },
   plugins: [],

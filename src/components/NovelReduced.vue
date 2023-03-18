@@ -49,7 +49,7 @@ export default {
 </script>
 
 <template>
-    <div class="w-1/2 flex bg-gradient-to-br from-novelize-dark to-zinc-900 rounded-md mt-8">
+    <div class="flex bg-gradient-to-br from-novelize-dark to-zinc-900 rounded-md mt-8">
         <div class="w-40 h-32 relative">
             <img class="absolute inset-x-0 bottom-2 w-28 h-36 object-cover rounded-md mx-auto" :src="BASE_IMG_PATH + novel.img" alt="">
         </div>
