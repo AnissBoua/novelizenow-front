@@ -8,10 +8,10 @@
       <span @click="alertModalState.open = false" class="close-button"
         >&times;</span
       >
-      <h1>{{ alertModalState.title }}</h1>
-      <p>{{ alertModalState.content }}</p>
-      <div class="btn-container">
-        <button @click="accept(alertModalState.emits)">Confirmer</button>
+      <h1 class="text-black">{{ alertModalState.title }}</h1>
+      <p class="text-black">{{ alertModalState.content }}</p>
+      <div v-if="alertModalState.emits !== undefined" class="btn-container">
+        <Button @click="accept(alertModalState.emits)" :label="'Confirmer'"/>
       </div>
     </div>
   </div>
@@ -20,12 +20,13 @@
 <script>
 import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/modals.js";
+import Button from './Button.vue';
 
 export default {
+  components: { Button },
   setup() {
     let store = useModalStore();
     const { alertModalState } = storeToRefs(store);
-
     return {
       store,
       alertModalState,

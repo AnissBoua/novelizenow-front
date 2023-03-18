@@ -4,8 +4,8 @@
         <button @click="showOutput">log</button>
         <div class="editor_container">
             <QuillEditor v-model:content="editorData" ref="myQuillEditor" theme="snow" contentType="html" @ready="onEditorReady" @textChange="onEditorInput"/>
+            <p class="text_counter_container text-right"><span :class="{'text-red-500': text.length > 2999}">{{text.length-1}}</span>/3000</p>
         </div>
-        <!-- <textarea v-model="editorData"></textarea> -->
     </div>
 </template>
 
@@ -33,9 +33,9 @@ export default {
             disabled:false,
             quillInstance:null,
             editorData: '<p>Votre première page.</p>',
+            text:"",
+            alreadyWarned:false
         }
-    },
-    mounted(){
     },
     methods:{
         onEditorReady(editor) {
@@ -51,25 +51,16 @@ export default {
         },
         onEditorInput(){
             let text = this.quillInstance.getText();
+            this.text = text;
             //décider d'une limite /!\
-            let max = 3000;
-            console.log(text.length);
-            if(text.length >= max && text.length < 3010){
-                this.quillInstance.disable();
+            let max = 3001;
+            if(text.length >= max && this.alreadyWarned === false){
                 this.alertModalState = {
                     open: true,
                     title:"Limite de 3000 caractères atteinte",
-                    content:`Attention vous avez atteint la limite des 3000 caractères ${text.length===3000 ? "" : `(${text.length})`}, passez à la page suivante ${text.length<=3010 ? `ou effacez des caractères pour continuer.`:"."}`,
-                    emits:"enableEditor"
+                    content:`Attention vous avez atteint la limite des 3000 caractères vous ne pourrai pas sauvegarder votre page si la limite est dépassée`,
                 }
-            } else if(text.length > 3010){
-                this.alertModalState = {
-                    open: true,
-                    title:"Limite de 3000 caractères atteinte",
-                    content:`Au dessus des 3000 caractères l'éditeur est désactivé`,
-                    emits:"disableEditor"
-                }
-                this.quillInstance.disable();
+                this.alreadyWarned = true;
             } else {
                 return;
             }
