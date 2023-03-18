@@ -3,36 +3,18 @@ $font-family: 'Quicksand', sans-serif;
 $color-text-primary: #FFFBFE;
 $color-text-secondary: #FFFBFE;
 
-$color-primary: #020887;
-$color-primary-light: #334195;
-$color-primary-lightest: #3F72AF;
+$color-primary: #3138B0;
+$color-primary-light: #4355b8;
+$color-primary-lightest: #4988d6;
 
-$color-test: #3138B0;
-
+$color-gray: #646464;
 $color-secondary:#2c3e50;
-
+$color-gradient-dark: radial-gradient(circle, rgba(113, 115, 118, 0.1), rgba(87, 88, 90, 0.3), rgba(61, 61, 63, 0.6), #252526, #0d0d0d);
 $color-error: #6B0504;
 $color-error-light: #C81D25;
 
 $border: 0.15em solid $color-secondary;
 $border-radius: 0.3em;
 
-$vt-c-white: #ffffff;
-$vt-c-white-soft: #f8f8f8;
-$vt-c-white-mute: #f2f2f2;
-
-$vt-c-black: #181818;
-$vt-c-black-soft: #222222;
-$vt-c-black-mute: #282828;
-
-$vt-c-indigo: #2c3e50;
-
-$vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-$vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-$vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-$vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
-
-$vt-c-text-light-1: var($vt-c-indigo);
-$vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-$vt-c-text-dark-1: var($vt-c-white);
-$vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+$dark-theme: rgb(20, 20, 20);
+$dark-theme-2: rgb(30, 30, 30);
