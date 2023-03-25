@@ -33,7 +33,19 @@ const router = createRouter({
     {
       path: '/:chapter_id/page_edit/:page_id?',
       name: 'page_edit',
-      component: () => import('../views/PageEdit.vue')
+      component: () => import('../views/novel/PageEdit.vue')
+    },
+    {
+      path: '/novel/:novel_id',
+      name:'read_novel',
+      component: () => import('../views/novel/read_novel/ReadNovel.vue'),
+      // children: [
+      //   {
+      //     path: "/novel/:novel_id/:chapter_id",
+      //     name: "pages_list",
+      //     component: userInfo,
+      //   },
+      // ]
     }
   ]
 })
