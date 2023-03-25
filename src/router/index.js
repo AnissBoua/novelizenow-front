@@ -31,7 +31,7 @@ const router = createRouter({
       component: () => import('../views/Account.vue')
     },
     {
-      path: '/page_edit',
+      path: '/:chapter_id/page_edit/:page_id?',
       name: 'page_edit',
       component: () => import('../views/PageEdit.vue')
     }
