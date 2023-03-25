@@ -31,7 +31,6 @@
     </div>
 </template>
 <script>
-import helper from '../config/helper';
 import Button from './Button.vue';
     export default {
         props: {
@@ -69,7 +68,7 @@ import Button from './Button.vue';
         },
         data() {
             return {
-                pathImg: helper.pathImg,
+                pathImg: import.meta.env.VITE_APP_PATH_IMG,
                 slide: 0,
 
             }

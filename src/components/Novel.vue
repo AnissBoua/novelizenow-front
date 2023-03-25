@@ -1,5 +1,4 @@
 <script>
-import helper from '../config/helper';
 import Score from './Score.vue';
 import Author from './Author.vue';
 import Tag from './Tag.vue';
@@ -34,7 +33,7 @@ export default {
     },
     data(){
         return {
-            BASE_IMG_PATH: helper.pathImg
+            BASE_IMG_PATH: import.meta.env.VITE_APP_PATH_IMG
         }
     },
     methods: {

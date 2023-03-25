@@ -19,7 +19,7 @@
         </div>
         <div class="my-6">
             <div class="grid grid-cols-4 gap-4">
-                <div v-for="i in 4" >
+                <div v-for="i in 4" :key="i">
                     <NovelCard />
                 </div>
             </div>
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import helper from '../../config/helper';
 import Category from '../Category.vue';
 import Author from '../Author.vue';
 import NovelCard from '../NovelCard.vue';
@@ -75,7 +74,7 @@ export default {
     },
     data(){
         return {
-            pathImg: helper.pathImg,
+            pathImg: import.meta.env.VITE_APP_PATH_IMG,
         }
     }
 }

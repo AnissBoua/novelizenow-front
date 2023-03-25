@@ -25,7 +25,6 @@
   
   <script>
   import { RouterLink } from 'vue-router'
-  import helper from '../config/helper'
   import axios from 'axios'
   import {useAuth} from '@/stores/auth.js'
 
@@ -50,7 +49,7 @@
         }
         // TODO 
         try {
-          const response = await axios.post(helper.path + 'login', data);
+          const response = await axios.post(import.meta.env.VITE_APP_API_URL + 'login', data);
           if (response.status === 200 && response.data.token) {
             this.authStore.setToken(response.data.token)
             localStorage.setItem('refresh_token', response.data.refresh_token);

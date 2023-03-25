@@ -6,7 +6,6 @@
   
 <script>
 import { RouterLink } from 'vue-router'
-import helper from '../config/helper'
 import axios from 'axios'
 export default {
     name: "Registration",

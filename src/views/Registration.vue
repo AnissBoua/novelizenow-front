@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import helper from '../config/helper'
 import axios from 'axios'
 export default {
   name: "Registration",
@@ -64,7 +63,7 @@ export default {
         "confirmpassword": this.confirmpassword,
       }
       try {
-        const response = await axios.post(helper.path + 'registration', data);
+        const response = await axios.post(import.meta.env.VITE_APP_API_URL + 'registration', data);
         if (response.status === 201) {
           this.$router.push({name: 'login'})
         }

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import helper from '@/config/helper'
 
 export const useAuth = defineStore('auth', {
     state: () => {
@@ -63,7 +62,7 @@ export const useAuth = defineStore('auth', {
             
                 try {
                     // check if token is valid
-                    const response = await axios.get(helper.path + 'me', headers);
+                    const response = await axios.get(import.meta.env.VITE_APP_API_URL + 'me', headers);
                     return {
                         data: response.data,
                         status: response.status,
@@ -89,7 +88,7 @@ export const useAuth = defineStore('auth', {
             if (refreshToken) {
                 try {
                     // try to refresh the token
-                    const res = await axios.post(helper.path + "token/refresh", data);
+                    const res = await axios.post(import.meta.env.VITE_APP_API_URL + "token/refresh", data);
     
                     // if it's okay set new token
                     if (res.status === 200) {

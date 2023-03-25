@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import helper from '../config/helper';
 import Category from './Category.vue';
 import Button from './Button.vue';
 import Author from './Author.vue';
@@ -62,7 +61,7 @@ export default {
     },
     data(){
         return {
-            pathImg: helper.pathImg,
+            pathImg: import.meta.env.VITE_APP_PATH_IMG,
         }
     },
 }
