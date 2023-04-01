@@ -3,10 +3,10 @@
     <alert-modal @acceptWarning="onWarningAccepted" />
     <div class="page_edit_header grid grid-cols-8 mt-2">
         <div class="path_container">
-            <router-link :to="{ name: 'home'}">Novel > </router-link><router-link :to="{ name: 'home'}">Chapter </router-link>
+            <router-link :to="{ name: 'home'}">Novel > </router-link><router-link :to="{ name: 'chapter_edit', params:{'novel_id':novelId,'chapter_id':chapterId}}">Chapter </router-link>
         </div>
       <div class="btn_container col-start-8 col-end-8">
-        <Button v-if="!chapterId" @click="submitPage('add')" label="Add page"></Button>
+        <Button v-if="!pageId" @click="submitPage('add')" label="Add page"></Button>
         <Button v-else @click="submitPage('update')" label="Update page"></Button>
       </div>
     </div>
@@ -59,6 +59,7 @@ export default {
       data:null,
       pageId:this.$route.params.page_id,
       chapterId:this.$route.params.chapter_id,
+      novelId:this.$route.params.novel_id
     };
   },
   async created(){

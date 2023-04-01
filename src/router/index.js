@@ -31,9 +31,19 @@ const router = createRouter({
       component: () => import('../views/Account.vue')
     },
     {
-      path: '/:chapter_id/page_edit/:page_id?',
+      path: '/:novel_id/chapter_edit/:chapter_id?',
+      name: 'chapter_edit',
+      component: () => import('../views/novel/ChapterEdit.vue')
+    },
+    {
+      path: '/:novel_id/:chapter_id/page_edit/:page_id?',
       name: 'page_edit',
-      component: () => import('../views/PageEdit.vue')
+      component: () => import('../views/novel/PageEdit.vue')
+    },
+    {
+      path: '/novel/:novel_id',
+      name:'read_novel',
+      component: () => import('../views/novel/read_novel/ReadNovel.vue'),
     }
   ]
 })
