@@ -1,6 +1,6 @@
 <template>
   <div class="chapter_edit w-full">
-    <alert-modal />
+    <alert-modal @acceptWarning="onWarningAccepted"/>
     <div class="form_container flex justify-center">
       <form class="w-8/12 grid grid-cols-12">
         <Button
@@ -49,7 +49,7 @@
           item-key="id"
         >
           <template #item="{ element: pageId }">
-            <DraggablePageCard :page="getPagesByIds(pageId)" :chapterId="chapterId" :novelId="novelId" @up="moveUpOrDown" @down="moveUpOrDown" />
+            <DraggablePageCard :page="getPagesByIds(pageId)" :chapterId="chapterId" :novelId="novelId" @up="moveUpOrDown" @down="moveUpOrDown" @delete="openAlertDeletePage" />
           </template>
         </draggable>
       </form>
@@ -92,6 +92,7 @@ export default {
       status: null,
       pageState: [],
       pages: null,
+      pageToDelete:null,
     };
   },
   async mounted() {
@@ -187,6 +188,43 @@ export default {
         console.warn(e);
       }
     },
+    openAlertDeletePage(data){
+      this.alertModalState = {
+          open: true,
+          title: "Delete page",
+          content: `Can you confirm that you want to delete the page with the intern id : ${data} ?`,
+          emits:"delete"
+      };
+      this.pageToDelete = data;
+    },
+    onWarningAccepted(data){
+      switch (data){
+        case 'delete':
+          this.deletePage();
+          break;
+        default:
+          throw new Error(`The case ${data} is not treated`);
+      }
+    },
+    async deletePage(){
+      if(this.pageToDelete){
+        try {
+          await axios.delete(`page/${this.pageToDelete}`);
+          const index = this.pageState.indexOf(this.pageToDelete);
+          if (index > -1){
+            this.pageState.splice(index,1);
+          }
+          this.pageToDelete = null;
+          this.alertModalState = {
+            open: true,
+            title: "Page deleted",
+            content: `Your page has been deleted successfully.`,
+          };
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+    }
   },
 };
 </script>
