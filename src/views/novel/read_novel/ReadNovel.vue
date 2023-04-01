@@ -16,13 +16,8 @@
     </div>
     <hr>
     <div class="page_content_chapters h-full border">
-      <div class="page_content_chapters_container border h-full w-10/12 m-auto grid grid-cols-2 gap-x-[20px]">
-        <div class="test w-full border h-10">test</div>
-        <div class="test w-full border h-10">test2</div>
-        <div class="test w-full border h-10">test3</div>
-        <div class="test w-full border h-10">test4</div>
-        <div class="test w-full border h-10">test5</div>
-
+      <div class="page_content_chapters_container  h-full w-10/12 m-auto grid grid-cols-2 gap-x-[20px] gap-y-[10px]">
+        <div v-for="i in 20" :key="i" class="test w-full border h-16">test {{i}}</div>
       </div>
     </div>
   </div>
