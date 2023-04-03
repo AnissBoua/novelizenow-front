@@ -1,82 +1,76 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import {useAuth} from '@/stores/auth.js'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import { useAuth } from "@/stores/auth.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: "/",
+      name: "home",
+      component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue')
+      path: "/about",
+      name: "about",
+      component: () => import("../views/AboutView.vue"),
     },
     {
-      path: '/register',
-      name: 'register',
-      component: () => import('../views/Registration.vue')
+      path: "/register",
+      name: "register",
+      component: () => import("../views/Registration.vue"),
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/Login.vue')
+      path: "/login",
+      name: "login",
+      component: () => import("../views/Login.vue"),
     },
     {
-      path: '/account',
-      name: 'account',
-      component: () => import('../views/Account.vue')
+      path: "/account",
+      name: "account",
+      component: () => import("../views/Account.vue"),
     },
     {
-      path: '/:novel_id/chapter_edit/:chapter_id?',
-      name: 'chapter_edit',
-      component: () => import('../views/novel/ChapterEdit.vue')
+      path: "/author/:novel_id/chapter/:chapter_id?",
+      name: "chapter_edit",
+      component: () => import("../views/novel/ChapterEdit.vue"),
     },
     {
-      path: '/:novel_id/:chapter_id/page_edit/:page_id?',
-      name: 'page_edit',
-      component: () => import('../views/novel/PageEdit.vue')
+      path: "/author/:novel_id/:chapter_id/page/:page_id?",
+      name: "page_edit",
+      component: () => import("../views/novel/PageEdit.vue"),
     },
     {
-      path: '/novel/:novel_id',
-      name:'read_novel',
-      component: () => import('../views/novel/read_novel/ReadNovel.vue'),
-    }
-  ]
-})
+      path: "/novel/:novel_id",
+      name: "read_novel",
+      component: () => import("../views/novel/read_novel/ReadNovel.vue"),
+    },
+  ],
+});
 
 router.beforeEach(async (to, from, next) => {
-  const secureLoggedPath = [
-    "/register",
-    "/login",
-    "/account"
-  ]
+  const secureLoggedPath = ["/register", "/login", "/account"];
   if (secureLoggedPath.includes(to.path)) {
     const authStore = useAuth();
-    const { verifyToken } = authStore
+    const { verifyToken } = authStore;
     const isAuthenticated = await verifyToken();
     console.log(isAuthenticated);
     if (isAuthenticated) {
       if (to.path === "/account") {
         next();
-      }else{
+      } else {
         next("/");
       }
-    }
-    else {
+    } else {
       if (to.path === "/account") {
         next("/login");
       } else {
         next();
       }
     }
-    
-  }else {
+  } else {
     next();
   }
-})
+});
 
-export default router
+export default router;

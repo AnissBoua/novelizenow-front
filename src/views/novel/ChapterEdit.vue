@@ -1,6 +1,6 @@
 <template>
   <div class="chapter_edit w-full">
-    <alert-modal @acceptWarning="onWarningAccepted"/>
+    <alert-modal @acceptWarning="onWarningAccepted" />
     <div class="form_container flex justify-center">
       <form class="w-8/12 grid grid-cols-12">
         <Button
@@ -39,7 +39,13 @@
           @selection-change="onSelectionChange"
         />
         <Button
-          @click.prevent="$router.push({name:'page_edit', params:{'novel_id':novelId,'chapter_id':chapterId}})"
+          v-if="chapterId"
+          @click.prevent="
+            $router.push({
+              name: 'page_edit',
+              params: { novel_id: novelId, chapter_id: chapterId },
+            })
+          "
           class="col-start-12 mt-2"
           label="New page"
         />
@@ -49,7 +55,14 @@
           item-key="id"
         >
           <template #item="{ element: pageId }">
-            <DraggablePageCard :page="getPagesByIds(pageId)" :chapterId="chapterId" :novelId="novelId" @up="moveUpOrDown" @down="moveUpOrDown" @delete="openAlertDeletePage" />
+            <DraggablePageCard
+              :page="getPagesByIds(pageId)"
+              :chapterId="chapterId"
+              :novelId="novelId"
+              @up="moveUpOrDown"
+              @down="moveUpOrDown"
+              @delete="openAlertDeletePage"
+            />
           </template>
         </draggable>
       </form>
@@ -92,7 +105,7 @@ export default {
       status: null,
       pageState: [],
       pages: null,
-      pageToDelete:null,
+      pageToDelete: null,
     };
   },
   async mounted() {
@@ -111,13 +124,13 @@ export default {
         } else {
           this.pageState = response.data.pageState;
         }
-        if(this.pageState.length !== this.pages.length){
-          this.pages.forEach(page=>{
-            if(this.pageState.indexOf(page.id)===-1){
+        if (this.pageState.length !== this.pages.length) {
+          this.pages.forEach((page) => {
+            if (this.pageState.indexOf(page.id) === -1) {
               this.pageState.push(page.id);
-              this.onSubmit('update')
+              this.onSubmit("update");
             }
-          })
+          });
         }
       } catch (e) {
         console.warn(e);
@@ -132,14 +145,14 @@ export default {
     moveUpOrDown(data) {
       const oldIndex = this.pageState.indexOf(data.id);
       let newIndex;
-      if(data.where === "up"){
+      if (data.where === "up") {
         newIndex = this.pageState.indexOf(data.id) - 1;
       } else {
         newIndex = this.pageState.indexOf(data.id) + 1;
       }
       if (newIndex >= 0 && newIndex < this.pageState.length) {
-        this.pageState.splice(oldIndex,1);
-        this.pageState.splice(newIndex,0,data.id);
+        this.pageState.splice(oldIndex, 1);
+        this.pageState.splice(newIndex, 0, data.id);
       }
     },
     onSubmit(type) {
@@ -188,31 +201,31 @@ export default {
         console.warn(e);
       }
     },
-    openAlertDeletePage(data){
+    openAlertDeletePage(data) {
       this.alertModalState = {
-          open: true,
-          title: "Delete page",
-          content: `Can you confirm that you want to delete the page with the intern id : ${data} ?`,
-          emits:"delete"
+        open: true,
+        title: "Delete page",
+        content: `Can you confirm that you want to delete the page with the intern id : ${data} ?`,
+        emits: "delete",
       };
       this.pageToDelete = data;
     },
-    onWarningAccepted(data){
-      switch (data){
-        case 'delete':
+    onWarningAccepted(data) {
+      switch (data) {
+        case "delete":
           this.deletePage();
           break;
         default:
           throw new Error(`The case ${data} is not treated`);
       }
     },
-    async deletePage(){
-      if(this.pageToDelete){
+    async deletePage() {
+      if (this.pageToDelete) {
         try {
           await axios.delete(`page/${this.pageToDelete}`);
           const index = this.pageState.indexOf(this.pageToDelete);
-          if (index > -1){
-            this.pageState.splice(index,1);
+          if (index > -1) {
+            this.pageState.splice(index, 1);
           }
           this.pageToDelete = null;
           this.alertModalState = {
@@ -224,7 +237,7 @@ export default {
           console.warn(e);
         }
       }
-    }
+    },
   },
 };
 </script>

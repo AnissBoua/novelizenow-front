@@ -2,12 +2,27 @@
   <div class="edit_page">
     <alert-modal @acceptWarning="onWarningAccepted" />
     <div class="page_edit_header grid grid-cols-8 mt-2">
-        <div class="path_container">
-            <router-link :to="{ name: 'home'}">Novel > </router-link><router-link :to="{ name: 'chapter_edit', params:{'novel_id':novelId,'chapter_id':chapterId}}">Chapter </router-link>
-        </div>
+      <div class="path_container">
+        <router-link :to="{ name: 'home' }">Novel > </router-link
+        ><router-link
+          :to="{
+            name: 'chapter_edit',
+            params: { novel_id: novelId, chapter_id: chapterId },
+          }"
+          >Chapter
+        </router-link>
+      </div>
       <div class="btn_container col-start-8 col-end-8">
-        <Button v-if="!pageId" @click="submitPage('add')" label="Add page"></Button>
-        <Button v-else @click="submitPage('update')" label="Update page"></Button>
+        <Button
+          v-if="!pageId"
+          @click="submitPage('add')"
+          label="Add page"
+        ></Button>
+        <Button
+          v-else
+          @click="submitPage('update')"
+          label="Update page"
+        ></Button>
       </div>
     </div>
     <div class="editor_container">
@@ -56,19 +71,19 @@ export default {
       editorData: "",
       text: "",
       alreadyWarned: false,
-      data:null,
-      pageId:this.$route.params.page_id,
-      chapterId:this.$route.params.chapter_id,
-      novelId:this.$route.params.novel_id
+      data: null,
+      pageId: this.$route.params.page_id,
+      chapterId: this.$route.params.chapter_id,
+      novelId: this.$route.params.novel_id,
     };
   },
-  async created(){
-    if(this.pageId){
-        let response = await axios.get(`page/${this.pageId}`);
-        this.data = response.data;
-        this.editorData = this.data.html;
+  async created() {
+    if (this.pageId) {
+      let response = await axios.get(`page/${this.pageId}`);
+      this.data = response.data;
+      this.editorData = this.data.html;
     } else {
-        this.editorData = "<p>Votre première page.</p>"
+      this.editorData = "<p>Votre nouvelle page.</p>";
     }
   },
   methods: {
@@ -114,41 +129,41 @@ export default {
         html: this.editorData,
         chapter: this.chapterId,
       };
-      switch(type){
+      switch (type) {
         case "add":
-            this.addPage(obj);
-            break;
+          this.addPage(obj);
+          break;
         case "update":
-            this.updatePage(obj);
-            break;
+          this.updatePage(obj);
+          break;
         default:
-            throw new Error(`cas non traité : ${type}`);
+          throw new Error(`cas non traité : ${type}`);
       }
     },
-    async addPage(obj){
-        try {
-            await axios.post("page", obj)
-            this.alertModalState = {
-                open: true,
-                title: "Page added",
-                content: `Your page has been added successfully.`,
-            };
-        } catch (e){
-            console.warn(e);
-        }
+    async addPage(obj) {
+      try {
+        await axios.post("page", obj);
+        this.alertModalState = {
+          open: true,
+          title: "Page added",
+          content: `Your page has been added successfully.`,
+        };
+      } catch (e) {
+        console.warn(e);
+      }
     },
-    async updatePage(obj){
-        try {
-            await axios.put(`page/${this.data.id}`, obj)
-            this.alertModalState = {
-                open: true,
-                title: "Page updated",
-                content: `Your page has been updated successfully.`,
-            };
-        } catch (e){
-            console.warn(e);
-        }
-    }
+    async updatePage(obj) {
+      try {
+        await axios.put(`page/${this.data.id}`, obj);
+        this.alertModalState = {
+          open: true,
+          title: "Page updated",
+          content: `Your page has been updated successfully.`,
+        };
+      } catch (e) {
+        console.warn(e);
+      }
+    },
   },
 };
 </script>
