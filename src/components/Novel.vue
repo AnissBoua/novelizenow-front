@@ -1,57 +1,57 @@
 <script>
-import helper from '../config/helper';
-import Score from './Score.vue';
-import Author from './Author.vue';
-import Tag from './Tag.vue';
+import Score from "./Score.vue";
+import Author from "./Author.vue";
+import Tag from "./Tag.vue";
 
 export default {
-    components: {
-        Score,
-        Author,
-        Tag,
+  components: {
+    Score,
+    Author,
+    Tag,
+  },
+  props: {
+    novel: {
+      type: Object,
+      default: {
+        title: "bla bla bla bla",
+        img: "2.jpg",
+        resume:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
+        category: ["hello", "action", "fantasy"],
+        score: 4.6,
+        author: {
+          avatar: "1.jpg",
+          name: "Anisse",
+          lastname: "Boua",
+        },
+        price: 8,
+        stats: {
+          readers: 98600,
+        },
+        date_creation: "04-03-2023",
+      },
     },
-    props: {
-        novel: {
-            type: Object,
-            default: {
-                title:"bla bla bla bla",
-                img: "2.jpg",
-                resume: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-                category: ["hello", "action", "fantasy"],
-                score: 4.6,
-                author: {
-                    avatar: '1.jpg',
-                    name: "Anisse",
-                    lastname: "Boua",
-                },
-                price: 8,
-                stats: {
-                    readers: 98600,
-                },
-                date_creation: "04-03-2023"
-            }
-        }
-    },
-    data(){
-        return {
-            BASE_IMG_PATH: helper.pathImg
-        }
-    },
-    methods: {
-        isNewNovel(date){
-            const postDate = new Date(date);
-            const today = new Date();
+  },
+  data() {
+    return {
+      BASE_IMG_PATH: import.meta.env.VITE_BACK_URL + "imgs/",
+    };
+  },
+  methods: {
+    isNewNovel(date) {
+      const postDate = new Date(date);
+      const today = new Date();
 
-            const difference = Math.floor((today - postDate) / (1000 * 60 * 60 * 24))
+      const difference = Math.floor((today - postDate) / (1000 * 60 * 60 * 24));
 
-            if (difference <= 7) {
-                return true;
-            }
+      if (difference <= 7) {
+        return true;
+      }
 
-            return false;
-        }
+      return false;
     },
-}
+  },
+};
 </script>
 
 <template>

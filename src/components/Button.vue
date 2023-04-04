@@ -1,11 +1,11 @@
 <template>
     <router-link v-if="to" :to="to">
-        <button :class="'btn ' +  (btnStyle ? (btnStyle === 1 ? 'btn_primary' : 'btn_secondary') : '' )">
+        <button class="btn" :class="{'btn_primary' : btnStyle === 1 && bgColor === undefined, 'btn_secondary' : btnStyle !== 1  && bgColor === undefined, bgColor : bgColor  }">
             <i v-if="icon" :class="'btn_icon ' + icon"></i>
             {{ label }}
         </button>
     </router-link>
-    <button v-else :class="'btn ' +  (btnStyle ? (btnStyle === 1 ? 'btn_primary' : 'btn_secondary') : '' )">
+    <button v-else class="btn" :class="{'btn_primary' : btnStyle === 1 && bgColor === undefined, 'btn_secondary' : btnStyle !== 1  && bgColor === undefined, [bgColor] : bgColor  }">
         <i v-if="icon" :class="'btn_icon ' + icon"></i>
         {{ label }}
     </button>
@@ -32,7 +32,10 @@ export default {
             type: String,
             default: ""
         },
-        
+        bgColor: {
+            type: String,
+            default: undefined
+        }
     },
     data(){
         return {
@@ -46,11 +49,11 @@ export default {
     font-weight: 600;
     border: 0.1em solid transparent;
     border-radius: 0.7em;
-    background-color: $color-primary;
     color: white;
     cursor: pointer;
     padding: 0.5em 1em;
     transition: all ease-in-out 0.3s;
+    border-radius: $border-radius;
     &_primary:hover {
         background-color: white;
         color: $color-primary;
@@ -71,7 +74,6 @@ export default {
         color: $color-text-primary;
         background-color: $color-primary;
         border: 0;
-        border-radius: $border-radius;
         cursor: pointer;
         padding: 0.5em 1em;
         transition: all ease-in-out 0.2s;
