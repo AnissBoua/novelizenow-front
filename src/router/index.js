@@ -31,25 +31,30 @@ const router = createRouter({
       component: () => import("../views/Account.vue"),
     },
     {
-      path: "/author/:novel_id/chapter/:chapter_id?",
-      name: "chapter_edit",
-      component: () => import("../views/novel/ChapterEdit.vue"),
-    },
-    {
-      path: "/author/:novel_id/:chapter_id/page/:page_id?",
-      name: "page_edit",
-      component: () => import("../views/novel/PageEdit.vue"),
-    },
-    {
       path: "/novel/:novel_id",
       name: "read_novel",
       component: () => import("../views/novel/read_novel/ReadNovel.vue"),
     },
-    // BACKOFFICE AUTHOR -> NOVEL 
+    // BACKOFFICE AUTHOR
     {
-      path: '/author/novel/:id?',
-      name: 'author_novel',
-      component: () => import('@/views/backoffice/author/Novel.vue')
+      path: "/author/",
+      children: [
+        {
+          path: ":novel_id/chapter/:chapter_id?",
+          name: "chapter_edit",
+          component: () => import("../views/novel/ChapterEdit.vue"),
+        },
+        {
+          path: ":novel_id/:chapter_id/page/:page_id?",
+          name: "page_edit",
+          component: () => import("../views/novel/PageEdit.vue"),
+        },
+        {
+          path: "novel/:id?",
+          name: "author_novel",
+          component: () => import("@/views/backoffice/author/Novel.vue"),
+        },
+      ],
     },
   ],
 });
