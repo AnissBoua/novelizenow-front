@@ -45,6 +45,12 @@ const router = createRouter({
       name: "read_novel",
       component: () => import("../views/novel/read_novel/ReadNovel.vue"),
     },
+    // BACKOFFICE AUTHOR -> NOVEL 
+    {
+      path: '/author/novel/:id?',
+      name: 'author_novel',
+      component: () => import('@/views/backoffice/author/Novel.vue')
+    },
   ],
 });
 
