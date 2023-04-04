@@ -1,10 +1,10 @@
 <template>
-    <a v-if="href" :href="href">
+    <router-link v-if="to" :to="to">
         <button :class="'btn ' +  (btnStyle ? (btnStyle === 1 ? 'btn_primary' : 'btn_secondary') : '' )">
             <i v-if="icon" :class="'btn_icon ' + icon"></i>
             {{ label }}
         </button>
-    </a>
+    </router-link>
     <button v-else :class="'btn ' +  (btnStyle ? (btnStyle === 1 ? 'btn_primary' : 'btn_secondary') : '' )">
         <i v-if="icon" :class="'btn_icon ' + icon"></i>
         {{ label }}
@@ -17,9 +17,12 @@ export default {
             type: Number,
             default: 1
         },
-        href: {
-            type: String,
-            default: ""
+        to: {
+            type: Object,
+            default: {
+                name: '',
+                params: '',
+            }
         },
         label: {
             type: String,

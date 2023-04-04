@@ -16,19 +16,19 @@ export default {
             default: {
                 title:"bla bla bla bla",
                 img: "2.jpg",
-                description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
+                resume: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
                 category: ["hello", "action", "fantasy"],
                 score: 4.6,
                 author: {
                     avatar: '1.jpg',
                     name: "Anisse",
-                    surname: "Boua",
+                    lastname: "Boua",
                 },
                 price: 8,
                 stats: {
                     readers: 98600,
                 },
-                date_publication: "04-03-2023"
+                date_creation: "04-03-2023"
             }
         }
     },
@@ -39,7 +39,7 @@ export default {
     },
     methods: {
         isNewNovel(date){
-            const postDate = new Date(date.split("-").reverse().join("-"));
+            const postDate = new Date(date);
             const today = new Date();
 
             const difference = Math.floor((today - postDate) / (1000 * 60 * 60 * 24))
@@ -60,7 +60,7 @@ export default {
             <img class="w-full h-full object-cover rounded-md rounded-r-none" :src="BASE_IMG_PATH + novel.img" alt="">
         </div>
         <div class="relative basis-3/4 flex flex-col justify-between py-3 px-4">
-            <div v-if="isNewNovel(novel.date_publication)" class="absolute -top-2 right-2">
+            <div v-if="isNewNovel(novel.date_creation)" class="absolute -top-2 right-2">
                 <Tag />
             </div>
             <div>
@@ -70,12 +70,12 @@ export default {
                     :score="novel.score"
                     />
                 </div>
-                <p class="my-3">{{ novel.description.length > 120 ? novel.description.slice(0, 120) + '...' :  novel.description }}</p>
+                <p v-if="novel.resume" class="my-3">{{ novel.resume.length > 120 ? novel.resume.slice(0, 120) + '...' :  novel.resume }}</p>
             </div>
             <div>
                 <Author
                 :name="novel.author.name"
-                :surname="novel.author.surname"
+                :lastname="novel.author.lastname"
                 :followers="4586"
                 :img="''"
                 />

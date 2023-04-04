@@ -5,7 +5,7 @@
         </div>
         <div :class="img ? 'mx-2' : ''">
             <div>
-                <p>{{ name + " " + surname }}</p>
+                <p>{{ name + " " + lastname }}</p>
             </div>
             <div class="text-xs text-zinc-400" v-if="followers !== false">
                 <p> {{followers }} followers</p>
@@ -26,7 +26,7 @@ export default {
             type: String,
             default: "Anisse"
         },
-        surname: {
+        lastname: {
             type: String,
             default: "Bouainbi"
         },

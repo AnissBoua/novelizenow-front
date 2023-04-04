@@ -34,6 +34,12 @@ const router = createRouter({
       path: '/page_edit',
       name: 'page_edit',
       component: () => import('../views/PageEdit.vue')
+    },
+    // BACKOFFICE AUTHOR -> NOVEL 
+    {
+      path: '/author/novel/:id?',
+      name: 'author_novel',
+      component: () => import('@/views/backoffice/author/Novel.vue')
     }
   ]
 })
