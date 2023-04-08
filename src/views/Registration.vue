@@ -62,14 +62,7 @@
         <p>{{ this.errors.general }}</p>
       </div>
       <div class="registerform_block_btn">
-        <input
-          @click="register()"
-          class="btn_primary registerform_submit"
-          type="submit"
-          name="submit"
-          id="submit"
-          value="Sign up"
-        />
+        <Button :label="'Sign up'" @click="register()"></Button>
       </div>
     </div>
     <div>
