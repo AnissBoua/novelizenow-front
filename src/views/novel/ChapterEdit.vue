@@ -174,7 +174,7 @@ export default {
       }
     },
     async addChapter(obj) {
-      obj["status"] = "In progress";
+      obj["status"] = "in_progress";
       try {
         await axios.post("chapter", obj);
         this.alertModalState = {

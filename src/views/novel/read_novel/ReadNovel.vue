@@ -1,76 +1,83 @@
 <template>
   <div class="read_book_page">
-    <div class="banner grid grid-cols-12">
-      <div class="novel_infos col-start-4 col-end-10">
-        <img src="#" alt="tempo" />
-        <div v-if="data" class="novel_infos_desc">
-          <h1>{{ data.title }}</h1>
-          <p>Author: {{ data.author.lastname }} {{ data.author.name }}</p>
+    <div class="relative">
+      <img v-if="novel && novel.banner" class="absolute w-full h-full" :src="BACK_URL + novel.banner.filepath" alt="">
+      <div v-else class="absolute w-full h-full bg-novelize-darklight"></div>
+      <div class="absolute w-full h-full bg-darklayer opacity-60"></div>
+      <div class="relative z-10 grid grid-cols-12 h-full py-20">
+        <img v-if="novel.cover.filepath" class="col-start-3 col-span-2 w-60 h-80 rounded-r-lg" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
+        <div v-if="novel" :class="(novel.cover.filepath ? 'col-start-5' : 'col-start-4') + ' col-span-6'">
+          <div class="flex items-center">
+            <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
+            <router-link v-if="isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
+              <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4"><i class="fa-solid fa-pen text-white "></i></div>
+            </router-link>
+          </div>
+          <div>
+            <p class="text-zinc-300 my-6">
+              {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 1000) :  novel.resume.slice(0, 300) + '...' }}
+              <span class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
+            </p>
+          </div>
+          <Author 
+          :name="novel.author.name"
+          :lastname="novel.author.lastname"/>
         </div>
       </div>
     </div>
   </div>
-  <div class="page_content w-1/2 m-auto" style="">
-    <div class="page_content_header m-l">
-      <h1 class="text-2xl p-2">Chapters</h1>
+  <div class="w-1/2 mx-auto my-4">
+    <div class="flex justify-between items-center my-4">
+      <h1 class="text-2xl py-2">Chapters</h1>
+      <Button 
+      label="Add chapter"
+      :to="{ name: 'chapter_edit', params: { novel_id: novel.id }}"
+      ></Button>
     </div>
-    <hr>
-    <div class="page_content_chapters h-full border">
-      <div class="page_content_chapters_container  h-full w-10/12 m-auto grid grid-cols-2 gap-x-[20px] gap-y-[10px]">
-        <div v-for="i in 20" :key="i" class="test w-full border h-16">test {{i}}</div>
+    <div class="">
+      <div class="grid grid-cols-2 gap-4">
+          <div v-for="(chapter, index) in novel.publishedChapters" :key="index" class="w-full text-xs text-zinc-300 bg-novelize-darklight rounded-lg py-2 px-2">Chapter {{index + 1}} : 
+            <router-link :to="{ name: 'read_page', params: { slug: novel.slug, chapter_id: chapter.id }}" class="text-sm text-white font-semibold hover:text-novelize-primary">{{ chapter.title }}
+            </router-link>
+          </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import {useAuth} from "@/stores/auth.js";
 import axios from "axios";
+import Author from "../../../components/Author.vue";
 
-export default {
-  data() {
-    return {
-      data: null,
-      title: null,
-      novelId: this.$route.params.novel_id,
-    };
-  },
-  mounted() {
-    this.getData();
-  },
-  methods: {
-    async getData() {
-      if (this.novelId) {
-        let response = await axios.get(`novel/${this.novelId}`);
-        this.data = response.data;
-        this.title = response.data.title;
-      }
-    },
-  },
-};
+const authStore = useAuth();
+const { me } = authStore;
+
+
+const novel = ref(null);
+const route = useRoute();
+const novelSlug = ref(route.params.novel_slug);
+const BACK_URL = import.meta.env.VITE_BACK_URL;
+
+const showMore = ref(false);
+
+const isAuthor = ref(null);
+
+
+
+if (novelSlug.value) {
+  axios.get(`novel/bySlug/${novelSlug.value}`).then((res) => {
+    novel.value = res.data;
+    console.log(novel.value);
+    me().then((res) => {
+      isAuthor.value = res.data.id === novel.value.author.id;
+    });
+  });
+}
+
+function showMoreResume() {
+  showMore.value = !showMore.value;
+}
 </script>
-
-<style scoped lang="scss">
-.banner {
-  height: 30rem;
-  border: 1px solid white;
-}
-
-.novel_infos {
-  display: flex;
-  align-items: center;
-  padding-inline: 5rem;
-  img {
-    border: 1px solid white;
-    height: 20rem;
-    width: 15rem;
-  }
-  &_desc {
-    flex-grow: 1;
-    height: 20rem;
-    margin-left: 2rem;
-    h1 {
-      font-size: 2rem;
-    }
-  }
-}
-</style>
