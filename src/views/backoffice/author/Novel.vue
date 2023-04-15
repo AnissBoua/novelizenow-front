@@ -87,7 +87,7 @@ if (route.params.id) {
 }
 const categories = ref(null);
 
-axios.get(import.meta.env.VITE_BACK_API_URL + 'category',)
+axios.get(import.meta.env.VITE_BACK_URL + 'api/category',)
 .then(res => {
     categories.value = res.data
 })
@@ -151,7 +151,7 @@ function updateNovel(){
     novel.value.categories.forEach((category) => {
         formData.append('category[]', category.id)
     })
-    axios.post(import.meta.env.VITE_BACK_API_URL + 'novel/' + novelId, formData, {
+    axios.post(import.meta.env.VITE_BACK_URL + 'api/novel/' + novelId, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer ' + JWTToken
