@@ -46,6 +46,10 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
+import {useAuth} from "@/stores/auth.js";
+
+const authStore = useAuth();
+const { me } = authStore;
 
 const router = useRouter();
 const route = useRoute();
@@ -60,12 +64,26 @@ const novel = ref({
 let novelId = null;
 if (route.params.id) {
     novelId = route.params.id;
+    let authorId = null;
     axios.get(import.meta.env.VITE_BACK_URL + 'api/novel/' + novelId)
-    .then((res) => {
-        novel.value.title = res.data.title;
-        novel.value.resume = res.data.resume;
-        novel.value.categories = res.data.categories;
+    .then(async (res) => {
+        authorId = res.data.author.id;
+        const isAuthor = await me().then((res) => {
+            res.data.id === authorId ? true : false;
+        });
+
+        if (isAuthor) {
+            novel.value.title = res.data.title;
+            novel.value.resume = res.data.resume;
+            novel.value.categories = res.data.categories;
+        } else {
+            novelId = null;
+            router.push({ name: 'author_novel' });
+        }
+        
     })
+
+
 }
 const categories = ref(null);
 

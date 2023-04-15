@@ -31,9 +31,19 @@ const router = createRouter({
       component: () => import("../views/Account.vue"),
     },
     {
-      path: "/novel/:novel_id",
-      name: "read_novel",
-      component: () => import("../views/novel/read_novel/ReadNovel.vue"),
+      path: "/novel/",
+      children: [
+        {
+          path: ":novel_slug",
+          name: "read_novel",
+          component: () => import("../views/novel/read_novel/ReadNovel.vue"),
+        },
+        {
+          path: ":slug/:chapter_id",
+          name: "read_page",
+          // component: () => import("../views/novel/read_novel/ReadPage.vue")
+        },
+      ]
     },
     // BACKOFFICE AUTHOR
     {
