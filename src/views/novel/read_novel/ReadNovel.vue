@@ -1,11 +1,11 @@
 <template>
   <div class="read_book_page">
     <div class="relative">
-      <img v-if="novel && novel.banner" class="absolute w-full h-full" :src="BACK_URL + novel.banner.filepath" alt="">
-      <div v-else class="absolute w-full h-full bg-novelize-darklight"></div>
-      <div class="absolute w-full h-full bg-darklayer opacity-60"></div>
-      <div class="relative z-10 grid grid-cols-12 h-full py-20">
-        <img v-if="novel.cover.filepath" class="col-start-3 col-span-2 w-60 h-80 rounded-r-lg" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
+      <img v-if="novel && novel.banner" class="absolute w-full h-full object-cover" :src="BACK_URL + novel.banner.filepath" alt="">
+      <div class="absolute w-full h-full bg-novelize-dark/50"></div>
+      <div class="absolute w-full h-full bg-darklayer opacity-20"></div>
+      <div class="relative z-10 grid grid-cols-12 h-full py-20 ">
+        <img v-if="novel.cover.filepath" class="col-start-3 col-span-2 w-60 h-80 rounded-lg object-cover" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
         <div v-if="novel" :class="(novel.cover.filepath ? 'col-start-5' : 'col-start-4') + ' col-span-6'">
           <div class="flex items-center">
             <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
@@ -14,9 +14,9 @@
             </router-link>
           </div>
           <div>
-            <p class="text-zinc-300 my-6">
-              {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 1000) :  novel.resume.slice(0, 300) + '...' }}
-              <span v-if="novel.resume.length > 300" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
+            <p class="text-zinc-200 my-6">
+              {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 700) :  novel.resume.slice(0, 300) + '...' }}
+              <span v-if="novel.resume.length > 300" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer font-semibold" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
             </p>
           </div>
           <Author 
