@@ -68,19 +68,16 @@ if (route.params.id) {
     axios.get(import.meta.env.VITE_BACK_URL + 'api/novel/' + novelId)
     .then(async (res) => {
         authorId = res.data.author.id;
-        const isAuthor = await me().then((res) => {
-            res.data.id === authorId ? true : false;
+        me().then((resjwt) => {
+            if (resjwt.data.id === authorId) {
+                novel.value.title = res.data.title;
+                novel.value.resume = res.data.resume;
+                novel.value.categories = res.data.categories;
+            } else {
+                novelId = null;
+                router.push({ name: 'author_novel' });
+            }
         });
-
-        if (isAuthor) {
-            novel.value.title = res.data.title;
-            novel.value.resume = res.data.resume;
-            novel.value.categories = res.data.categories;
-        } else {
-            novelId = null;
-            router.push({ name: 'author_novel' });
-        }
-        
     })
 
 

@@ -33,7 +33,7 @@
                                                     params: { id: userNovel.novel.id },
                                                 }"><i class="fa-solid fa-pen mr-2"></i> Edit</router-link>
                                             </div>
-                                            <div class="w-full hover:bg-novelize-primary/20 py-2 px-4">
+                                            <div class="w-full hover:bg-novelize-primary/20 py-2 px-4" @click="deleteNovel(userNovel.novel.id)">
                                                 <p><i class="fa-solid fa-trash mr-2"></i> Delete</p>
                                             </div>
                                         </div>
@@ -96,5 +96,17 @@ let isNovelOptionVisible = ref(false);
 
 const showNovelOptions = () => {
     return isNovelOptionVisible.value = !isNovelOptionVisible.value;
+}
+
+function deleteNovel(novelId){
+    axios.delete(import.meta.env.VITE_BACK_URL + 'api/novel/' + novelId, {
+        headers: {
+            'Authorization': 'Bearer ' + JWTToken
+        } 
+    })
+    .then((res) => {
+        console.log(res.data)
+    })
+    .catch((e) => console.error(e))
 }
 </script>
