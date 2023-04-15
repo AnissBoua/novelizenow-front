@@ -130,7 +130,7 @@ function createNovel(){
         formData.append('category[]', category.id)
     })
     console.log([...formData.entries()]);
-    axios.post(import.meta.env.VITE_BACK_API_URL + 'novel/', formData, {
+    axios.post(import.meta.env.VITE_BACK_URL + 'api/novel/', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer ' + JWTToken

@@ -69,7 +69,7 @@ const JWTToken = localStorage.getItem('token');
 
 
 const userNovels = ref(null);
-axios.get(import.meta.env.VITE_BACK_API_URL + 'user/novels', {
+axios.get(import.meta.env.VITE_BACK_URL + 'api/user/novels', {
     headers: {
         'Authorization': 'Bearer ' + JWTToken
     } 
