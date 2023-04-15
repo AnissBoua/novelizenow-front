@@ -3,13 +3,12 @@
     <alert-modal @acceptWarning="onWarningAccepted" />
     <div class="page_edit_header grid grid-cols-8 mt-2">
       <div class="path_container">
-        <router-link :to="{ name: 'home' }">Novel > </router-link
-        ><router-link
+        <router-link
           :to="{
             name: 'chapter_edit',
             params: { novel_id: novelId, chapter_id: chapterId },
           }"
-          >Chapter
+          > > Chapter
         </router-link>
       </div>
       <div class="btn_container col-start-8 col-end-8">
@@ -31,6 +30,7 @@
         ref="myQuillEditor"
         theme="snow"
         contentType="html"
+        :toolbar="toolbar"
         @ready="onEditorReady"
         @textChange="onEditorInput"
       />
@@ -75,6 +75,13 @@ export default {
       pageId: this.$route.params.page_id,
       chapterId: this.$route.params.chapter_id,
       novelId: this.$route.params.novel_id,
+      toolbar:[
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ align: [] }], // Ajout de l'option alignement
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ color: [] }],
+          ],
     };
   },
   async created() {

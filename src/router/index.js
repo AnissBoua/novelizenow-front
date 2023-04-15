@@ -41,7 +41,10 @@ const router = createRouter({
         {
           path: ":slug/:chapter_id",
           name: "read_page",
-          component: () => import("../views/novel/read_novel/ReadPage.vue")
+          component: () => import("../views/novel/read_novel/ReadPage.vue"),
+          query: {
+            page: '1'
+          }
         },
       ]
     },

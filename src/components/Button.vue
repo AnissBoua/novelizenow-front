@@ -1,6 +1,6 @@
 <template>
     <router-link v-if="to" :to="to">
-        <button class="btn" :class="{'btn_primary' : btnStyle === 1 && bgColor === undefined, 'btn_secondary' : btnStyle !== 1  && bgColor === undefined, bgColor : bgColor  }">
+        <button class="btn" :class="{'btn_primary' : btnStyle === 1 && bgColor === undefined, 'btn_secondary' : btnStyle !== 1  && bgColor === undefined, [bgColor] : bgColor  }">
             <i v-if="icon" :class="'btn_icon ' + icon"></i>
             {{ label }}
         </button>

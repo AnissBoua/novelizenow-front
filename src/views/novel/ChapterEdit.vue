@@ -1,19 +1,35 @@
 <template>
   <div class="chapter_edit w-full">
     <alert-modal @acceptWarning="onWarningAccepted" />
+      <div v-if="chapterId && data" class="path_container">
+        <router-link
+          :to="{
+            name: 'read_novel',
+            params: { novel_slug: data.novel.slug},
+          }"
+          > > Novel
+        </router-link>
+      </div>
     <div class="form_container flex justify-center">
       <form class="w-8/12 grid grid-cols-12">
         <Button
           v-if="chapterId"
           @click.prevent="onSubmit('update')"
-          class="col-start-12 mt-2"
+          class="col-start-11 mt-2"
           label="Update"
         />
         <Button
           v-else
           @click.prevent="onSubmit('add')"
-          class="col-start-12 mt-2"
+          class="col-start-11 mt-2"
           label="Add"
+        />
+        <Button
+          v-if="chapterId"
+          @click.prevent="onSubmit('delete')"
+          class="col-start-12 mt-2"
+          bgColor="bg-red-600"
+          label="Delete"
         />
         <div class="col-start-1 col-end-13 row-start-2">
           <label for="first_name" class="block mb-2 text-lg font-medium"
@@ -106,6 +122,7 @@ export default {
       pageState: [],
       pages: null,
       pageToDelete: null,
+      newChapterId: null,
     };
   },
   async mounted() {
@@ -169,6 +186,9 @@ export default {
         case "update":
           this.updateChapter(obj);
           break;
+        case "delete":
+          this.openAlertDeleteChapter();
+          break;
         default:
           throw new Error(`the submit type : ${type} is not supported`);
       }
@@ -176,12 +196,15 @@ export default {
     async addChapter(obj) {
       obj["status"] = "in_progress";
       try {
-        await axios.post("chapter", obj);
+        let response = await axios.post("chapter", obj);
         this.alertModalState = {
           open: true,
           title: "Chapter added",
           content: `Your chapter has been added successfully.`,
+          emits:"redirectToNewChapter"
         };
+        console.log(response);
+        this.newChapterId = response.data.id; 
       } catch (e) {
         console.warn(e);
       }
@@ -201,6 +224,14 @@ export default {
         console.warn(e);
       }
     },
+    openAlertDeleteChapter() {
+      this.alertModalState = {
+        open: true,
+        title: "Delete chapter",
+        content: `Can you confirm that you want to delete the chapter : ${this.data.title} with all the pages ?`,
+        emits: "deleteChapter",
+      };
+    },
     openAlertDeletePage(data) {
       this.alertModalState = {
         open: true,
@@ -214,6 +245,15 @@ export default {
       switch (data) {
         case "delete":
           this.deletePage();
+          break;
+        case "deleteChapter":
+          this.deleteChapter();
+          break;
+        case "redirectToNovel":
+          this.$router.push({name:"read_novel", params:{novel_slug:this.data.novel.slug}})
+          break;
+        case "redirectToNewChapter":
+          this.$router.push({name:"chapter_edit", params:{chapter_id:this.newChapterId}})
           break;
         default:
           throw new Error(`The case ${data} is not treated`);
@@ -238,6 +278,19 @@ export default {
         }
       }
     },
+    async deleteChapter() {
+      try {
+        await axios.delete(`chapter/${this.chapterId}`);
+        this.alertModalState = {
+            open: true,
+            title: "Chapter deleted",
+            content: `Your chapter has been deleted successfully.`,
+            emits: "redirectToNovel",
+        };
+      } catch (error) {
+        console.warn(error);
+      }
+    }
   },
 };
 </script>
