@@ -16,7 +16,7 @@
           <div>
             <p class="text-zinc-300 my-6">
               {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 1000) :  novel.resume.slice(0, 300) + '...' }}
-              <span class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
+              <span v-if="novel.resume.length > 300" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
             </p>
           </div>
           <Author 
@@ -36,9 +36,16 @@
     </div>
     <div class="">
       <div class="grid grid-cols-2 gap-4">
-          <div v-for="(chapter, index) in novel.publishedChapters" :key="index" class="w-full text-xs text-zinc-300 bg-novelize-darklight rounded-lg py-2 px-2">Chapter {{index + 1}} : 
-            <router-link :to="{ name: 'read_page', params: { slug: novel.slug, chapter_id: chapter.id }}" class="text-sm text-white font-semibold hover:text-novelize-primary">{{ chapter.title }}
-            </router-link>
+          <div v-for="(chapter, index) in ( isAuthor ? novel.chapters : novel.publishedChapters)" :key="index" class="w-full text-xs text-zinc-300 bg-novelize-darklight rounded-lg py-2 px-2">
+            <div class="flex justify-between items-center">
+              <p>Chapter {{index + 1}} :
+                <router-link :to="{ name: 'read_page', params: { slug: novel.slug, chapter_id: chapter.id }}" class="text-sm text-white font-semibold hover:text-novelize-primary">{{ chapter.title }}
+                </router-link>
+              </p>
+              <router-link  :to="{ name: 'chapter_edit', params: { novel_id: novel.id, chapter_id: chapter.id }}">
+                <i class="fa-solid fa-pen text-white hover:text-novelize-primary cursor-pointer"></i>
+              </router-link>
+            </div> 
           </div>
       </div>
     </div>
