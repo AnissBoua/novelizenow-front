@@ -76,7 +76,7 @@ export default {
       chapterId: this.$route.params.chapter_id,
       novelId: this.$route.params.novel_id,
       toolbar:[
-            [{ header: [1, 2, false] }],
+            [{ header: [1, 2, 3, false] }],
             ["bold", "italic", "underline", "strike"],
             [{ align: [] }], // Ajout de l'option alignement
             [{ list: "ordered" }, { list: "bullet" }],
