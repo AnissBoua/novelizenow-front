@@ -43,7 +43,12 @@
                                     <div class="flex items-center">
                                         <img class="max-h-16 w-28 h-16 object-cover" :src="BACK_URL + 'uploads/novels/' + getCover(userNovel.novel.novelImages)" alt="">
                                         <div class="flex-1 px-2">
+                                            <router-link :to="{
+                                                name: 'read_novel',
+                                                params: { novel_slug: userNovel.novel.slug },
+                                            }">
                                             {{ userNovel.novel.title }} <br><span class="text-xs text-zinc-400">{{ userNovel.novel.resume ? userNovel.novel.resume.slice(0, 150) : '' }}</span>
+                                            </router-link>
                                         </div>
                                     </div>
                                 </div>
