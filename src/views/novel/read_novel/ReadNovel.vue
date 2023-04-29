@@ -7,11 +7,14 @@
       <div class="relative z-10 grid grid-cols-12 h-full py-20 ">
         <img v-if="novel.cover.filepath" class="col-start-3 col-span-2 w-60 h-80 rounded-lg object-cover" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
         <div v-if="novel" :class="(novel.cover.filepath ? 'col-start-5' : 'col-start-4') + ' col-span-6'">
-          <div class="flex items-center">
-            <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
-            <router-link v-if="isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
-              <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4"><i class="fa-solid fa-pen text-white "></i></div>
-            </router-link>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
+              <router-link v-if="isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
+                <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4"><i class="fa-solid fa-pen text-white "></i></div>
+              </router-link>
+            </div>
+            <div class="flex items-center gap-4" v-if="likesUpdated"><p class="text-lg font-bold">{{likesCount}}</p> <i class="fa-heart text-3xl cursor-pointer" :class="{'fa-regular': !isLiked, 'fa-solid': isLiked}" @click="like"></i></div>
           </div>
           <div>
             <p class="text-zinc-200 my-6">
@@ -72,6 +75,10 @@ const showMore = ref(false);
 
 const isAuthor = ref(null);
 
+const isLiked = ref(false)
+const likesCount = ref(0);
+const likesUpdated = ref(false);
+
 
 
 if (novelSlug.value) {
@@ -81,7 +88,32 @@ if (novelSlug.value) {
     me().then((res) => {
       isAuthor.value = res.data.id === novel.value.author.id;
     });
+    axios.get(`like/count/${novel.value.id}`)
+      .then((res)=>{
+        likesCount.value = res.data.count;
+      axios.get(`like/liked/${novel.value.id}`)
+        .then((res)=>{
+          console.log(res.data.liked);
+          isLiked.value = res.data.liked
+          likesUpdated.value = true;
+        })
+      });
   });
+}
+
+function like(){
+  let obj = {
+    "novel": novel.value.id
+  }
+  axios.post(`like/`, obj).then((res)=>{
+    if(res.data.response){
+      isLiked.value = false;
+      likesCount.value--;
+    } else {
+      isLiked.value = true;
+      likesCount.value++;
+    }
+  })
 }
 
 function showMoreResume() {
