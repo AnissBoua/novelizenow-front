@@ -69,6 +69,21 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/shop/",
+      children: [
+        {
+          path: "coins",
+          name: "shop_coins",
+          component: () => import("../views/boutique/Shop.vue"),
+        }
+      ]
+    },
+    {
+      path: "/panier",
+      name: "panier",
+      component: () => import("../views/boutique/Panier.vue"),
+    }
   ],
 });
 
