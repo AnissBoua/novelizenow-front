@@ -10,15 +10,20 @@
           <div v-if="novel" :class="'flex flex-col ' + (novel.cover.filepath ? 'col-start-5' : 'col-start-4') + ' col-span-6'">
             <div>
               <div class="flex items-center justify-between">
-            <div class="flex items-center">
+                <div class="flex items-center">
                   <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
                   <router-link v-if="novel.isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
-                    <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4"><i class="fa-solid fa-pen text-white "></i></div>
+                    <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4">
+                      <i class="fa-solid fa-pen text-white "></i>
+                    </div>
                   </router-link>
                 </div>
-                <div class="flex items-center gap-4" v-if="likesUpdated"><p class="text-lg font-bold">{{likesCount}}</p> <i class="fa-heart text-3xl cursor-pointer" :class="{'fa-regular': !isLiked, 'fa-solid': isLiked}" @click="like"></i></div>
-          </div>
-          <div>
+                <div class="flex items-center gap-4" v-if="likesUpdated">
+                  <p class="text-lg font-bold">{{likesCount}}</p> 
+                  <i class="fa-heart text-3xl cursor-pointer" :class="{'fa-regular': !isLiked, 'fa-solid': isLiked}" @click="like"></i>
+                </div>
+              </div>
+              <div>
                 <p class="text-zinc-200 my-6">
                   {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 500) :  novel.resume.slice(0, 300) + '...' }}
                   <span v-if="novel.resume.length > 300" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer font-semibold" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
