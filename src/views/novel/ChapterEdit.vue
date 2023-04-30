@@ -2,13 +2,13 @@
   <div class="chapter_edit w-full">
     <alert-modal @acceptWarning="onWarningAccepted" />
       <div v-if="chapterId && data" class="path_container">
-        <router-link
+        <!-- <router-link
           :to="{
             name: 'read_novel',
             params: { novel_slug: data.novel.slug},
           }"
           > > Novel
-        </router-link>
+        </router-link> -->
       </div>
     <div class="form_container flex justify-center">
       <form class="w-8/12 grid grid-cols-12">

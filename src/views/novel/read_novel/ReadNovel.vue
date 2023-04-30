@@ -9,13 +9,16 @@
           <img v-if="novel.cover.filepath" class="col-start-3 col-span-2 w-60 h-80 rounded-lg object-cover" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
           <div v-if="novel" :class="'flex flex-col ' + (novel.cover.filepath ? 'col-start-5' : 'col-start-4') + ' col-span-6'">
             <div>
-              <div class="flex items-center">
-                <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
-                <router-link v-if="novel.isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
-                  <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4"><i class="fa-solid fa-pen text-white "></i></div>
-                </router-link>
-              </div>
-              <div>
+              <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                  <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
+                  <router-link v-if="novel.isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
+                    <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4"><i class="fa-solid fa-pen text-white "></i></div>
+                  </router-link>
+                </div>
+                <div class="flex items-center gap-4" v-if="likesUpdated"><p class="text-lg font-bold">{{likesCount}}</p> <i class="fa-heart text-3xl cursor-pointer" :class="{'fa-regular': !isLiked, 'fa-solid': isLiked}" @click="like"></i></div>
+          </div>
+          <div>
                 <p class="text-zinc-200 my-6">
                   {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 500) :  novel.resume.slice(0, 300) + '...' }}
                   <span v-if="novel.resume.length > 300" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer font-semibold" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
@@ -135,6 +138,10 @@ const isBuying = ref(false);
 const isOrderSuccess = ref(false);
 const orderError = ref('');
 
+const isLiked = ref(false)
+const likesCount = ref(0);
+const likesUpdated = ref(false);
+
 
 if (novelSlug.value) {
   axios.get(`novel/bySlug/${novelSlug.value}`).then((res) => {
@@ -144,7 +151,32 @@ if (novelSlug.value) {
     if (novel.value.status === "unpublished" && !novel.value.isAuthor) {
       router.push({ name: "home" }); 
     }
+    axios.get(`like/count/${novel.value.id}`)
+      .then((res)=>{
+        likesCount.value = res.data.count;
+      axios.get(`like/liked/${novel.value.id}`)
+        .then((res)=>{
+          console.log(res.data.liked);
+          isLiked.value = res.data.liked
+          likesUpdated.value = true;
+        })
+      });
   });
+}
+
+function like(){
+  let obj = {
+    "novel": novel.value.id
+  }
+  axios.post(`like/`, obj).then((res)=>{
+    if(res.data.response){
+      isLiked.value = false;
+      likesCount.value--;
+    } else {
+      isLiked.value = true;
+      likesCount.value++;
+    }
+  })
 }
 
 function showMoreResume() {
