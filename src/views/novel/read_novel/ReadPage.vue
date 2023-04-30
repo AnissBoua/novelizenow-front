@@ -16,6 +16,13 @@
             </div>
         </div>
     </div>
+    <div v-if="error" class="h-full w-full flex flex-col items-center bg-novelize-darklight py-20">
+        <h1 class="text-2xl text-center">Oopsy</h1>
+        <p class="text-center">{{ error }} you can <router-link class="!text-novelize-primary hover:!text-novelize-primarylight" :to="{
+            name: 'read_novel',
+            params: { novel_slug: novelSlug },
+        }">buy it here</router-link></p>
+    </div>
   </div>
 </template>
 
@@ -26,7 +33,9 @@ export default {
         return {
             chapterId: this.$route.params.chapter_id,
             pageParam:this.$route.query.page,
+            novelSlug: this.$route.params.slug,
             data:null,
+            error:"",
         }
     },
     async mounted(){
@@ -41,10 +50,14 @@ export default {
     },
     methods:{
         async getPages(){
-            let response = await axios.get(`chapter_pages/${this.chapterId}`);
-            this.data = response.data;
-            console.log(this.data);
-            
+            try {
+                let response = await axios.get(`chapter_pages/${this.chapterId}`);
+                this.data = response.data;
+                console.log(this.data);
+            } catch (error) {
+                console.log(error);
+                this.error = error.response.data.detail;
+            }
         },
         injectPage(page){
             let htmlContainer = document.querySelector(".read_page_body_html");
