@@ -80,37 +80,114 @@
         </div>
       </div>
     </div>
-    <div v-if="toggleBuyingModal" class="flex justify-center items-center absolute top-0 w-full h-full m-auto bg-novelize-dark/70 z-40">
-      <div class="w-1/3 bg-novelize-darklight rounded-lg px-4 py-2">
-        <h3 class="text-center font-semibold border-b border-b-zinc-500 py-2">Buying Novel</h3>
-        <div v-if="!isOrderSuccess">
-          <p class="text-center text-zinc-300 py-2">Are you sure you want to buy this novel ?</p>
-          <div class="flex justify-center items-center">
-            <Button
-              label="Cancel"
-              @click="toggleBuyingModal = false"
-              class="mr-2"
-            ></Button>
-            <Button
-              v-if="!isBuying"
-              label="Buy"
-              @click="buyNovel"
-            ></Button>
-            <Button
-              v-else
-              label="Buying..."
-            >
-            </Button>
+    <div class="w-2/3 mx-auto my-4">
+      <h1 class="text-base font-semibold">Comments</h1>
+      <div v-if="token">
+        <div class="flex items-center gap-4 my-4">
+          <div>
+            <img class="w-12 h-12 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
           </div>
-          <p v-if="orderError.length > 0" class="mt-4 mb-2">{{ orderError }}</p>
+          <div class="w-full">
+            <div>
+              <input class="w-full bg-novelize-darklight rounded-lg p-2 !text-white" v-model="comment" type="text" name="comment" id="comment" placeholder="Write a comment..."/>
+            </div>
+          </div>
         </div>
-        <div v-if="isOrderSuccess">
-          <p class="text-center text-zinc-300 py-2">Your order has been successfully processed !</p>
-          <div class="flex justify-center items-center">
-            <Button
-              label="Ok"
-              @click="toggleBuyingModal = false"
-            ></Button>
+        <div class="flex justify-end">
+          <Button
+            label="Send"
+            @click="sendComment"
+          ></Button>
+        </div>
+      </div>
+      <div>
+        <div v-for="(comment, index) in novel.comments" :key="index" class="flex gap-4 my-4">
+          <div>
+            <img class="w-14 h-14 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+          </div>
+          <div class="w-full">
+            <div>
+              <p class="text-zinc-300">{{ comment.user.username }}</p>
+              <p>{{ comment.content }}</p>
+            </div>
+            <div>
+              <div class="flex gap-2 text-xs">
+                <p v-if="token" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer" @click="toggleAnswerInput(index)"
+                >Answer</p>
+                <div v-if="comment.comments && comment.comments.length > 0" class="flex items-center gap-1 text-novelize-primarylight hover:text-novelize-primary cursor-pointer" @click="toggleAnswers(index)">
+                  <p class="text-novelize-primarylight hover:text-novelize-primary" > {{ comment.comments.length }} Answers</p>
+                  <i class="fa-sharp fa-solid fa-chevron-down "></i>
+                </div>
+              </div>
+              <div class="w-full">
+                <div v-if="comment.showAnswerInput">
+                  <div class="flex flex-col gap-4 my-4">
+                    <div class="flex gap-4">
+                      <div>
+                        <img class="w-10 h-10 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+                      </div>
+                      <input class="w-full bg-novelize-darklight rounded-lg p-2 !text-white" v-model="answer" type="text" name="answer" id="answer" placeholder="Write an answer..."/>
+                    </div>
+                    <div class="flex justify-end">
+                      <Button
+                        label="Send"
+                        @click="sendAnswer(index)"
+                      ></Button>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="comment.showAnswers">
+                  <div v-for="(answer, index) in comment.comments" :key="index" class="flex items-center gap-4 my-4">
+                    <div>
+                      <img class="w-10 h-10 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+                    </div>
+                    <div>
+                      <div>
+                        <p class="text-zinc-300">{{ answer.user.username }}</p>
+                        <p>{{ answer.content }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="toggleBuyingModal" class="absolute top-0 w-full h-full m-auto bg-novelize-dark/70 z-40">
+      <div class="flex justify-center items-center h-96">
+        <div class="w-1/3 bg-novelize-darklight rounded-lg px-4 py-2">
+          <h3 class="text-center font-semibold border-b border-b-zinc-500 py-2">Buying Novel</h3>
+          <div v-if="!isOrderSuccess">
+            <p class="text-center text-zinc-300 py-2">Are you sure you want to buy this novel ?</p>
+            <div class="flex justify-center items-center">
+              <Button
+                label="Cancel"
+                @click="toggleBuyingModal = false"
+                class="mr-2"
+              ></Button>
+              <Button
+                v-if="!isBuying"
+                label="Buy"
+                @click="buyNovel"
+              ></Button>
+              <Button
+                v-else
+                label="Buying..."
+              >
+              </Button>
+            </div>
+            <p v-if="orderError.length > 0" class="mt-4 mb-2">{{ orderError }}</p>
+          </div>
+          <div v-if="isOrderSuccess">
+            <p class="text-center text-zinc-300 py-2">Your order has been successfully processed !</p>
+            <div class="flex justify-center items-center">
+              <Button
+                label="Ok"
+                @click="toggleBuyingModal = false"
+              ></Button>
+            </div>
           </div>
         </div>
       </div>
@@ -128,6 +205,7 @@ import Author from "../../../components/Author.vue";
 
 const authStore = useAuth();
 const { me } = authStore;
+const token = localStorage.getItem("token");
 
 
 const novel = ref(null);
@@ -147,6 +225,8 @@ const isLiked = ref(false)
 const likesCount = ref(0);
 const likesUpdated = ref(false);
 
+const comment = ref('');
+const answer = ref('');
 
 if (novelSlug.value) {
   axios.get(`novel/bySlug/${novelSlug.value}`).then((res) => {
@@ -206,4 +286,48 @@ function buyNovel() {
     isBuying.value = false;
   })
 }
+
+function sendComment(){
+  if (comment.value === '') {
+    return;
+  }
+  const data = {
+    content: comment.value,
+    novel: novel.value.id
+  }
+  axios.post('comment/', data).then((res) => {
+    novel.value.comments.unshift(res.data);
+    comment.value = '';
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+function sendAnswer(index){
+  if (novel.value.comments[index].answer === '') {
+    return;
+  }
+  const data = {
+    novel: novel.value.id,
+    content: answer.value,
+    parent: novel.value.comments[index].id
+  }
+  axios.post('comment/', data).then((res) => {
+    novel.value.comments[index].comments.unshift(res.data);
+    novel.value.comments[index].showAnswerInput = false;
+    novel.value.comments[index].showAnswers = true;
+    answer.value = '';
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+function toggleAnswers(index){
+  novel.value.comments[index].showAnswers = !novel.value.comments[index].showAnswers;
+}
+
+function toggleAnswerInput(index){
+  novel.value.comments[index].showAnswerInput = !novel.value.comments[index].showAnswerInput;
+}
+
 </script>
