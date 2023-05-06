@@ -6,10 +6,12 @@ export const useAuth = defineStore("auth", {
   state: () => {
     return {
       token: localStorage.getItem("token"),
+      coins: null,
     };
   },
   getters: {
     getToken: (state) => state.token,
+    getCoins: (state) => state.coins,
   },
   actions: {
     setToken(token) {
@@ -20,38 +22,31 @@ export const useAuth = defineStore("auth", {
         localStorage.setItem("token", token);
       }
     },
+    setCoins(coins) {
+      this.coins = coins;
+    },
+
     async verifyToken() {
       try {
-        const user = await this.me();
-        if (user !== false) {
-          return {
-            type: "user",
-            status: user.status,
-            data: user.data,
-          };
+        const result = await this.refreshToken();
+        if (result.status === 200) {
+          this.setToken(result.data.token);
+          localStorage.setItem("token", result.data.token);
+          localStorage.setItem("refresh_token", result.data.refresh_token);
+          window.location.reload();
+        }
+  
+        if (result.status === 401 ) {
+          this.setToken(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("refresh_token");
+          window.location.href = "/login";
         }
       } catch (error) {
-        const errorData = JSON.parse(error.message);
-
-        // if the token is expired
-        if (
-          errorData.status === 401 &&
-          errorData.response.data.message === "Expired JWT Token"
-        ) {
-          // refresh the token
-          const refresh = await this.refreshToken();
-          if (refresh !== false && refresh.type !== "Deconnection") {
-            return {
-              type: "refresh",
-              status: refresh.status,
-              // data: refresh.data
-            };
-          }
-        } else if (errorData.status === 401) {
-          this.setToken(null);
-          localStorage.removeItem("refresh_token");
-        }
-        return false;
+        this.setToken(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/login";
       }
     },
     async me() {
@@ -130,6 +125,14 @@ export const useAuth = defineStore("auth", {
         localStorage.removeItem("refresh_token");
       }
       throw new Error("No refresh token");
+    },
+
+    async updateCoins() {
+      await axios.get("/user/coins").then((res) => {
+        this.setCoins(res.data.coins);
+      }).catch((err) => {
+        console.log(err);
+      });
     },
   },
 });

@@ -11,11 +11,7 @@
         </div>
         <div>
             <div class="flex items-center">
-                <div class="flex justify-center items-center rounded-full border border-2 border-novelize-primary h-6 w-6">
-                    <div class="flex justify-center items-center rounded-full bg-gradient-to-br from-novelize-primarylight to-novelize-primary w-full h-full">
-                        <p>C</p>
-                    </div>
-                </div>
+                <CoinIcon />
                 <p class="text-2xl font-semibold mx-2">{{ offer.coins }}</p>
             </div>
         </div>
@@ -24,6 +20,7 @@
 
 <script setup>
 import { defineEmits } from 'vue'
+import CoinIcon from '../CoinIcon.vue';
 const props = defineProps({
     offer: {
         type: Object,
