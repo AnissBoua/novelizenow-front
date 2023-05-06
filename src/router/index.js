@@ -88,28 +88,14 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const secureLoggedPath = ["/register", "/login", "/account"];
-  if (secureLoggedPath.includes(to.path)) {
+  const noLogedPath = ["/register", "/login"];
+  if (noLogedPath.includes(to.path)) {
     const authStore = useAuth();
-    const { verifyToken } = authStore;
-    const isAuthenticated = await verifyToken();
-    console.log(isAuthenticated);
-    if (isAuthenticated) {
-      if (to.path === "/account") {
-        next();
-      } else {
-        next("/");
-      }
-    } else {
-      if (to.path === "/account") {
-        next("/login");
-      } else {
-        next();
-      }
+    if (authStore.getToken) {
+      next("/");
     }
-  } else {
-    next();
   }
+  next();
 });
 
 export default router;

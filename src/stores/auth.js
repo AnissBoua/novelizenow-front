@@ -85,6 +85,23 @@ export const useAuth = defineStore("auth", {
         return false;
       }
     },
+    decodeToken(token) {
+      if (token) {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+        );
+        return JSON.parse(jsonPayload);
+      } else {
+        return false;
+      }
+    },
 
     async refreshToken() {
       const refreshToken = localStorage.getItem("refresh_token");
@@ -94,33 +111,17 @@ export const useAuth = defineStore("auth", {
       if (refreshToken) {
         try {
           // try to refresh the token
-          const res = await axios.post(
-            import.meta.env.VITE_BACK_URL + "api/token/refresh",
-            data
-          );
-
-          // if it's okay set new token
-          if (res.status === 200) {
-            this.setToken(res.data.token);
-            return {
-              data: res.data,
-              status: res.status,
-            };
-          }
+          const res = await axios.post("/token/refresh", data);
+          return res
         } catch (error) {
-          if (
-            error.response.status === 401 &&
-            error.response.data.message === "Invalid JWT Refresh Token"
-          ) {
-            this.setToken(null);
-            localStorage.removeItem("refresh_token");
-          }
-
-          return false;
+          return error;
         }
       } else {
-        return false;
+        this.setToken(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
       }
+      throw new Error("No refresh token");
     },
   },
 });
