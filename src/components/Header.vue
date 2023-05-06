@@ -12,7 +12,11 @@
             <RouterLink v-else to="/account">Account</RouterLink>
         </nav>
     </div>
-    <div class="header_user">
+    <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2">
+            <CoinIcon />
+            <p>{{coins}}</p>
+        </div>
         <Button
             v-if="token"
             label="Logout"
@@ -35,14 +39,15 @@ import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuth } from '@/stores/auth.js'
 import Button from './Button.vue';
+import CoinIcon from './CoinIcon.vue';
 export default {
     setup() {
         const store = useAuth()
-        const { token } = storeToRefs(store);
+        const { token, coins } = storeToRefs(store);
         const {logout} = store;
 
         return {
-            token, logout
+            token, coins, logout
         }
     },
     watch: {
@@ -51,7 +56,8 @@ export default {
         }
     },
     components: {
-        Button
+        Button,
+        CoinIcon
     },
 };
 </script>
