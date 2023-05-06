@@ -128,10 +128,7 @@ export const useAuth = defineStore("auth", {
     },
 
     async updateCoins() {
-      await axios.get("/me").then((res) => {
-        if (res.response && res.response.status === 500) {
-          this.verifyToken();
-        }
+      await axios.get("/user/coins").then((res) => {
         this.setCoins(res.data.coins);
       }).catch((err) => {
         console.log(err);
