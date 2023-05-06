@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import router from "../router/index"
 
 export const useAuth = defineStore("auth", {
   state: () => {
@@ -101,6 +102,13 @@ export const useAuth = defineStore("auth", {
       } else {
         return false;
       }
+    },
+
+    logout(){
+      this.token = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('refresh_token');
+      router.go('/');
     },
 
     async refreshToken() {

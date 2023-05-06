@@ -13,7 +13,12 @@
         </nav>
     </div>
     <div class="header_user">
-        <i class="fa-solid fa-cart-shopping"></i>
+        <Button
+            v-if="token"
+            label="Logout"
+            :btnStyle="1"
+            @click="logout"
+        ></Button>
         <Button
             class="header_user_button"
             :label="!token ? 'Sign in' : 'Account'"
@@ -33,10 +38,11 @@ import Button from './Button.vue';
 export default {
     setup() {
         const store = useAuth()
-        const { token } = storeToRefs(store)
+        const { token } = storeToRefs(store);
+        const {logout} = store;
 
         return {
-            token
+            token, logout
         }
     },
     watch: {
