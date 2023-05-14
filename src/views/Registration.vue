@@ -57,6 +57,11 @@
         />
       </div>
     </div>
+    <div class="flex flex-col">
+                    <label class="my-2" for="cover">Avatar :</label>
+                    <input class="flex-1 rounded-lg bg-novelize-darklight cursor-pointer outline outline-offset outline-1 outline-novelize-primary
+                    file:bg-novelize-primary file:border-0 file:px-3 file:py-2 file:text-white file:mr-4 hover:file:bg-novelize-primarylight" type="file" name="cover" id="avatar">
+                </div>
     <div class="registerform_wrap errors">
       <div v-if="this.errors.general">
         <p>{{ this.errors.general }}</p>
@@ -92,24 +97,33 @@ export default {
 
   methods: {
     async register() {
-      const data = {
-        name: this.name,
-        lastname: this.lastname,
-        email: this.email,
-        password: this.password,
-        confirmpassword: this.confirmpassword,
-      };
-      try {
-        const response = await axios.post(
-          import.meta.env.VITE_BACK_URL + "api/registration",
-          data
-        );
-        if (response.status === 201) {
-          this.$router.push({ name: "login" });
+      let files = document.querySelector("#avatar").files;
+      const formData = new FormData();
+      formData.append('name', this.name);
+      formData.append('lastname', this.lastname);
+      formData.append('email', this.email);
+      formData.append('password', this.password);
+      if(files[0]){
+        formData.append("avatar", files[0]);
+      }
+      if(this.password === this.confirmpassword){
+        try {
+          const response = await axios.post(
+            import.meta.env.VITE_BACK_URL + "api/registration",
+            formData,
+            {
+              headers: {
+              'Content-Type': 'multipart/form-data'
+              }
+            }
+          );
+          if (response.status === 201) {
+            this.$router.push({ name: "login" });
+          }
+          // TODO handle other cases
+        } catch (error) {
+          this.errors.general = "Registration failed";
         }
-        // TODO handle other cases
-      } catch (error) {
-        this.errors.general = "Registration failed";
       }
     },
   },
