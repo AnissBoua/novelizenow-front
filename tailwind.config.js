@@ -9,7 +9,9 @@ module.exports = {
       colors: {
         novelize: {
           primary: '#3138B0',
+          primarydark: '#181823',
           primarylight: '#5966C9',
+          secondary: '#FFA500',
           dark: '#141414',
           darklight: '#1E1E1E',
         }
