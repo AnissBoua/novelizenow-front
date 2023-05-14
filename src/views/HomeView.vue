@@ -3,11 +3,7 @@ import Carousel from '../components/Carousel.vue';
 import Chapter from '../components/Chapter.vue'
 import Novel from '../components/Novel.vue';
 import NovelReduced from '../components/NovelReduced.vue';
-import Category from '../components/Category.vue';
-import TopAuthor from '../components/home/TopAuthor.vue';
-import Select from '../components/inputs/Select.vue';
-import TopNovel from '../components/home/TopNovel.vue';
-import NewRelease from '../components/home/NewRelease.vue';
+import PopularCategories from '../components/home/PopularCategories.vue';
 
 import axios from 'axios';
 import { ref } from 'vue';
@@ -32,10 +28,10 @@ axios.get('/home').then(res => {
   <main>
     <Carousel/>
     <div class="flex justify-between px-8">
-      <div class="w-full mx-auto">
+      <div class="w-10/12 mx-auto">
         <div class="bg-neutral-800 rounded-lg py-2 px-4 my-8">
           <h3 class="text-xl font-semibold my-2">Last chapters</h3>
-          <div class="grid grid-cols-2 gap-4 my-4">
+          <div class="grid grid-cols-1 gap-4 my-4">
             <div class="" v-for="(chapter, i) in chapters" :key="i">
               <Chapter :title="chapter.title" :novel="chapter.novel" :author="chapter.novel.author" />
             </div>
@@ -43,8 +39,11 @@ axios.get('/home').then(res => {
         </div>
       </div>
     </div>
-    <div class="px-8">
-      <NewRelease />
+    <div class="w-11/12 px-8 mx-auto">
+      <PopularCategories :categories="categories" />
+    </div>
+    <div>
+      
     </div>
   </main>
 </template>

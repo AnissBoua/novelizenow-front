@@ -2,7 +2,7 @@
   <div class="flex rounded-lg bg-gradient-to-br from-novelize-dark to-novelize-primarydark">
     <div class="w-1/3 p-1">
       <img
-        class="h-44 rounded-lg object-cover"
+        class="w-full h-44 rounded-lg object-cover"
         :src="BACK_URL + novel.cover.filepath"
         alt=""
       />
@@ -17,7 +17,7 @@
         <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}"
          class="text-lg hover:text-novelize-primary">{{ title }}</RouterLink>
         <div class="flex items-center gap-2">
-          <IconText color="bg-novelize-secondary" :text="novel.quantiteChapitre + ' chapters'" />
+          <IconText color="bg-novelize-secondary" :text="novel.title + ' - ' + novel.quantiteChapitre + ' chapters'" />
         </div>
       </div>
       <div class="flex justify-between">
@@ -71,6 +71,4 @@ const props = defineProps({
     },
   },
 });
-
-console.log(props.novel);
 </script>
