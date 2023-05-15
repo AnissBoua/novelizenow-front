@@ -26,7 +26,7 @@ axios.get('/home').then(res => {
 
 <template>
   <main>
-    <Carousel/>
+    <Carousel :novels="carousel"/>
     <div class="flex justify-between px-8">
       <div class="w-10/12 mx-auto">
         <div class="bg-neutral-800 rounded-lg py-2 px-4 my-8">

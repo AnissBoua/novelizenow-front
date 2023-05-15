@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       backgroundImage: {
-        'darklayer': 'linear-gradient(73.95deg, rgba(20, 20, 20, 0.8) 0%, rgba(20, 20, 20, 0.1) 64.9%)',
+        'darklayer': 'linear-gradient(43.95deg, rgba(20, 20, 20, 1) 0%, rgba(20, 20, 20, 0.8) 30%, rgba(20, 20, 20, 0.1) 64.9%)',
       }
     },
   },

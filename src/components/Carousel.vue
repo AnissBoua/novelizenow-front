@@ -1,42 +1,33 @@
 <template>
   <div>
-    <div class="carousel_container">
-      <div
-        :class="
-          'carousel_item ' + (slide === index ? 'carousel_item_active' : '')
-        "
-        v-for="(novel, index) in novels"
-        :key="index"
-      >
-        <img class="carousel_img" :src="pathImg + novel.img" alt="" />
-        <div class="carousel_layer"></div>
-        <div class="carousel_novel">
+    <div class="relative h-[40em]">
+      <div v-for="(novel, index) in novels" :key="index" :class="'absolute flex items-end w-full h-full opacity-0 transition-all ease-in-out duration-200 ' + (slide === index ? ' opacity-100 ' : '')" >
+        <img class="absolute top-0 left-0 w-full h-full  object-cover " :src="BACK_URL + novel.banner.filepath" alt="" />
+        <div class="absolute top-0 w-full h-full bg-darklayer opacity-75"></div>
+        <div class="relative z-10 flex flex-col w-6/12 opacity-100 p-20  transition-all ease-in-out duration-200">
           <div>
-            <h2>{{ novel.title }}</h2>
-            <p>{{ novel.description }}</p>
+            <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
+            <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="text-lg hover:text-novelize-primary">{{ novel.title }}</RouterLink>
+            <div class="flex items-center gap-10">
+              <IconText :text="novel.quantiteChapitre + ' chapters'" color="bg-novelize-primary"/>
+              <div class="flex gap-4">
+                  <IconText :text="novel.likesCount" color="text-novelize-secondary" icon="fa-solid fa-heart" />
+                  <IconText :text="novel.commentsCount" color="text-novelize-secondary" icon="fa-solid fa-comments"/>
+              </div>
+            </div>
           </div>
-          <div class="novel_bottom">
-            <div class="novel_author">
-              <img
-                class="novel_author_avatar"
-                :src="pathImg + novel.author.avatar"
-                alt=""
-              />
-              <p>
-                By :
-                <span class="novel_author_name">{{ novel.author.name }}</span>
-              </p>
-            </div>
-            <div>
-              <Button label="Read it" :btnStyle="2" @click="hello()"></Button>
-            </div>
+          <div class="my-4">
+            <p>{{ novel.resume.slice(0, 350) + '...' }}</p>
+          </div>
+          <div class="flex justify-between items-center">
+            <Author :author="novel.author" />
           </div>
         </div>
       </div>
-      <div class="dot_wrapper">
+      <div class="absolute bottom-10 left-0 right-0 z-20 flex w-max mx-auto">
         <div
           @click="setSlide(index)"
-          :class="'dot ' + (slide === index ? 'dot_active' : '')"
+          :class="'w-4 h-4 cursor-pointer border border-novelize-primarylight rounded-full mx-1 transition-all ease-in-out duration-500 ' + (slide === index ? ' border border-transparent bg-novelize-primary ' : '')"
           v-for="(novel, index) in novels"
           :key="index"
         ></div>
@@ -44,164 +35,83 @@
     </div>
   </div>
 </template>
-<script>
+
+<script setup>
 import Button from "./Button.vue";
-export default {
-  props: {
-    novels: {
-      type: Array,
-      default: [
-        {
-          title: "Test Title",
-          img: "2.jpg",
-          description:
+import Category from "./Category.vue";
+import IconText from "./IconText.vue";
+import Author from "./Author.vue";
+import { ref } from "vue";
+import { RouterLink } from "vue-router";
+
+const BACK_URL = import.meta.env.VITE_BACK_URL;
+const props = defineProps({
+  novels: {
+    type: Array,
+    default: [
+          {
+            title: "The last of us",
+            slug: "the-last-of-us",
+            cover: {
+                filename: "2.jpg",
+                filepath: "2.jpg",
+            },
+            banner: {
+                filename: "2.jpg",
+                filepath: "imgs/2.jpg",
+            },
+            resume:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-          caregoty: ["hello", "action", "fantasy"],
-          author: {
-            avatar: "1.jpg",
-            name: "Anisse Boua",
+            categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
+            likesCount: 1,
+            commentsCount: 16,
+            quantiteChapitre: 12,
+            author: {
+              id: 1,
+              name: "Anisse",
+              lastname: "Boua",
+              username: "AnisseBoua",
+              avatar: "imgs/1.jpg",
+              novelCount: 2,
+            },
           },
-          price: 8,
-        },
-        {
-          title: "Second",
-          img: "1.jpg",
-          description:
+          {
+            title: "blabla",
+            slug: "the-last-of-us",
+            cover: {
+                filename: "2.jpg",
+                filepath: "2.jpg",
+            },
+            banner: {
+                filename: "1.jpg",
+                filepath: "imgs/1.jpg",
+            },
+            resume:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-          caregoty: ["hello", "action", "fantasy"],
-          author: {
-            avatar: "2.jpg",
-            name: "Anisse Boua",
+            categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
+            likesCount: 1,
+            commentsCount: 16,
+            quantiteChapitre: 12,
+            author: {
+              id: 1,
+              name: "Anisse",
+              lastname: "Boua",
+              username: "AnisseBoua",
+              avatar: "imgs/2.jpg",
+              novelCount: 2,
+            },
           },
-          price: 8,
-        },
-      ],
-    },
-  },
-  components: {
-    Button,
-  },
-  data() {
-    return {
-      pathImg: import.meta.env.VITE_BACK_URL + "imgs/",
-      slide: 0,
-    };
-  },
-  mounted() {
-    setInterval(() => {
-      this.slide = this.slide + 1 > this.novels.length - 1 ? 0 : this.slide + 1;
-    }, 5000);
-  },
-  methods: {
-    setSlide(index) {
-      this.slide = index;
-    },
-    hello() {
-      console.log("hello");
-    },
-  },
-};
+        ]
+  }
+})
+
+const slide = ref(0);
+
+setInterval(() => {
+  slide.value = slide.value + 1 > props.novels.length - 1 ? 0 : slide.value + 1;
+}, 5000);
+    
+function setSlide(index) {
+  slide.value = index;
+}
 </script>
-<style lang="scss" scoped>
-.carousel {
-  &_container {
-    // display: flex;
-    position: relative;
-    height: 30em;
-  }
-  &_item {
-    position: absolute;
-    display: flex;
-    align-items: flex-end;
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: all ease-in-out 0.2s;
-    transition-delay: 0.2s;
-    &_active {
-      opacity: 1;
-      transition-delay: 0s;
-      & .carousel_novel {
-        opacity: 1;
-        transition-delay: 0s;
-        transform: translate(0, 0);
-      }
-    }
-  }
-  &_img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  &_layer {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-image: $color-gradient-dark;
-    opacity: 0.75;
-  }
-  &_novel {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    width: 40%;
-    color: white;
-    opacity: 0;
-    padding: 5em;
-    transform: translate(0, 10%);
-    transition: all ease-in-out 2s;
-    transition-delay: 0.2s;
-  }
-}
-.novel {
-  &_bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  &_author {
-    display: flex;
-    align-items: center;
-    &_avatar {
-      width: 3em;
-      height: 3em;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 1em 0 0;
-    }
-    &_name {
-      color: $color-primary-lightest;
-    }
-  }
-}
-.dot {
-  width: 1em;
-  height: 1em;
-  cursor: pointer;
-  border: 0.1em solid $color-secondary;
-  // background-color: $color-secondary;
-  border-radius: 50%;
-  margin: 0 0.3em;
-  transition: all ease-in-out 0.5s;
-  &_wrapper {
-    position: absolute;
-    bottom: 10%;
-    left: 0;
-    right: 0;
-    z-index: 2;
-    display: flex;
-    width: max-content;
-    margin: 0 auto;
-  }
-  &_active {
-    border: 0.1em solid transparent;
-    background-color: $color-primary-light;
-  }
-}
-</style>

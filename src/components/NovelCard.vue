@@ -3,7 +3,7 @@
     <div class="relative h-56 w-full rounded-md">
       <img
         class="absolute w-full h-full object-cover rounded-md"
-        :src="BACK_URL + novel.cover.filepath"
+        :src="BACK_URL + novel.banner.filepath"
         alt=""
       />
       <div class="absolute w-full h-full top-0 bg-darklayer"></div>
