@@ -1,13 +1,13 @@
 <template>
-  <div class="flex rounded-lg bg-gradient-to-br from-novelize-dark to-novelize-primarydark">
-    <div class="w-1/3 p-1">
+  <div class="flex flex-col sm:flex-row rounded-lg bg-gradient-to-br from-novelize-dark to-novelize-primarydark">
+    <div class="w-full sm:w-1/3 p-1">
       <img
-        class="w-full h-44 rounded-lg object-cover"
+        class="w-full h-28 sm:h-44 rounded-lg object-cover"
         :src="BACK_URL + novel.cover.filepath"
         alt=""
       />
     </div>
-    <div class="w-2/3 flex flex-col justify-between py-3 px-3">
+    <div class="w-full sm:w-2/3 flex flex-col justify-between py-3 px-3">
       <div class="flex justify-between">
         <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
         <IconText :text="novel.likesCount" icon="fa-solid fa-heart" color="text-novelize-secondary"/>
