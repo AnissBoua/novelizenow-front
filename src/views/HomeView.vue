@@ -4,6 +4,7 @@ import Chapter from '../components/Chapter.vue'
 import Novel from '../components/Novel.vue';
 import NovelReduced from '../components/NovelReduced.vue';
 import PopularCategories from '../components/home/PopularCategories.vue';
+import NewReleases from '../components/home/NewReleases.vue';
 
 import axios from 'axios';
 import { ref } from 'vue';
@@ -42,8 +43,8 @@ axios.get('/home').then(res => {
     <div class="w-11/12 px-8 mx-auto">
       <PopularCategories :categories="categories" />
     </div>
-    <div>
-      
+    <div class="w-11/12 px-8 mx-auto">
+      <NewReleases :novels="newNovels" />
     </div>
   </main>
 </template>
