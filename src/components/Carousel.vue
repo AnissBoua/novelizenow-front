@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="relative h-[40em]">
+    <div class="relative h-[25em] sm:h-[40em]">
       <div v-for="(novel, index) in novels" :key="index" :class="'absolute flex items-end w-full h-full opacity-0 transition-all ease-in-out duration-200 ' + (slide === index ? ' opacity-100 ' : '')" >
         <img class="absolute top-0 left-0 w-full h-full  object-cover " :src="BACK_URL + novel.banner.filepath" alt="" />
         <div class="absolute top-0 w-full h-full bg-darklayer opacity-75"></div>
-        <div class="relative z-10 flex flex-col w-6/12 opacity-100 p-20  transition-all ease-in-out duration-200">
+        <div class="relative z-10 flex flex-col w-full sm:w-9/12 md:w-7/12 opacity-100 px-4 sm:px-10 py-20 lg:p-20  transition-all ease-in-out duration-200">
           <div>
             <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
             <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="text-lg hover:text-novelize-primary">{{ novel.title }}</RouterLink>
@@ -16,10 +16,10 @@
               </div>
             </div>
           </div>
-          <div class="my-4">
-            <p>{{ novel.resume.slice(0, 350) + '...' }}</p>
+          <div class="hidden sm:block w-full min-h-max max-h-20 overflow-hidden my-4">
+            <p>{{ novel.resume }}</p>
           </div>
-          <div class="flex justify-between items-center">
+          <div class="hidden sm:block flex justify-between items-center">
             <Author :author="novel.author" />
           </div>
         </div>
