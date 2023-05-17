@@ -7,7 +7,7 @@
         alt=""
       />
       <div class="absolute w-full h-full top-0 bg-darklayer"></div>
-      <div class="absolute w-6/12 bottom-3 left-6">
+      <div class="absolute w-full bottom-3 left-6">
         <Category v-if="novel.categories" :name="novel.categories[0].name" color="text-novelize-secondary" />
         <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="text-lg hover:text-novelize-primary">{{ novel.title }}</RouterLink>
         <div class="flex gap-10">
