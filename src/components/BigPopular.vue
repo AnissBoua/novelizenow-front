@@ -58,7 +58,7 @@ console.log(props.novel);
         :alt="novel.title + ' post image'"
       />
       <div class="absolute w-full h-full top-0 bg-darklayer"></div>
-      <div class="absolute w-full sm:w-6/12 bottom-6 sm:bottom-14 left-6 sm:left-14">
+      <div class="absolute sm:w-6/12 bottom-6 sm:bottom-14 left-6 sm:left-14">
         <Category :name="category.name" color="text-novelize-secondary" />
         <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="text-lg hover:text-novelize-primary">{{ novel.title }}</RouterLink>
         <div class="flex items-center gap-10">

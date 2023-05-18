@@ -43,7 +43,7 @@ axios.get('/home').then(res => {
     <div class="w-full lg:w-11/12 lg:px-8 mx-auto">
       <PopularCategories :categories="categories" />
     </div>
-    <div class="w-11/12 px-8 mx-auto">
+    <div class=" px-4 mx-auto">
       <NewReleases :novels="newNovels" />
     </div>
   </main>

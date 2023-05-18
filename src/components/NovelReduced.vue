@@ -48,8 +48,8 @@ function numberFormatter(number) {
 </script>
 
 <template>
-  <div class="flex bg-gradient-to-br from-novelize-dark to-novelize-primarydark gap-3 rounded-md mt-14 mb-8">
-    <div class="w-40 h-32 relative">
+  <div class="flex items-center bg-gradient-to-br from-novelize-dark to-novelize-primarydark gap-4 rounded-md mt-14 mb-4">
+    <div class="w-36 h-32 relative">
       <img
         class="absolute left-2 bottom-2 w-32 h-40 object-cover rounded-md mx-auto"
         :src="BACK_URL + novel.cover.filepath"
@@ -61,7 +61,7 @@ function numberFormatter(number) {
         <div class="">
           <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
           <h4 class="text-lg font-semibold">{{ novel.title }}</h4>
-          <div class="flex items-center gap-10">
+          <div class="flex items-center gap-6">
             <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' Chapters'" />
             <div class="flex items-center gap-4">
               <IconText :text="novel.likesCount" color="text-novelize-secondary" icon="fa-solid fa-heart" />
