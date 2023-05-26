@@ -3,7 +3,7 @@
     <div v-if="author.avatar"> 
       <img
         class="w-12 h-12 object-cover rounded-full"
-        :src="BACK_URL + author.avatar"
+        :src="BACK_URL + author.avatar.filepath"
         alt=""
       />
     </div>

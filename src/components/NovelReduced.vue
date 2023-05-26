@@ -60,7 +60,7 @@ function numberFormatter(number) {
       <div>
         <div class="">
           <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
-          <h4 class="text-lg font-semibold">{{ novel.title }}</h4>
+          <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="block max-h-14 overflow-y-hidden hover:text-novelize-primary text-lg font-semibold">{{ novel.title }}</RouterLink>
           <div class="flex items-center gap-6">
             <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' Chapters'" />
             <div class="flex items-center gap-4">

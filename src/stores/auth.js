@@ -5,11 +5,13 @@ import router from "../router/index"
 export const useAuth = defineStore("auth", {
   state: () => {
     return {
+      user: null,
       token: localStorage.getItem("token"),
       coins: null,
     };
   },
   getters: {
+    getUser: (state) => state.user,
     getToken: (state) => state.token,
     getCoins: (state) => state.coins,
   },
@@ -36,6 +38,9 @@ export const useAuth = defineStore("auth", {
           window.location.reload();
         }
   
+        console.log(result.data.code);
+        console.log(result.code);
+        // use result.code if does not work
         if (result.status === 401 ) {
           this.setToken(null);
           localStorage.removeItem("token");
@@ -65,6 +70,10 @@ export const useAuth = defineStore("auth", {
             import.meta.env.VITE_BACK_URL + "api/me",
             headers
           );
+          // remove the roles from the response
+          // delete response.data.roles;
+          
+          this.user = response.data;
           return {
             data: response.data,
             status: response.status,
@@ -81,6 +90,8 @@ export const useAuth = defineStore("auth", {
         return false;
       }
     },
+
+
     decodeToken(token) {
       if (token) {
         const base64Url = token.split(".")[1];
@@ -98,7 +109,6 @@ export const useAuth = defineStore("auth", {
         return false;
       }
     },
-
     logout(){
       this.token = null;
       localStorage.removeItem('token');
@@ -130,6 +140,14 @@ export const useAuth = defineStore("auth", {
     async updateCoins() {
       await axios.get("/user/coins").then((res) => {
         this.setCoins(res.data.coins);
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
+    async getAvatar() {
+      await axios.get("/user/avatar").then((res) => {
+        this.user.avatar = res.data.avatar;
+        console.log(this.user);
       }).catch((err) => {
         console.log(err);
       });

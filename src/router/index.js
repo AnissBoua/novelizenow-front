@@ -90,11 +90,17 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const noLogedPath = ["/register", "/login"];
   const authStore = useAuth();
+  if (authStore.getToken && !authStore.getUser) {
+    await authStore.me();
+    await authStore.getAvatar();
+  }
+  
   if (noLogedPath.includes(to.path)) {
     if (authStore.getToken) {
       next("/");
     }
   }
+
   if (authStore.getToken) {
     await authStore.updateCoins();
   }

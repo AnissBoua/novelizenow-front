@@ -15,7 +15,6 @@ const categories = ref([]);
 const newNovels = ref([]);
 
 axios.get('/home').then(res => {
-  console.log(res.data);
   carousel.value = res.data.carousel;
   chapters.value = res.data.chapters;
   categories.value = res.data.categories;

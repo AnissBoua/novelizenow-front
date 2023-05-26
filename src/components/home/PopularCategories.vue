@@ -3,7 +3,7 @@
     <div class="px-4 lg:px-0">
       <h3 class="text-lg font-semibold my-4">Popular categories</h3>
       <div class="my-4">
-        <div class="flex gap-4" v-if="selectedCategory">
+        <div class="flex flex-wrap gap-4" v-if="selectedCategory">
           <div v-for="(category, i) in categories" :key="i" @click="selectCategory(category)" class="cursor-pointer">
             <Category :name="category.name" :color="selectedCategory.id == category.id ? 'text-novelize-primary' : 'text-white'" />
           </div>
@@ -115,6 +115,7 @@ watch(() => props.categories, (categories) => {
 function selectCategory(category) {
   selectedCategory.value = category;
   novels.value = selectedCategory.value.novel
+  currentNovel.value = novels.value[0];
 }
 
 function selectNovel(novel) {

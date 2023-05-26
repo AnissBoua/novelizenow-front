@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
     text : {
-        type: String,
+        type: [String, Number],
         default: 'Horror'
     },
     color: {

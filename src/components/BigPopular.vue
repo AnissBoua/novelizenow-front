@@ -47,7 +47,6 @@ const props = defineProps({
     },
 })
 
-console.log(props.novel);
 </script>
 
 <template>
@@ -69,7 +68,7 @@ console.log(props.novel);
             </div>
         </div>
         <p class="hidden sm:block min-h-max max-h-20 overflow-hidden my-4">{{ novel.resume }}</p>
-        <Author class="hidden sm:block" :author="author"> </Author>
+        <Author class="hidden sm:flex" :author="author"> </Author>
       </div>
     </div>
 </template>
