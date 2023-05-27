@@ -1,98 +1,74 @@
 <template>
-  <div class="flex rounded-lg novel">
-    <img
-      class="w-1/3 h-40 rounded-lg object-cover"
-      :src="pathImg + novel.img"
-      alt=""
-    />
-    <div class="novel_data">
-      <div class="novel_head">
-        <Category :category="novel.category[0]" :btnStyle="false" />
-        <Score :score="novel.score" />
+  <div class="flex flex-col sm:flex-row rounded-lg bg-gradient-to-br from-novelize-dark to-novelize-primarydark">
+    <div class="w-full sm:w-1/3 p-1">
+      <img
+        class="w-full h-28 sm:h-44 rounded-lg object-cover"
+        :src="BACK_URL + novel.cover.filepath"
+        alt=""
+      />
+    </div>
+    <div class="w-full sm:w-2/3 flex flex-col justify-between py-3 px-3">
+      <div class="flex justify-between">
+        <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
+        <IconText :text="novel.likesCount" icon="fa-solid fa-heart" color="text-novelize-secondary"/>
+
       </div>
       <div>
-        <h3>{{ novel.title }}</h3>
+        <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}"
+         class="text-lg hover:text-novelize-primary">{{ title }}</RouterLink>
+        <div class="flex items-center gap-2">
+          <IconText color="bg-novelize-secondary" :text="novel.title + ' - ' + novel.quantiteChapitre + ' chapters'" />
+        </div>
       </div>
-      <div class="novel_details">
-        <Author :followers="4586"> </Author>
-        <Button :label="'Read it'" :btnStyle="1"> </Button>
+      <div class="flex justify-between">
+        <Author :author="author"> </Author>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import IconText from "./IconText.vue";
 import Category from "./Category.vue";
 import Button from "./Button.vue";
 import Author from "./Author.vue";
 import Score from "./Score.vue";
 
-export default {
-  components: {
-    Category,
-    Button,
-    Author,
-    Score,
-  },
-  props: {
-    novel: {
-      type: Object,
-      default: {
-        title: "bla bla bla bla",
-        img: "2.jpg",
-        description:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-        category: ["hello", "action", "fantasy"],
-        score: 4.7,
-        author: {
-          avatar: "1.jpg",
-          name: "Anisse Boua",
+const BACK_URL = import.meta.env.VITE_BACK_URL;
+
+const props = defineProps({
+  novel: {
+    type: Object,
+    default: {
+        title: "The last of us",
+        slug: "the-last-of-us",
+        cover: {
+          filename: "2.jpg",
+          filepath: "2.jpg",
         },
-        price: 8,
+        resume:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
+        categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
+        likesCount: 1,
+        commentsCount: 16,
+        quantiteChapitre: 12,
+        // price: 8,
       },
+  },
+  title: {
+      type: String,
+      default: "Chapter title",
+    },
+  author: {
+    type: Object,
+    default: {
+      id: 1,
+      name: "Anisse",
+      lastname: "Boua",
+      username: "AnisseBoua",
+      avatar: "1.jpg",
+      novelCount: 2,
     },
   },
-  data() {
-    return {
-      pathImg: import.meta.env.VITE_BACK_URL + "imgs/",
-    };
-  },
-};
+});
 </script>
-
-<style lang="scss" scoped>
-.novel {
-  background-color: $dark-theme;
-  padding: 0.5em;
-  &_img {
-    width: 18%;
-    height: 12em;
-    object-fit: cover;
-    border-radius: $border-radius;
-  }
-  &_data {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-basis: 80%;
-    padding: 0.5em 1em;
-  }
-  &_head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    &_score {
-      display: flex;
-      align-items: center;
-      & p {
-        margin: 0 1em;
-      }
-    }
-  }
-  &_details {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-</style>

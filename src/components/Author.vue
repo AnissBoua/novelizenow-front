@@ -1,47 +1,37 @@
 <template>
-  <div class="flex items-center">
-    <div v-if="img">
+  <div class="flex items-center gap-2">
+    <div v-if="author.avatar"> 
       <img
-        class="w-14 h-14 object-cover rounded-full"
-        :src="pathImg + img"
+        class="w-12 h-12 object-cover rounded-full"
+        :src="BACK_URL + author.avatar.filepath"
         alt=""
       />
     </div>
-    <div :class="img ? 'mx-2' : ''">
+    <div>
       <div>
-        <p>{{ name + " " + lastname }}</p>
+        <p>{{ author.name + " " + author.lastname }}</p>
       </div>
-      <div class="text-xs text-zinc-400" v-if="followers !== false">
-        <p>{{ followers }} followers</p>
-      </div>
+      <IconText :text="author.novelCount + ' novels'" color="bg-novelize-primary" />
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    img: {
-      type: String,
-      default: "avatar.png",
-    },
-    name: {
-      type: String,
-      default: "Anisse",
-    },
-    lastname: {
-      type: String,
-      default: "Bouainbi",
-    },
-    followers: {
-      type: Number,
-      default: false,
+<script setup>
+import IconText from './IconText.vue';
+
+const BACK_URL = import.meta.env.VITE_BACK_URL;
+
+const props = defineProps({
+  author: {
+    type: Object,
+    default: {
+      id: 1,
+      name: "Anisse",
+      lastname: "Boua",
+      username: "AnisseBoua",
+      avatar: "imgs/1.jpg",
+      novelCount: 2,
     },
   },
-  data() {
-    return {
-      pathImg: import.meta.env.VITE_BACK_URL + "imgs/",
-    };
-  },
-};
+});
 </script>

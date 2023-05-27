@@ -1,84 +1,76 @@
-<script>
-import Score from "./Score.vue";
-import Author from "./Author.vue";
+<script setup>
+import IconText from "./IconText.vue";
+import Category from "./Category.vue";
 
-export default {
-  components: {
-    Score,
-    Author,
-  },
-  props: {
-    novel: {
-      type: Object,
-      default: {
-        title: "bla bla bla bla",
-        img: "2.jpg",
-        description:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-        category: ["hello", "action", "fantasy"],
-        score: 4.6,
-        author: {
-          avatar: "1.jpg",
-          name: "Anisse",
-          surname: "Boua",
-        },
-        price: 8,
-        stats: {
-          readers: 98600,
-        },
+const BACK_URL = import.meta.env.VITE_BACK_URL;
+
+const props = defineProps({
+  novel: {
+    type: Object,
+    default: {
+      title: "The last of us but what happen with a longer text ?",
+      slug: "the-last-of-us",
+      cover: {
+          filename: "2.jpg",
+          filepath: "imgs/2.jpg",
+      },
+      banner: {
+          filename: "2.jpg",
+          filepath: "imgs/2.jpg",
+      },
+      resume:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
+      categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
+      likesCount: 1,
+      commentsCount: 16,
+      quantiteChapitre: 12,
+      author: {
+        id: 1,
+        name: "Anisse",
+        lastname: "Boua",
+        username: "AnisseBoua",
+        avatar: "imgs/1.jpg",
+        novelCount: 2,
       },
     },
-  },
-  data() {
-    return {
-      BASE_IMG_PATH: import.meta.env.VITE_BACK_URL + "imgs/",
-    };
-  },
-  methods: {
-    numberFormatter(number) {
-      if (number >= 1000000) {
-        return (number / 1000000).toFixed(1) + "M";
-      } else if (number >= 1000) {
-        return (number / 1000).toFixed(1) + "K";
-      } else {
-        return number;
-      }
-    },
-  },
-};
+  }
+})
+
+function numberFormatter(number) {
+  if (number >= 1000000) {
+    return (number / 1000000).toFixed(1) + "M";
+  } else if (number >= 1000) {
+    return (number / 1000).toFixed(1) + "K";
+  } else {
+    return number;
+  }
+}
 </script>
 
 <template>
-  <div
-    class="flex bg-gradient-to-br from-novelize-dark to-zinc-900 rounded-md mt-8"
-  >
-    <div class="w-40 h-32 relative">
+  <div class="flex items-center bg-gradient-to-br from-novelize-dark to-novelize-primarydark gap-4 rounded-md mt-14 mb-4">
+    <div class="w-36 h-32 relative">
       <img
-        class="absolute inset-x-0 bottom-2 w-28 h-36 object-cover rounded-md mx-auto"
-        :src="BASE_IMG_PATH + novel.img"
+        class="absolute left-2 bottom-2 w-32 h-40 object-cover rounded-md mx-auto"
+        :src="BACK_URL + novel.cover.filepath"
         alt=""
       />
     </div>
-    <div class="basis-3/4 flex flex-col justify-between py-3 px-2">
+    <div class="basis-3/4 flex flex-col justify-between py-3">
       <div>
-        <div class="flex justify-between">
-          <h4 class="text-lg font-semibold">{{ novel.title }}</h4>
-          <Score :score="novel.score" />
+        <div class="">
+          <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
+          <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="block max-h-14 overflow-y-hidden hover:text-novelize-primary text-lg font-semibold">{{ novel.title }}</RouterLink>
+          <div class="flex items-center gap-6">
+            <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' Chapters'" />
+            <div class="flex items-center gap-4">
+              <IconText :text="novel.likesCount" color="text-novelize-secondary" icon="fa-solid fa-heart" />
+              <IconText :text="novel.commentsCount" color="text-novelize-secondary" icon="fa-solid fa-comments"/>
+            </div>
+          </div>
         </div>
       </div>
       <div class="flex items-center">
-        <div class="rounded-full bg-novelize-primary w-2 h-2 mr-2"></div>
-        <p class="text-zinc-400">
-          {{ numberFormatter(novel.stats.readers) }} readers
-        </p>
-      </div>
-      <div>
-        <Author
-          :name="novel.author.name"
-          :surname="novel.author.surname"
-          :followers="4586"
-          :img="''"
-        />
       </div>
     </div>
   </div>

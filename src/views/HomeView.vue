@@ -3,72 +3,47 @@ import Carousel from '../components/Carousel.vue';
 import Chapter from '../components/Chapter.vue'
 import Novel from '../components/Novel.vue';
 import NovelReduced from '../components/NovelReduced.vue';
-import Category from '../components/Category.vue';
-import TopAuthor from '../components/home/TopAuthor.vue';
-import Select from '../components/inputs/Select.vue';
-import TopNovel from '../components/home/TopNovel.vue';
-import NewRelease from '../components/home/NewRelease.vue';
+import PopularCategories from '../components/home/PopularCategories.vue';
+import NewReleases from '../components/home/NewReleases.vue';
+
+import axios from 'axios';
+import { ref } from 'vue';
+
+const carousel = ref([]);
+const chapters = ref([]);
+const categories = ref([]);
+const newNovels = ref([]);
+
+axios.get('/home').then(res => {
+  carousel.value = res.data.carousel;
+  chapters.value = res.data.chapters;
+  categories.value = res.data.categories;
+  newNovels.value = res.data.newNovels;
+})
+
+
 </script>
 
 <template>
   <main>
-    <Carousel/>
-    <div class="flex justify-between px-8">
-      <div class="w-8/12">
-        <div class="my-8">
-          <div class="flex">
-            <Category 
-            class="mr-4"
-            color="white"
-            />
-            <Category 
-            class="mr-4"
-            category="Adventure"
-            :active="true"
-            />
-            <Category 
-            class="mr-4"
-            category="Horror"
-            color="white"
-            />
-            <Category 
-            class="mr-4"
-            category="Action"
-            color="white"
-            />
-          </div>
-          <div class="flex overflow-x-scroll py-4 scrollbar">
-            <div class="min-w-[40em] mr-4">
-              <Novel />
-            </div>
-            <div class="min-w-[40em] mr-4">
-              <Novel />
-            </div>
-            <div class="min-w-[40em] mr-4">
-              <Novel />
-            </div>
-          </div>
-        </div>
-        <div class="bg-neutral-800 rounded-lg py-2 px-4 my-8">
+    <Carousel :novels="carousel"/>
+    <div class="flex justify-between md:px-8">
+      <div class="w-full lg:w-10/12 mx-auto">
+        <div class="bg-neutral-800 md:rounded-lg py-2 px-4 md:my-8">
           <h3 class="text-xl font-semibold my-2">Last chapters</h3>
-          <div class="my-4">
-            <div class="my-4" v-for="i in 8" :key="i">
-              <Chapter />
+          <div class="grid grid-cols-1 gap-4 my-4">
+            <div class="" v-for="(chapter, i) in chapters" :key="i">
+              <Chapter :title="chapter.title" :novel="chapter.novel" :author="chapter.novel.author" />
             </div>
           </div>
         </div>
       </div>
-      <div class="w-4/12 my-8 mx-8">
-        <div class="h-max bg-neutral-800 rounded-lg py-2 px-4 ">
-          <TopAuthor/>
-        </div>
-        <div class="h-max bg-neutral-800 rounded-lg py-2 px-4 my-4">
-          <TopNovel />
-        </div>
-      </div>      
     </div>
-    <div class="px-8">
-      <NewRelease />
+    <div class="w-full lg:w-11/12 lg:px-8 mx-auto">
+      <PopularCategories :categories="categories" />
+    </div>
+    <div class=" px-4 mx-auto">
+      <NewReleases :novels="newNovels" />
     </div>
   </main>
 </template>
