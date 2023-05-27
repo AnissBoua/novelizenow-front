@@ -73,7 +73,10 @@ export const useAuth = defineStore("auth", {
           // remove the roles from the response
           // delete response.data.roles;
           
-          this.user = response.data;
+          this.user = {
+            ...this.user,
+            ...response.data,
+          }
           return {
             data: response.data,
             status: response.status,

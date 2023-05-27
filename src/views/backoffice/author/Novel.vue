@@ -1,34 +1,44 @@
 <template>
-    <div class="mx-10 my-10">
-        <h3 class="font-bold text-lg">{{ novelId ? 'Mis a jour du novel' : 'Creation du novel' }}</h3>
-        <div class="flex flex-col my-4">
-            <div class="w-full my-2">
-                <input v-model="novel.title" class="w-full h-8 rounded-md px-4" type="text" name="titre" id="titre" placeholder="Titre Novel">
-            </div>
-            <div class="w-full my-2">
-                <textarea v-model="novel.resume" class="w-full rounded-md px-4 py-2" name="resume" id="resume" cols="30" rows="5" placeholder="Résumé du Novel"></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-8">
+    <div class="w-10/12 lg:w-6/12 mx-auto my-10">
+        <h3 class="font-bold text-lg">{{ novelId ? 'Update a novel' : 'Create novel' }}</h3>
+        <div class="flex flex-col gap-4 my-4">
+            <TextInput v-model="novel.title" placeholder="Titre Novel" id="titre" />
+            <TextAreaInput v-model="novel.resume" placeholder="Résumé du Novel" id="resume" />
+            <div class="flex flex-col  sm:flex-row items-center gap-4">
+                    <div class="w-full sm:w-1/2">
+                        <label for="price">Price</label>
+                        <NumberInput v-model="novel.price" placeholder="Prix" id="price" />
+                    </div>
+                    <div class="w-full sm:w-1/2">
+                        <label for="status">Status</label>
+                        <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2 dark:text-white outline-none" name="categories" id="categories" v-model="novel.status">
+                            <option value="" disabled selected>Status</option>
+                            <option value="published">Published</option>
+                            <option value="unpublished">Unpublished</option>
+                        </select>
+                    </div>
+                </div>
+            <div class="grid sm:grid-cols-2 gap-8">
                 <div class="flex flex-col">
                     <label class="my-2" for="cover">Cover :</label>
-                    <input class="flex-1 rounded-lg bg-novelize-darklight cursor-pointer outline outline-offset outline-1 outline-novelize-primary
-                    file:bg-novelize-primary file:border-0 file:px-3 file:py-2 file:text-white file:mr-4 hover:file:bg-novelize-primarylight" type="file" @change="onFileUpload($event, 'cover')" name="cover" id="cover">
+                    <FileUpload :fileUpload="(event) => onFileUpload(event, 'cover')" placeholder="Cover" id="cover" />
                 </div>
                 <div class="flex flex-col">
                     <label class="my-2" for="banner">Banner :</label>
-                    <input class="flex-1 rounded-lg bg-novelize-darklight cursor-pointer outline outline-offset outline-1 outline-novelize-primary
-                    file:bg-novelize-primary file:border-0 file:px-3 file:py-2 file:text-white file:mr-4 hover:file:bg-novelize-primarylight" type="file" @change="onFileUpload($event, 'banner')" name="banner" id="banner">
+                    <FileUpload :fileUpload="(event) => onFileUpload(event, 'banner')" placeholder="Banner" id="banner" />
                 </div>
+                
             </div>
             <div class="my-4">
                 <p class="my-2">Categories</p>
-                <select class="bg-novelize-darklight border border-novelize-primary text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none" name="categories" id="categories" @change="onCategorySelect">
+                <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none" name="categories" id="categories" @change="onCategorySelect">
+                    <option value="" disabled selected>Choisir des categorie</option>
                     <option v-for="(category, index ) in categories" :key="index" :value="category.id">{{ category.name }} </option>
                 </select>
-                <div class="flex my-2">
-                    <div class="flex items-baseline bg-novelize-primarylight border border-novelize-primary rounded-full py-1 px-2 mr-2" v-for="(category, index) in novel.categories" :key="index">
+                <div class="flex flex-wrap gap-4 my-2">
+                    <div class="flex items-baseline bg-novelize-primarydark border border-novelize-primary rounded-full gap-3 py-1.5 px-4 " v-for="(category, index) in novel.categories" :key="index">
                         <p>{{category.name}}</p>
-                        <i class="fa-solid fa-x fa-2xs cursor-pointer font-bold ml-2 text-novelize-primary"  @click="removeCategory(index)"></i>
+                        <i class="fa-solid fa-x fa-2xs cursor-pointer font-bold text-novelize-primary"  @click="removeCategory(index)"></i>
                     </div>
                 </div>
             </div>
@@ -43,6 +53,10 @@
 </template>
 
 <script setup>
+import TextInput from '@/components/inputs/TextInput.vue';
+import TextAreaInput from '@/components/inputs/TextAreaInput.vue';
+import NumberInput from '@/components/inputs/NumberInput.vue';
+import FileUpload from '@/components/inputs/FileUpload.vue';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
@@ -57,6 +71,8 @@ const route = useRoute();
 const novel = ref({
     title: '',
     resume: '',
+    price: 0,
+    status: '',
     image: null,
     banner: null,
     categories: []
@@ -65,13 +81,14 @@ let novelId = null;
 if (route.params.id) {
     novelId = route.params.id;
     let authorId = null;
-    axios.get(import.meta.env.VITE_BACK_URL + 'api/novel/' + novelId)
-    .then(async (res) => {
+    axios.get('novel/' + novelId).then(async (res) => {
         authorId = res.data.author.id;
         me().then((resjwt) => {
             if (resjwt.data.id === authorId) {
                 novel.value.title = res.data.title;
                 novel.value.resume = res.data.resume;
+                novel.value.price = res.data.price;
+                novel.value.status = res.data.status;
                 novel.value.categories = res.data.categories;
             } else {
                 novelId = null;
@@ -79,13 +96,10 @@ if (route.params.id) {
             }
         });
     })
-
-
 }
 const categories = ref(null);
 
-axios.get(import.meta.env.VITE_BACK_URL + 'api/category',)
-.then(res => {
+axios.get('category').then(res => {
     categories.value = res.data
 })
 .catch(e => console.log(e))
@@ -116,44 +130,37 @@ function removeCategory(index) {
 }
 
 function createNovel(){
-    const JWTToken = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('title', novel.value.title)
     formData.append('resume', novel.value.resume)
+    formData.append('price', novel.value.price)
+    formData.append('status', novel.value.status)
     formData.append('cover', novel.value.image)
     formData.append('banner', novel.value.banner)
 
     novel.value.categories.forEach((category) => {
         formData.append('category[]', category.id)
     })
-    console.log([...formData.entries()]);
-    axios.post(import.meta.env.VITE_BACK_URL + 'api/novel/', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': 'Bearer ' + JWTToken
+    axios.post('novel/', formData).then((res) => {  
+        if (res.status === 201) {
+            router.push({ name: 'account' })
         }
-    })
-    .then((res) => {  router.push({ name: 'account' })})
-    .catch((e) => console.log(e))
+    }).catch((e) => console.log(e))
 }
 
 function updateNovel(){
-    const JWTToken = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('title', novel.value.title)
     formData.append('resume', novel.value.resume)
+    formData.append('price', novel.value.price)
+    formData.append('status', novel.value.status)
     formData.append('cover', novel.value.image)
     formData.append('banner', novel.value.banner)
 
     novel.value.categories.forEach((category) => {
         formData.append('category[]', category.id)
     })
-    axios.post(import.meta.env.VITE_BACK_URL + 'api/novel/' + novelId, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': 'Bearer ' + JWTToken
-        }
-    })
+    axios.post('novel/' + novelId, formData)
     .then((res) => {  router.push({ name: 'account' })})
     .catch((e) => console.log(e))
 }
