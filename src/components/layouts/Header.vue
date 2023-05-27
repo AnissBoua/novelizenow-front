@@ -38,7 +38,7 @@
                 </div>
                 <div class="w-full h-[1px] bg-zinc-600"></div>
                 <div>
-                    <RouterLink class="block hover:bg-novelize-primary/20 py-3 px-4" to="account" @click="closeMenuUser">My Account</RouterLink>
+                    <RouterLink class="block hover:bg-novelize-primary/20 py-3 px-4" :to="{name: 'account'}" @click="closeMenuUser">My Account</RouterLink>
                 </div>
                 <div class="w-full h-[1px] bg-zinc-600"></div>
                 <div>
@@ -47,12 +47,12 @@
             </div>
         </div>
         <div v-else>
-            <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" to="/login">Login</RouterLink>
+            <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" :to="{name: 'login'}">Login</RouterLink>
             <Button
                 class="mx-4"
                 :label="!token ? 'Sign in' : 'Account'"
                 :btnStyle="1"
-                to="register"
+                :to="{name: 'register'}"
             >
             </Button>
         </div>
