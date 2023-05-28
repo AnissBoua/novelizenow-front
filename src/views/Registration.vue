@@ -1,165 +1,102 @@
 <template>
-  <section class="registerform">
+  <section class="flex flex-col gap-4 w-10/12 md:w-1/2 mx-auto my-20">
     <h3>Register</h3>
-    <div class="registerform_wrap">
-      <div class="registerform_block">
-        <input
-          v-model="name"
-          class="registerform_input"
-          type="text"
-          name="name"
-          id="name"
-          placeholder="Name"
-        />
+    <div class="flex flex-col md:flex-row w-full gap-4">
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="name" placeholder="Name" id="name" />
       </div>
-      <div class="registerform_block">
-        <input
-          v-model="lastname"
-          class="registerform_input"
-          type="text"
-          name="lastname"
-          id="lastname"
-          placeholder="Lastname"
-        />
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="lastname" placeholder="Lastname" id="lastname" />
       </div>
     </div>
+    <div >
+      <div class="w-full">
+        <TextInput v-model="email" placeholder="Email" id="email" type="email" />
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row w-full gap-4">
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="password" placeholder="Password" id="password" type="password" />
+      </div>
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="confirmpassword" placeholder="Confirm password" id="confirmPassword" type="password" />
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row md:items-end gap-4">
+      <div class="flex flex-col w-full md:w-1/2">
+        <label class="my-2" for="cover">Avatar :</label>
+        <FileUpload :fileUpload="(event) => onFileUpload(event)" placeholder="Banner" id="banner" />
+      </div>
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="username" placeholder="Username" id="username"  />
+      </div>
+    </div>
+    
     <div>
-      <div class="registerform_block">
-        <input
-          v-model="email"
-          class="registerform_input"
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Email"
-        />
+      <div v-if="errors.general">
+        <p>{{ errors.general }}</p>
       </div>
-    </div>
-    <div class="registerform_wrap">
-      <div class="registerform_block">
-        <input
-          v-model="password"
-          class="registerform_input"
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
-        />
-      </div>
-      <div class="registerform_block">
-        <input
-          v-model="confirmpassword"
-          class="registerform_input"
-          type="password"
-          name="confirmPassword"
-          id="confirmPassword"
-          placeholder="Confirm password"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col">
-                    <label class="my-2" for="cover">Avatar :</label>
-                    <input class="flex-1 rounded-lg bg-novelize-darklight cursor-pointer outline outline-offset outline-1 outline-novelize-primary
-                    file:bg-novelize-primary file:border-0 file:px-3 file:py-2 file:text-white file:mr-4 hover:file:bg-novelize-primarylight" type="file" name="cover" id="avatar">
-                </div>
-    <div class="registerform_wrap errors">
-      <div v-if="this.errors.general">
-        <p>{{ this.errors.general }}</p>
-      </div>
-      <div class="registerform_block_btn">
+      <div class="flex justify-end w-full">
         <Button :label="'Sign up'" @click="register()"></Button>
       </div>
     </div>
     <div>
       <p>
-        You already have an account ? <RouterLink to="/login">Login</RouterLink>
+        You already have an account ? <RouterLink class="hover:text-novelize-primary" to="/login">Login</RouterLink>
       </p>
     </div>
   </section>
 </template>
 
-<script>
+<script setup>
+import TextInput from '@/components/inputs/TextInput.vue';
+import FileUpload from '@/components/inputs/FileUpload.vue';
+import { useRouter } from "vue-router";
+import { ref } from "vue";
 import axios from "axios";
-export default {
-  name: "Registration",
-  data() {
-    return {
-      name: "",
-      lastname: "",
-      email: "",
-      password: "",
-      confirmpassword: "",
-      errors: {
-        general: null,
-      },
-    };
-  },
 
-  methods: {
-    async register() {
-      let files = document.querySelector("#avatar").files;
-      const formData = new FormData();
-      formData.append('name', this.name);
-      formData.append('lastname', this.lastname);
-      formData.append('email', this.email);
-      formData.append('password', this.password);
-      if(files[0]){
-        formData.append("avatar", files[0]);
-      }
-      if(this.password === this.confirmpassword){
-        try {
-          const response = await axios.post(
-            import.meta.env.VITE_BACK_URL + "api/registration",
-            formData,
-            {
-              headers: {
-              'Content-Type': 'multipart/form-data'
-              }
-            }
-          );
-          if (response.status === 201) {
-            this.$router.push({ name: "login" });
-          }
-          // TODO handle other cases
-        } catch (error) {
-          this.errors.general = "Registration failed";
+const router = useRouter();
+
+
+const name = ref("");
+const lastname = ref("");
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const confirmpassword = ref("");
+const avatar = ref(null);
+const errors = ref({
+  general: null,
+});
+
+function onFileUpload(event) {
+  const file = event.target.files[0];
+  avatar.value = file;
+}
+
+async function register() {
+  const formData = new FormData();
+  formData.append('name', name.value);
+  formData.append('lastname', lastname.value);
+  formData.append('email', email.value);
+  formData.append('password', password.value);
+  if(avatar.value){
+    formData.append("avatar", avatar.value);
+  }
+  if(password.value === confirmpassword.value){
+    await axios.post("registration", formData,
+      {
+        headers: {
+        'Content-Type': 'multipart/form-data'
         }
       }
-    },
-  },
-};
-</script>
-
-<style scoped lang="scss">
-.registerform {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 40%;
-  height: 25em;
-  margin: auto;
-  &_wrap {
-    display: flex;
-    &.errors {
-      height: 3em;
-      align-items: center;
-    }
-  }
-  &_block {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 50%;
-    margin: 0.5em 0.5em;
-    &_btn {
-      margin-left: auto;
-    }
-  }
-  &_input {
-    font-family: $font-family;
-    font-weight: 600;
-    border-radius: $border-radius;
-    border: $border;
-    padding: 0.5em 1em;
+    ).then((response) => {
+      if (response.status === 201) {
+        router.push({ name: "login" });
+      }
+    }).catch((error) => {
+      errors.value.general = "Registration failed";
+    });
   }
 }
-</style>
+</script>
