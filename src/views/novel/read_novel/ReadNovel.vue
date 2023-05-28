@@ -5,36 +5,44 @@
         <img v-if="novel && novel.banner" class="absolute w-full h-full object-cover" :src="BACK_URL + novel.banner.filepath" alt="">
         <div class="absolute w-full h-full bg-novelize-dark/50"></div>
         <div class="absolute w-full h-full bg-darklayer opacity-20"></div>
-        <div class="relative z-10 grid grid-cols-12 h-full py-20 ">
-          <img v-if="novel.cover.filepath" class="col-start-3 col-span-2 w-60 h-80 rounded-lg object-cover" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
-          <div v-if="novel" :class="'flex flex-col ' + (novel.cover.filepath ? 'col-start-5' : 'col-start-4') + ' col-span-6'">
+        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-center gap-4 md:gap-10 h-full py-5 md:py-20 px-10 sm:px-20">
+          <img v-if="novel.cover.filepath" class="w-60 h-80 rounded-lg object-cover" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
+          <div v-if="novel" :class="'flex flex-col'">
             <div>
-              <div class="flex items-center justify-between">
+              <div class="flex flex-col md:flex-row md:items-center justify-between">
                 <div class="flex items-center">
-                  <h1 class="text-3xl font-semibold">{{ novel.title }}</h1>
+                  <h1 class="text-2xl lg:text-3xl font-semibold">{{ novel.title }}</h1>
                   <router-link v-if="novel.isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
-                    <div class="flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4">
+                    <div class="hidden md:flex items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full mx-4">
                       <i class="fa-solid fa-pen text-white "></i>
                     </div>
                   </router-link>
                 </div>
-                <div class="flex items-center gap-4" v-if="likesUpdated">
-                  <p class="text-lg font-bold">{{likesCount}}</p> 
-                  <i class="fa-heart text-3xl cursor-pointer" :class="{'fa-regular': !isLiked, 'fa-solid': isLiked}" @click="like"></i>
+                <div class="flex items-center gap-4 my-2">
+                  <router-link v-if="novel.isAuthor" :to="{ name: 'author_novel', params: { id: novel.id }}">
+                    <div class="flex md:hidden items-center justify-center cursor-pointer bg-novelize-primary hover:[&>*]:text-novelize-primarylight w-8 h-8 rounded-full">
+                      <i class="fa-solid fa-pen text-white "></i>
+                    </div>
+                  </router-link>
+                  <div class="flex items-center gap-4" v-if="likesUpdated">
+                    <p class="text-base md:text-lg font-bold">{{likesCount}}</p> 
+                    <i class="fa-heart text-2xl md:text-3xl cursor-pointer" :class="{'fa-regular': !isLiked, 'fa-solid': isLiked}" @click="like"></i>
+                  </div>
                 </div>
-              </div>
+
+                </div>
               <div>
-                <p class="text-zinc-200 my-6">
+                <p class="text-zinc-200 my-2 md:my-6">
                   {{ novel.resume.length < 300 || showMore ? novel.resume.slice(0, 500) :  novel.resume.slice(0, 300) + '...' }}
                   <span v-if="novel.resume.length > 300" class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer font-semibold" @click="showMoreResume">{{ showMore ? 'Show less' : 'Show more'}}</span>
                 </p>
               </div>
               <Author 
-              :name="novel.author.name"
-              :lastname="novel.author.lastname"/>
+              :author="novel.author"/>
             </div>
             
-            <div class="my-4" v-if="!isOrderSuccess && !novel.userBought && !novel.isAuthor">
+            <div class="flex justify-end md:block my-4" v-if="!isOrderSuccess && !novel.userBought && !novel.isAuthor">
+              
               <Button
                 label="Buy Now"
                 @click="buyModal"
@@ -44,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div class="w-1/2 mx-auto my-4">
+    <div class="lg:w-3/5 mx-2 md:mx-10 lg:mx-auto my-4">
       <div class="flex justify-between items-center my-4">
         <h1 class="text-2xl py-2">Chapters</h1>
         <div v-if="novel.isAuthor">
@@ -56,7 +64,7 @@
         
       </div>
       <div class="">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
             <div v-for="(chapter, index) in ( novel.isAuthor ? novel.chapters : novel.publishedChapters)" :key="index" class="w-full text-xs text-zinc-300 bg-novelize-darklight rounded-lg py-2 px-2">
               <div v-if="index == 0 || novel.userBought || novel.isAuthor || isOrderSuccess" class="flex justify-between items-center">
                 <p>Chapter {{index + 1}} :
@@ -80,12 +88,13 @@
         </div>
       </div>
     </div>
-    <div class="w-2/3 mx-auto my-4">
+    <div class="lg:w-2/3 mx-4 lg:mx-auto my-4">
       <h1 class="text-base font-semibold">Comments</h1>
       <div v-if="token">
         <div class="flex items-center gap-4 my-4">
-          <div>
-            <img class="w-12 h-12 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+          <div class="w-12 h-12">
+            <img v-if="user.avatar" class="w-full h-full rounded-full object-cover object-top" :src="BACK_URL + user.avatar" alt="user avatar">
+            <div v-else class="flex items-center justify-center font-semibold text-lg w-full h-full bg-novelize-primary rounded-full"><span> {{ user.username ? user.username.slice(0, 1).toUpperCase() : user.name.slice(0, 1).toUpperCase() }} </span> </div>
           </div>
           <div class="w-full">
             <div>
@@ -103,12 +112,16 @@
       <div>
         <div v-for="(comment, index) in novel.comments" :key="index" class="flex gap-4 my-4">
           <div>
-            <img class="w-14 h-14 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+            <div class="w-14 h-14">
+              <img v-if="comment.user.avatar"  class="w-full h-full rounded-full object-cover object-top" :src="BACK_URL + comment.user.avatar.filepath" alt="">
+              <div v-else class="flex items-center justify-center font-semibold text-lg w-full h-full bg-novelize-primary rounded-full"><span> {{ comment.user.username ? comment.user.username.slice(0, 1).toUpperCase() : comment.user.name.slice(0, 1).toUpperCase() }} </span> </div>
+            </div>
           </div>
           <div class="w-full">
             <div>
               <p class="text-zinc-300">{{ comment.user.username }}</p>
-              <p>{{ comment.content }}</p>
+              <p :class="'overflow-hidden' + ( comment.showMore ? ' '  : ' max-h-10 ' )">{{ comment.content }}</p>
+              <p @click="toggleCommentExpand(index)" v-if="comment.content.length > 50" class="md:hidden text-zinc-300 my-2" >{{comment.showMore ? 'Show less' : 'Show more'}}</p>
             </div>
             <div>
               <div class="flex gap-2 text-xs">
@@ -123,8 +136,10 @@
                 <div v-if="comment.showAnswerInput">
                   <div class="flex flex-col gap-4 my-4">
                     <div class="flex gap-4">
-                      <div>
-                        <img class="w-10 h-10 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+                      <div class="w-10 h-10">
+                        <img v-if="user.avatar" class="w-full h-full rounded-full object-cover object-top" :src="BACK_URL + user.avatar" alt="user avatar">
+                        <div v-else class="flex items-center justify-center font-semibold text-lg w-full h-full bg-novelize-primary rounded-full"><span> {{ user.username ? user.username.slice(0, 1).toUpperCase() : user.name.slice(0, 1).toUpperCase() }} </span> </div>
+
                       </div>
                       <input class="w-full bg-novelize-darklight rounded-lg p-2 !text-white" v-model="answer" type="text" name="answer" id="answer" placeholder="Write an answer..."/>
                     </div>
@@ -138,8 +153,9 @@
                 </div>
                 <div v-if="comment.showAnswers">
                   <div v-for="(answer, index) in comment.comments" :key="index" class="flex items-center gap-4 my-4">
-                    <div>
-                      <img class="w-10 h-10 rounded-full object-cover object-top" :src="BACK_URL + 'imgs/avatar.png'" alt="">
+                    <div class="w-10 h-10">
+                      <img v-if="answer.user.avatar" class="w-full h-full rounded-full object-cover object-top" :src="BACK_URL + answer.user.avatar.filepath" alt="user avatar">
+                      <div v-else class="flex items-center justify-center font-semibold text-lg w-full h-full bg-novelize-primary rounded-full"><span> {{ answer.user.username ? answer.user.username.slice(0, 1).toUpperCase() : answer.user.name.slice(0, 1).toUpperCase() }} </span> </div>
                     </div>
                     <div>
                       <div>
@@ -157,19 +173,33 @@
     </div>
     <div v-if="toggleBuyingModal" class="absolute top-0 w-full h-full m-auto bg-novelize-dark/70 z-40">
       <div class="flex justify-center items-center h-96">
-        <div class="w-1/3 bg-novelize-darklight rounded-lg px-4 py-2">
-          <h3 class="text-center font-semibold border-b border-b-zinc-500 py-2">Buying Novel</h3>
+        <div class="w-full lg:w-3/6 bg-novelize-darklight rounded-lg mx-2 sm:mx-6 lg:mx-0 px-4 py-2">
+          <h3 class="text-lg text-center text-novelize-primary font-semibold border-b border-b-zinc-500 py-2">Buying Novel</h3>
           <div v-if="!isOrderSuccess">
-            <p class="text-center text-zinc-300 py-2">Are you sure you want to buy this novel ?</p>
-            <div class="flex justify-center items-center">
+            <p class="text-center text-zinc-300 py-4">Are you sure you want to buy this novel ?</p>
+            <div class="flex justify-between">
+              <div>
+                <p class=" font-semibold">{{ novel.title }}</p>
+                <p class="text-zinc-300">{{ novel.author.name }}</p>
+              </div>
+              <div class="flex items-center gap-2 my-2">
+                <p class="text-novelize-secondary font-semibold">{{ novel.price }}</p>
+                <div class="scale-75">
+                  <CoinIcon /> 
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-center items-center my-2">
               <Button
                 label="Cancel"
                 @click="toggleBuyingModal = false"
                 class="mr-2"
+                bgColor="bg-red-700"
               ></Button>
               <Button
                 v-if="!isBuying"
                 label="Buy"
+
                 @click="buyNovel"
               ></Button>
               <Button
@@ -199,11 +229,14 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { storeToRefs } from 'pinia'
 import {useAuth} from "@/stores/auth.js";
 import axios from "axios";
 import Author from "../../../components/Author.vue";
+import CoinIcon from "../../../components/CoinIcon.vue";
 
 const authStore = useAuth();
+const { user } = storeToRefs(authStore);
 const { me } = authStore;
 const token = localStorage.getItem("token");
 
@@ -320,6 +353,10 @@ function sendAnswer(index){
   }).catch((err) => {
     console.log(err);
   })
+}
+
+function toggleCommentExpand(index) {
+  novel.value.comments[index].showMore = !novel.value.comments[index].showMore;
 }
 
 function toggleAnswers(index){
