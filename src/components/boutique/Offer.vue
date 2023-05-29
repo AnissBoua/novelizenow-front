@@ -1,19 +1,15 @@
 <template>
-    <div class="flex justify-between items-center rounded-lg bg-gradient-to-r from-novelize-darklight/50 to-novelize-primary/50 py-4 px-4 m-4" @click="select">
-        <div class="flex items-center">
-            <div class="flex justify-center items-center bg-white rounded-full w-8 h-8">
-                <i v-if="selected" class="fa-solid fa-check text-lg"></i>
-            </div>
-            <div class="mx-4">
-                <h3 class="text-xl font-semibold ">{{ offer.name }}</h3>
-                <p class="text-base text-zinc-300">{{ offer.price.toFixed(2) }} &euro;</p>
-            </div>
+    <div class="rounded-lg bg-gradient-to-br from-novelize-dark to-novelize-primarydark" @click="select">
+        <div class="text-center my-2">
+            <h3 class="text-xl font-semibold text-novelize-secondary">{{ offer.name }}</h3>
         </div>
-        <div>
-            <div class="flex items-center">
-                <CoinIcon />
-                <p class="text-2xl font-semibold mx-2">{{ offer.coins }}</p>
-            </div>
+        <div class="w-full h-0.5 bg-zinc-700"></div>
+        <div class="flex flex-col items-center w-full text-center my-4">
+            <CoinIcon />
+            <p class="text-2xl font-semibold m-2">{{ offer.coins }} Coins</p>
+        </div>
+        <div class="flex justify-center rounded-b-lg py-2 bg-gradient-to-r from-novelize-secondarylight to-novelize-secondary  cursor-pointer" @click="initializeCheckout(offer.id)">
+            <p class="text-base">{{ offer.price.toFixed(2) }} &euro;</p>
         </div>
     </div>
 </template>
@@ -21,6 +17,9 @@
 <script setup>
 import { defineEmits } from 'vue'
 import CoinIcon from '../CoinIcon.vue';
+import { useStripe } from '@/stores/stripe.js' 
+
+const stripeStore = useStripe();
 const props = defineProps({
     offer: {
         type: Object,
@@ -33,6 +32,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['select']);
+
+const initializeCheckout = (offerId) => {
+    stripeStore.initCheckout(offerId);
+}
 
 const select = () => {
     emit('select', props.selected);
