@@ -1,30 +1,19 @@
 <template>
-  <div class="edit_page">
+  <div class="md:w-7/12 my-8 mx-auto px-4 md:px-0">
     <alert-modal @acceptWarning="onWarningAccepted" />
-    <div class="page_edit_header grid grid-cols-8 mt-2">
-      <div class="path_container">
+    <div class=" grid grid-cols-8 mt-2">
+      <div class="col-span-12">
         <router-link
           :to="{
             name: 'chapter_edit',
             params: { novel_id: novelId, chapter_id: chapterId },
           }"
-          > > Chapter
+          > Go back
         </router-link>
       </div>
-      <div class="btn_container col-start-8 col-end-8">
-        <Button
-          v-if="!pageId"
-          @click="submitPage('add')"
-          label="Add page"
-        ></Button>
-        <Button
-          v-else
-          @click="submitPage('update')"
-          label="Update page"
-        ></Button>
-      </div>
+      
     </div>
-    <div class="editor_container">
+    <div class=" my-6 mx-auto ">
       <QuillEditor
         v-model:content="editorData"
         ref="myQuillEditor"
@@ -34,12 +23,16 @@
         @ready="onEditorReady"
         @textChange="onEditorInput"
       />
-      <p class="text_counter_container text-right">
+      <p class="text_counter_container text-right my-2">
         <span :class="{ 'text-red-500': text.length > 2999 }">{{
           text.length - 1
         }}</span
         >/3000
       </p>
+      <div class="flex justify-end col-start-8 col-end-8">
+        <button v-if="!pageId" @click="submitPage('add')" class="text-novelize-primary hover:text-novelize-primarylight">Add page</button>
+        <button v-else @click="submitPage('add')" class="text-novelize-primary hover:text-novelize-primarylight">Update page</button>
+      </div>
     </div>
   </div>
 </template>
@@ -178,15 +171,17 @@ export default {
 <style lang="scss">
 .ql- {
   &snow {
-    background-color: white;
+    background-color: rgba($color: #1E1E1E, $alpha: 1.0);
   }
   &container {
-    height: 47.5rem;
+    height: 25rem;
   }
-}
-.edit_page {
-  background-color: rgb(0 0 0 / 12%);
-  height: 100%;
+  &editor {
+    color: #fff;
+  }
+  &formats {
+    color: #fff !important;
+  }
 }
 .editor_container {
   width: 30%;

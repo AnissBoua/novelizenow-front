@@ -39,7 +39,7 @@
         <div class="col-start-1 col-end-13 row-start-2">
           <TextInput v-model="title" placeholder="Chapter title" id="titre" />
         </div>
-        <div class="col-span-12 font-semibold my-4">
+        <div v-if="chapterId" class="col-span-12 font-semibold my-4">
           <p>Status</p>
           <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none my-1" name="categories" id="categories" @change="onSelectionChange">
               <option value="In progess" >In progess</option>
@@ -47,7 +47,7 @@
           </select>
         </div>
         <div class="flex justify-end col-span-12">
-          <RouterLink :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId } }" class="!text-novelize-primary hover:!text-novelize-primarylight ">New page </RouterLink>
+          <RouterLink v-if="chapterId" :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId } }" class="!text-novelize-primary hover:!text-novelize-primarylight ">New page </RouterLink>
         </div>
         <draggable
           class="col-start-1 col-end-13 mt-3"
