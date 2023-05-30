@@ -1,121 +1,65 @@
 <template>
-  <section class="registerform">
+  <section class="flex flex-col gap-4 w-10/12 md:w-6/12 mx-auto my-40">
     <h3>Login</h3>
-    <div class="registerform_wrap">
-      <div class="registerform_block">
-        <input
-          v-model="email"
-          class="registerform_input"
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Email"
-        />
+    <div class="flex flex-col md:flex-row w-full gap-4 my-4">
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="email" placeholder="Email" id="email" type="email" />
       </div>
-      <div class="registerform_block">
-        <input
-          v-model="password"
-          class="registerform_input"
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
-        />
+      <div class="w-full md:w-1/2">
+        <TextInput v-model="password" placeholder="Password" id="password" type="password" />
       </div>
     </div>
-    <div class="registerform_wrap errors">
-      <div v-if="this.errors.general">
-        <p>{{ this.errors.general }}</p>
+    <div class="">
+      <div v-if="errors.general">
+        <p>{{ errors.general }}</p>
       </div>
-      <div class="registerform_block_btn">
-        <Button :label="'Login'" @click="login()"></Button>
+      <div class="w-full flex justify-end">
+        <Button type="button" label="Login" @click="login()"></Button>
       </div>
     </div>
     <div>
       <p>
         You don't have an account ?
-        <RouterLink to="/register">Sign up here</RouterLink>
+        <RouterLink class="hover:text-novelize-primary" to="/register">Sign up here</RouterLink>
       </p>
     </div>
   </section>
 </template>
 
-<script>
+<script setup>
 import { RouterLink } from "vue-router";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import { useAuth } from "@/stores/auth.js";
+import TextInput from '@/components/inputs/TextInput.vue';
 
-export default {
-  name: "Registration",
-  data() {
-    return {
-      authStore: useAuth(),
-      email: "",
-      password: "",
-      errors: {
-        general: null,
-      },
-    };
-  },
 
-  methods: {
-    async login() {
-      const data = {
-        email: this.email,
-        password: this.password,
-      };
-      // TODO
-      try {
-        const response = await axios.post(
-          import.meta.env.VITE_BACK_URL + "api/login",
-          data
-        );
-        if (response.status === 200 && response.data.token) {
-          this.authStore.setToken(response.data.token);
-          localStorage.setItem("refresh_token", response.data.refresh_token);
-          this.$router.push({ name: "home" });
-        }
-      } catch (error) {
-        if (error.response.status) {
-          this.errors.general = "Wrong email or password";
-        }
-        console.log(error.response.status);
-      }
-    },
-  },
-};
-</script>
+const router = useRouter();
+const authStore = useAuth();
+const email = ref("");
+const password = ref("");
+const errors = ref({
+  general: null,
+});
 
-<style scoped lang="scss">
-.registerform {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 40%;
-  height: 25em;
-  margin: auto;
-  &_wrap {
-    display: flex;
-    &.errors {
-      height: 3em;
-      align-items: center;
+async function login() {
+  const data = {
+    email: email.value,
+    password: password.value,
+  };
+  await axios.post("login", data).then((response) => {
+    console.log(response);
+    if (response.status === 200 && response.data.token) {
+      authStore.setToken(response.data.token);
+      localStorage.setItem("refresh_token", response.data.refresh_token);
+      router.push({ name: "home" });
     }
-  }
-  &_block {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 50%;
-    margin: 0.5em 0.5em;
-    &_btn {
-      margin-left: auto;
+  })
+  .catch((error) => {
+    if (error.response.status) {
+      errors.value.general = "Wrong email or password";
     }
-  }
-  &_input {
-    font-family: $font-family;
-    font-weight: 600;
-    border-radius: $border-radius;
-    border: $border;
-    padding: 0.5em 1em;
-  }
+  });
 }
-</style>
+</script>

@@ -1,49 +1,24 @@
 <template>
   <div
-    class="page_card"
-    :class="{ dragging: isDragging }"
+    class="bg-novelize-darklight rounded-lg cursor-move transition-all suration-200 ease-in-out my-4 p-3"
+    :class="{' scale-105': isDragging }"
     draggable="true"
     ref="pageCard"
     :id="page.id"
   >
     <div class="page_title">
-      <p class="text-black font-bold font">Page ID : {{ page.id }}</p>
-      <p class="text-black font-bold font">Content :</p>
-      <span class="text-black">{{ page.content.substring(0, 400) }}...</span>
+      <p class="font-bold font">Page ID : {{ page.id }}</p>
+      <p class="font-bold font">Content :</p>
+      <span>{{ page.content.substring(0, 400) }}...</span>
     </div>
-    <div class="btn_container flex justify-between">
-      <div class="up_down_btns">
-        <Button
-          class="mx-1"
-          label="Up"
-          @click.prevent="$emit('up', { id: page.id, where: 'up' })"
-        ></Button>
-        <Button
-          class="mx-1"
-          label="Down"
-          @click.prevent="$emit('down', { id: page.id, where: 'down' })"
-        ></Button>
+    <div class="flex justify-between items-center">
+      <div class="flex gap-4 text-xl cursor-pointer">
+        <i class="fa-solid fa-caret-up text-white hover:text-zinc-500" @click.prevent="$emit('up', { id: page.id, where: 'up' })"></i>
+        <i class="fa-solid fa-caret-down text-white hover:text-zinc-500" @click.prevent="$emit('up', { id: page.id, where: 'up' })"></i>
       </div>
-      <div class="options_btns">
-        <Button
-          @click.prevent="
-            $router.push({
-              name: 'page_edit',
-              params: {
-                novel_id: novelId,
-                chapter_id: chapterId,
-                page_id: page.id,
-              },
-            })
-          "
-          label="Update"
-        ></Button>
-        <Button
-          class="ml-2"
-          bgColor="bg-red-600"
-          label="Delete"
-          @click.prevent="$emit('delete', page.id)"
-        ></Button>
+      <div class="flex gap-4">
+        <RouterLink :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId, page_id: page.id, } }" class="!text-novelize-secondary hover:!text-novelize-secondarylight2">Edit</RouterLink>
+        <button @click.prevent="$emit('delete', page.id)" class="!text-red-600 hover:!text-red-400">Delete</button>
       </div>
     </div>
   </div>
@@ -74,20 +49,3 @@ export default {
   methods: {},
 };
 </script>
-
-<style lang="scss" scoped>
-.page_card {
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  margin-bottom: 5px;
-  padding: 10px;
-  user-select: none;
-  cursor: move;
-  transition: transform 0.2s ease-in-out;
-}
-
-.page_card.dragging {
-  transform: scale(1.05);
-}
-</style>

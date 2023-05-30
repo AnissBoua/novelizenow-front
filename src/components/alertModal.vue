@@ -1,16 +1,19 @@
 <template>
   <div
     @click="closeEvent"
-    class="modal"
+    class="fixed left-0 top-0 w-full h-full bg-black/50 opacity-0 invisible scale-105 transition-all"
     :class="{ 'show-modal': alertModalState.open }"
   >
-    <div ref="targetDiv" class="modal-content">
-      <span @click="alertModalState.open = false" class="close-button"
-        >&times;</span
-      >
-      <h1 class="text-black">{{ alertModalState.title }}</h1>
-      <p class="text-black">{{ alertModalState.content }}</p>
-      <div v-if="alertModalState.emits !== undefined" class="btn-container">
+    <div ref="targetDiv" class="absolute w-11/12 sm:w-1/2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-novelize-darklight rounded-md shadow-md py-2 px-4"
+    >
+     <div class="flex justify-between my-1">
+       <h1 >{{ alertModalState.title }}</h1>
+       <span @click="alertModalState.open = false" class="w-6 h-6 text-center cursor-pointer rounded-md bg-zinc-600 hover:bg-zinc-500"
+         >&times;</span
+       >
+     </div>
+      <p class="my-4">{{ alertModalState.content }}</p>
+      <div v-if="alertModalState.emits !== undefined">
         <Button @click="accept(alertModalState.emits)" :label="'Confirmer'"/>
       </div>
     </div>
@@ -52,47 +55,9 @@ export default {
 </script>
 
 <style>
-.modal {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(1.1);
-  transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
-}
-
-.modal-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 1rem 1.5rem;
-  width: 24rem;
-  border-radius: 0.5rem;
-}
-
-.close-button {
-  float: right;
-  width: 1.5rem;
-  line-height: 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  background-color: lightgray;
-}
-
-.close-button:hover {
-  background-color: darkgray;
-}
-
 .show-modal {
   opacity: 1;
-  visibility: visible;
+  visibility: visible !important;
   transform: scale(1);
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
   z-index: 1;

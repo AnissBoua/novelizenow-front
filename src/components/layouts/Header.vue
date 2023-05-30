@@ -1,6 +1,6 @@
 <template>
   <header class="relative flex justify-between items-center py-4 lg:py-6 px-4 sm:px-6 lg:px-20">
-    <div class="flex items-center gap-10 w-10/12 lg:w-6/12">
+    <div class="flex items-center gap-10 w-8/12 lg:w-6/12">
         <div>
             <RouterLink to="/" @click="closeMenuUser">
                 <img class="hidden lg:block lg:w-32" src="@/assets/logos/novelizelogo.svg" alt="logo" >
@@ -16,7 +16,7 @@
         <div class="sm:hidden" @click="toggleSearchMobile">
             <i class="fa-solid fa-magnifying-glass text-white"></i>
         </div>
-        <div class="flex items-center gap-2">
+        <div v-if="token" class="flex items-center gap-2">
             <RouterLink :to="{name: 'shop_coins'}"  >
                 <CoinIcon />
             </RouterLink>
@@ -46,11 +46,11 @@
                 </div>
             </div>
         </div>
-        <div v-else>
+        <div v-else class="flex items-center">
             <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" :to="{name: 'login'}">Login</RouterLink>
             <Button
-                class="mx-4"
-                :label="!token ? 'Sign in' : 'Account'"
+                class="hidden md:block mx-4"
+                label="Sign up"
                 :btnStyle="1"
                 :to="{name: 'register'}"
             >

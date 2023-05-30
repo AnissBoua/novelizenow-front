@@ -10,61 +10,45 @@
           > > Novel
         </router-link> -->
       </div>
-    <div class="form_container flex justify-center">
-      <form class="w-8/12 grid grid-cols-12">
-        <Button
-          v-if="chapterId"
-          @click.prevent="onSubmit('update')"
-          class="col-start-11 mt-2"
-          label="Update"
-        />
-        <Button
-          v-else
-          @click.prevent="onSubmit('add')"
-          class="col-start-11 mt-2"
-          label="Add"
-        />
-        <Button
-          v-if="chapterId"
-          @click.prevent="onSubmit('delete')"
-          class="col-start-12 mt-2"
-          bgColor="bg-red-600"
-          label="Delete"
-        />
-        <div class="col-start-1 col-end-13 row-start-2">
-          <label for="first_name" class="block mb-2 text-lg font-medium"
-            >Chapter</label
-          >
-          <input
-            v-model="title"
-            type="text"
-            id="first_name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Chapter name"
-            required
-          />
+    <div class="flex justify-center">
+      <form class="w-full sm:w-8/12 grid grid-cols-12 px-4 sm:px-0"> 
+        <div class="flex justify-between items-center col-span-12 my-4">
+          <h3>Chapter form</h3>
+          <div class="flex gap-4">
+            <Button
+              v-if="chapterId"
+              @click.prevent="onSubmit('update')"
+              class="col-start-11 mt-2"
+              label="Update"
+            />
+            <Button
+              v-else
+              @click.prevent="onSubmit('add')"
+              class="col-start-11 mt-2"
+              label="Add"
+            />
+            <Button
+              v-if="chapterId"
+              @click.prevent="onSubmit('delete')"
+              class="col-start-12 mt-2"
+              bgColor="bg-red-600"
+              label="Delete"
+            />
+          </div>
         </div>
-        <Select
-          v-if="chapterId"
-          class="col-start-1 col-end-13 flex flex-col mt-2"
-          :initialValue="initialValue"
-          textColor="text-black"
-          bgColor="bg-white"
-          :options="['In progess', 'Published']"
-          label="Status"
-          @selection-change="onSelectionChange"
-        />
-        <Button
-          v-if="chapterId"
-          @click.prevent="
-            $router.push({
-              name: 'page_edit',
-              params: { novel_id: novelId, chapter_id: chapterId },
-            })
-          "
-          class="col-start-12 mt-2"
-          label="New page"
-        />
+        <div class="col-start-1 col-end-13 row-start-2">
+          <TextInput v-model="title" placeholder="Chapter title" id="titre" />
+        </div>
+        <div v-if="chapterId" class="col-span-12 font-semibold my-4">
+          <p>Status</p>
+          <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none my-1" name="categories" id="categories" @change="onSelectionChange">
+              <option value="In progess" >In progess</option>
+              <option value="Published">Published</option>
+          </select>
+        </div>
+        <div class="flex justify-end col-span-12">
+          <RouterLink v-if="chapterId" :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId } }" class="!text-novelize-primary hover:!text-novelize-primarylight ">New page </RouterLink>
+        </div>
         <draggable
           class="col-start-1 col-end-13 mt-3"
           v-model="pageState"
@@ -94,6 +78,8 @@ import alertModal from "@/components/alertModal.vue";
 import Select from "@/components/inputs/Select.vue";
 import DraggablePageCard from "../../components/DraggablePageCard.vue";
 import draggable from "vuedraggable";
+import TextInput from '@/components/inputs/TextInput.vue';
+
 
 export default {
   setup() {
@@ -110,6 +96,7 @@ export default {
     Select,
     DraggablePageCard,
     draggable,
+    TextInput,
   },
   data() {
     return {
