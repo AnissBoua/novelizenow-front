@@ -31,7 +31,7 @@
       </p>
       <div class="flex justify-end col-start-8 col-end-8">
         <button v-if="!pageId" @click="submitPage('add')" class="text-novelize-primary hover:text-novelize-primarylight">Add page</button>
-        <button v-else @click="submitPage('add')" class="text-novelize-primary hover:text-novelize-primarylight">Update page</button>
+        <button v-else @click="submitPage('update')" class="text-novelize-primary hover:text-novelize-primarylight">Update page</button>
       </div>
     </div>
   </div>
