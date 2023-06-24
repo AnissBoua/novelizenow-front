@@ -53,7 +53,7 @@ const props = defineProps({
     <div class="relative h-[25em] sm:h-[35em] md:h-[45em] w-full rounded-md">
       <img
         class="absolute w-full h-full object-cover rounded-md"
-        :src="BACK_URL + novel.banner.filepath"
+        :src="novel.banner ? (BACK_URL + novel.banner.filepath) : ''"
         :alt="novel.title + ' post image'"
       />
       <div class="absolute w-full h-full top-0 bg-darklayer"></div>

@@ -52,7 +52,7 @@ function numberFormatter(number) {
     <div class="w-36 h-32 relative">
       <img
         class="absolute left-2 bottom-2 w-32 h-40 object-cover rounded-md mx-auto"
-        :src="BACK_URL + novel.cover.filepath"
+        :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''"
         alt=""
       />
     </div>

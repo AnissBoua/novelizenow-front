@@ -3,7 +3,7 @@
       <div class="w-full sm:w-1/3 p-1">
         <img
           class="w-full h-28 sm:h-44 rounded-lg object-cover"
-          :src="BACK_URL + novel.cover.filepath"
+          :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''"
           alt=""
         />
       </div>

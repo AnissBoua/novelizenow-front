@@ -2,7 +2,7 @@
   <div>
     <div class="relative h-[25em] sm:h-[40em]">
       <div v-for="(novel, index) in novels" :key="index" :class="'absolute flex items-end w-full h-full opacity-0 transition-all ease-in-out duration-200 ' + (slide === index ? ' opacity-100 ' : '')" >
-        <img class="absolute top-0 left-0 w-full h-full  object-cover " :src="BACK_URL + novel.banner.filepath" alt="" />
+        <img class="absolute top-0 left-0 w-full h-full  object-cover " :src="novel.banner ? (BACK_URL + novel.banner.filepath) : ''" alt="" />
         <div class="absolute top-0 w-full h-full bg-darklayer opacity-75"></div>
         <div class="relative z-10 flex flex-col w-full sm:w-9/12 md:w-7/12 opacity-100 px-4 sm:px-10 py-20 lg:p-20  transition-all ease-in-out duration-200">
           <div>
