@@ -12,7 +12,7 @@
             <input v-model="search" class="w-full bg-novelize-darklight !text-white rounded-lg  px-4 py-2" type="text" placeholder="Search" @input="debounceSeach" @focusin="toggleSearch" @focusout="toggleSearch">
             <div v-if="isSearching && novels && novels.length > 0" class="absolute z-50 flex flex-col gap-2 w-full bg-novelize-darklight rounded-lg my-2 p-1 lg:p-4">
                 <div v-for="(novel, index) in novels" :key="index" class="flex gap-4">
-                    <img class="w-16 h-24 object-cover rounded-lg" :src="BACK_URL + novel.cover.filepath" alt="">
+                    <img class="w-16 h-24 object-cover rounded-lg" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
                     <div class="col-span-5">
                         <div class="flex gap-2 mb-2">
                             <p v-for="(category, index) in novel.categories" :key="index" class="text-novelize-secondary text-xs">{{ category.name }}</p>
@@ -79,7 +79,7 @@
         <i class="fa-solid fa-xmark text-2xl text-white" @click="toggleSearchMobile"></i>
         <div v-if="isSearching && novels && novels.length > 0" class="absolute top-16 left-0 z-50 flex flex-col gap-2 w-full bg-novelize-darklight my-2 p-1 lg:p-4">
             <div v-for="(novel, index) in novels" :key="index" class="flex gap-4">
-                <img class="w-16 h-24 object-cover rounded-lg" :src="BACK_URL + novel.cover.filepath" alt="">
+                <img class="w-16 h-24 object-cover rounded-lg" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
                 <div class="col-span-5">
                     <div class="flex gap-2 mb-2">
                         <p v-for="(category, index) in novel.categories" :key="index" class="text-novelize-secondary text-xs">{{ category.name }}</p>

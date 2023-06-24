@@ -10,7 +10,7 @@ export default defineConfig({
     include: ['ckeditor5-custom-build'],
   },
   build: {
-    commonjsOptions: { exclude: ['ckeditor5-custom-build'], include: [] },
+    commonjsOptions: { exclude: ["quill/*"] }
   },
   resolve: {
     alias: {

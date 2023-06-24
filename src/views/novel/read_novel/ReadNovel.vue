@@ -2,11 +2,11 @@
   <div v-if="novel" class="relative">
     <div class="read_book_page">
       <div class="relative">
-        <img v-if="novel && novel.banner" class="absolute w-full h-full object-cover" :src="BACK_URL + novel.banner.filepath" alt="">
+        <img v-if="novel && novel.banner" class="absolute w-full h-full object-cover" :src="novel.banner ? (BACK_URL + novel.banner.filepath) : ''" alt="">
         <div class="absolute w-full h-full bg-novelize-dark/50"></div>
         <div class="absolute w-full h-full bg-darklayer opacity-20"></div>
         <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-center gap-4 md:gap-10 h-full py-5 md:py-20 px-10 sm:px-20">
-          <img v-if="novel.cover.filepath" class="w-60 h-80 rounded-lg object-cover" :src="BACK_URL + novel.cover.filepath" alt="novel cover"/>
+          <img v-if="novel.cover.filepath" class="w-60 h-80 rounded-lg object-cover" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="novel cover"/>
           <div v-if="novel" :class="'flex flex-col'">
             <div>
               <div class="flex flex-col md:flex-row md:items-center justify-between">
@@ -272,12 +272,14 @@ if (novelSlug.value) {
     axios.get(`like/count/${novel.value.id}`)
       .then((res)=>{
         likesCount.value = res.data.count;
-      axios.get(`like/liked/${novel.value.id}`)
-        .then((res)=>{
-          console.log(res.data.liked);
-          isLiked.value = res.data.liked
-          likesUpdated.value = true;
-        })
+        if (token) {
+          axios.get(`like/liked/${novel.value.id}`)
+            .then((res)=>{
+              console.log(res.data.liked);
+              isLiked.value = res.data.liked
+              likesUpdated.value = true;
+            })
+        }
       });
   });
 }
