@@ -196,8 +196,8 @@ export default {
         console.warn(e);
       }
     },
-    onSelectionChange(selection) {
-      this.status = selection;
+    onSelectionChange(event) {
+      this.status = event.target.value;
     },
     async updateChapter(obj) {
       try {
