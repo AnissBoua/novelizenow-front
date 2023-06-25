@@ -41,7 +41,7 @@
         </div>
         <div v-if="chapterId" class="col-span-12 font-semibold my-4">
           <p>Status</p>
-          <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none my-1" name="categories" id="categories" @change="onSelectionChange">
+          <select class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none my-1" name="categories" id="categories" @change="onSelectionChange">
               <option value="In progess" >In progess</option>
               <option value="Published">Published</option>
           </select>

@@ -11,7 +11,7 @@
                     </div>
                     <div class="w-full sm:w-1/2">
                         <label for="status">Status</label>
-                        <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2 dark:text-white outline-none" name="categories" id="categories" v-model="novel.status">
+                        <select class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2 dark:text-white outline-none" name="categories" id="categories" v-model="novel.status">
                             <option value="" disabled selected>Status</option>
                             <option value="published">Published</option>
                             <option value="unpublished">Unpublished</option>
@@ -31,7 +31,7 @@
             </div>
             <div class="my-4">
                 <p class="my-2">Categories</p>
-                <select class="bg-novelize-darklight text-gray-900 text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none" name="categories" id="categories" @change="onCategorySelect">
+                <select class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none" name="categories" id="categories" @change="onCategorySelect">
                     <option value="" disabled selected>Choisir des categorie</option>
                     <option v-for="(category, index ) in categories" :key="index" :value="category.id">{{ category.name }} </option>
                 </select>
