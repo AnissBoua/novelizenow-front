@@ -128,7 +128,11 @@ async function register() {
       }
     })
     .catch((error) => {
-      errors.value.general = "Registration failed";
+      if (error.response.status === 409) {
+        errors.value.general = error.response.data.message;
+      } else {
+        errors.value.general = "Registration failed";
+      }
     });
 }
 

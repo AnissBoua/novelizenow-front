@@ -15,12 +15,18 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-axios.interceptors.response.use( response => {
-  return response;
-}, async (error) => {
-  if (error.response.status === 401 && error.response.config.url != "/token/refresh" ) {
-    const authStore = useAuth();
-    authStore.verifyToken();
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (
+      error.response.status === 401 &&
+      error.response.config.url != "/token/refresh"
+    ) {
+      const authStore = useAuth();
+      authStore.verifyToken();
+    }
+    return Promise.reject(error);
   }
-  return error;
-});
+);
