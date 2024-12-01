@@ -39,7 +39,8 @@ export const useAuth = defineStore("auth", {
         }
   
         // use result.code if does not work
-        if (result.status === 401 ) {
+        console.log(result.response);
+        if (result.response.status === 401 ) {
           this.setToken(null);
           localStorage.removeItem("token");
           localStorage.removeItem("refresh_token");
