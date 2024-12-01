@@ -3,23 +3,23 @@
     <div class="px-4 lg:px-0">
       <h3 class="text-lg font-semibold my-4">Popular categories</h3>
       <div class="my-4">
-        <div class="flex flex-wrap gap-4" v-if="selectedCategory">
-          <div v-for="(category, i) in categories" :key="i" @click="selectCategory(category)" class="cursor-pointer">
-            <Category :name="category.name" :color="selectedCategory.id == category.id ? 'text-novelize-primary' : 'text-white'" />
+        <div class="flex flex-wrap gap-4" v-if="category">
+          <div v-for="(cat, i) in categories" :key="i" @click="selectCategory(cat)" class="cursor-pointer">
+            <Category :name="cat.name" :color="category.id == cat.id ? 'text-novelize-primary' : 'text-white'" />
           </div>
         </div>
       </div>
     </div>
-    <BigPopular v-if="currentNovel" :novel="currentNovel" :author="currentNovel.author" :category="{id: selectedCategory.id, name: selectedCategory.name}" />
+    <BigPopular v-if="novel" :novel="novel" :author="novel.author" :category="{id: category.id, name: category.name}" />
     <div v-if="novels" class="my-4 lg:my-6">
       <div class="hidden lg:grid grid-cols-3 gap-4">
-        <div v-for="(novel, index) in novels.filter((nov) => nov.id != currentNovel.id)" :key="index" @click="selectNovel(novel)">
-          <NovelCard class="" :novel="novel" />
+        <div v-for="(nov, index) in novels.filter((nov) => nov.id != novel.id)" :key="index" @click="selectNovel(nov)">
+          <NovelCard class="" :novel="nov" />
         </div>
       </div>
       <div class="flex justify-center gap-4 lg:hidden">
-        <div v-for="(novel, index) in novels" :key="index">
-          <div :class="'w-10 h-3 rounded-full ' + (novel.id == currentNovel.id ? 'bg-novelize-primary' : ' bg-novelize-darklight')" >
+        <div v-for="(nov, index) in novels" :key="index">
+          <div :class="'w-10 h-3 rounded-full ' + (nov.id == novel.id ? 'bg-novelize-primary' : ' bg-novelize-darklight')" >
           </div>
         </div>
       </div>
@@ -31,100 +31,46 @@
 import Category from "../Category.vue";
 import NovelCard from "../NovelCard.vue";
 import BigPopular from "../BigPopular.vue";
-import { ref, watch } from "vue";
-
-
-const BACK_URL = import.meta.env.VITE_BACK_URL;
+import { onMounted, ref, watch } from "vue";
 
 const props = defineProps({
   categories: {
     type: Array,
-    default: [
-      {
-        id: 3,
-        name: "Romance",
-        novel: [
-          {
-            title: "The last of us",
-            slug: "the-last-of-us",
-            cover: {
-                filename: "2.jpg",
-                filepath: "2.jpg",
-            },
-            banner: {
-                filename: "2.jpg",
-                filepath: "2.jpg",
-            },
-            resume:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-            categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
-            likesCount: 1,
-            commentsCount: 16,
-            quantiteChapitre: 12,
-            author: {
-              id: 1,
-              name: "Anisse",
-              lastname: "Boua",
-              username: "AnisseBoua",
-              avatar: "1.jpg",
-              novelCount: 2,
-            },
-          },
-          {
-            title: "The last of us",
-            slug: "the-last-of-us",
-            cover: {
-                filename: "2.jpg",
-                filepath: "2.jpg",
-            },
-            banner: {
-                filename: "2.jpg",
-                filepath: "2.jpg",
-            },
-            resume:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-            categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
-            likesCount: 1,
-            commentsCount: 16,
-            quantiteChapitre: 12,
-            author: {
-              id: 1,
-              name: "Anisse",
-              lastname: "Boua",
-              username: "AnisseBoua",
-              avatar: "1.jpg",
-              novelCount: 2,
-            },
-          },
-        ]
-      },
-    ]
+    default: []
   },
 });
 
-const selectedCategory = ref(null);
+const category = ref(null);
 const novels = ref(null);
-const currentNovel = ref(null);
+const novel = ref(null);
+
+onMounted(() => {
+  if (props.categories.length > 0) {
+    category.value = props.categories[0];
+    novel.value = category.value.novel[0];
+    novels.value = category.value.novel;
+  }
+});
 
 watch(() => props.categories, (categories) => {
-  selectedCategory.value = categories[0];
-  currentNovel.value = selectedCategory.value.novel[0];
-  novels.value = selectedCategory.value.novel
+  category.value = categories[0];
+  novel.value = category.value.novel[0];
+  novels.value = category.value.novel
 });
 
 function selectCategory(category) {
-  selectedCategory.value = category;
-  novels.value = selectedCategory.value.novel
-  currentNovel.value = novels.value[0];
+  category.value = category;
+  novels.value = category.value.novel;
+  novel.value = novels.value[0];
 }
 
 function selectNovel(novel) {
-  currentNovel.value = novel;
+  novel.value = novel;
 }
 
 setInterval(() => {
-  const currentSlide = novels.value.indexOf(currentNovel.value);
-  currentNovel.value = novels.value[(currentSlide + 1) % novels.value.length];
+  const currentSlide = novels.value.indexOf(novel.value);
+  novel.value = novels.value[(currentSlide + 1) % novels.value.length];
 }, 5000);
 
 </script>

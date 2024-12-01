@@ -48,60 +48,7 @@ const BACK_URL = import.meta.env.VITE_BACK_URL;
 const props = defineProps({
   novels: {
     type: Array,
-    default: [
-          {
-            title: "The last of us",
-            slug: "the-last-of-us",
-            cover: {
-                filename: "2.jpg",
-                filepath: "2.jpg",
-            },
-            banner: {
-                filename: "2.jpg",
-                filepath: "imgs/2.jpg",
-            },
-            resume:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-            categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
-            likesCount: 1,
-            commentsCount: 16,
-            quantiteChapitre: 12,
-            author: {
-              id: 1,
-              name: "Anisse",
-              lastname: "Boua",
-              username: "AnisseBoua",
-              avatar: "imgs/1.jpg",
-              novelCount: 2,
-            },
-          },
-          {
-            title: "blabla",
-            slug: "the-last-of-us",
-            cover: {
-                filename: "2.jpg",
-                filepath: "2.jpg",
-            },
-            banner: {
-                filename: "1.jpg",
-                filepath: "imgs/1.jpg",
-            },
-            resume:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas fuga asperiores, amet laborum dolorem molestiae architecto quasi tempora obcaecati consequuntur repellendus vitae sed modi, cum maxime doloremque libero expedita quibusdam.",
-            categories: [{id: 1, name: "hello"}, {id: 2, name: "action"}, {id: 3, name: "fantasy"}],
-            likesCount: 1,
-            commentsCount: 16,
-            quantiteChapitre: 12,
-            author: {
-              id: 1,
-              name: "Anisse",
-              lastname: "Boua",
-              username: "AnisseBoua",
-              avatar: "imgs/2.jpg",
-              novelCount: 2,
-            },
-          },
-        ]
+    default: []
   }
 })
 
