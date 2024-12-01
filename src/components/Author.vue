@@ -11,7 +11,7 @@
       <div>
         <p>{{ author.name + " " + author.lastname }}</p>
       </div>
-      <IconText :text="author.novelCount + ' novels'" color="bg-novelize-primary" />
+      <IconText :text="author.novelCount + ( author.novelCount > 1 ? ' novels' : ' novel')" color="bg-novelize-primary" />
     </div>
   </div>
 </template>

@@ -1,38 +1,12 @@
-<script setup>
-import Carousel from '../components/Carousel.vue';
-import Chapter from '../components/Chapter.vue'
-import Novel from '../components/Novel.vue';
-import NovelReduced from '../components/NovelReduced.vue';
-import PopularCategories from '../components/home/PopularCategories.vue';
-import NewReleases from '../components/home/NewReleases.vue';
-
-import axios from 'axios';
-import { ref } from 'vue';
-
-const carousel = ref([]);
-const chapters = ref([]);
-const categories = ref([]);
-const newNovels = ref([]);
-
-axios.get('/home').then(res => {
-  carousel.value = res.data.carousel;
-  chapters.value = res.data.chapters;
-  categories.value = res.data.categories;
-  newNovels.value = res.data.newNovels;
-})
-
-
-</script>
-
 <template>
   <main>
-    <Carousel :novels="carousel"/>
+    <Carousel :novels="store.carousel"/>
     <div class="flex justify-between md:px-8">
       <div class="w-full lg:w-10/12 mx-auto">
         <div class="bg-neutral-800 md:rounded-lg py-2 px-4 md:my-8">
           <h3 class="text-xl font-semibold my-2">Last chapters</h3>
           <div class="grid grid-cols-1 gap-4 my-4">
-            <div class="" v-for="(chapter, i) in chapters" :key="i">
+            <div class="" v-for="(chapter, i) in store.chapters" :key="i">
               <Chapter :title="chapter.title" :novel="chapter.novel" :author="chapter.novel.author" />
             </div>
           </div>
@@ -40,10 +14,24 @@ axios.get('/home').then(res => {
       </div>
     </div>
     <div class="w-full lg:w-11/12 lg:px-8 mx-auto">
-      <PopularCategories :categories="categories" />
+      <PopularCategories :categories="store.categories" />
     </div>
     <div class=" px-4 mx-auto">
-      <NewReleases :novels="newNovels" />
+      <NewReleases :novels="store.newNovels" />
     </div>
   </main>
 </template>
+
+<script setup>
+import Carousel from '../components/Carousel.vue';
+import Chapter from '../components/Chapter.vue'
+import PopularCategories from '../components/home/PopularCategories.vue';
+import NewReleases from '../components/home/NewReleases.vue';
+import { useHomeStore } from '../stores/counter';
+
+const store = useHomeStore();
+const minutes = 10; // refresh every 10 minutes, in case there are new chapters or novels
+setInterval(() => {
+  store.refresh(minutes);
+}, minutes * 60 * 1000);
+</script>
