@@ -7,16 +7,30 @@
         <div>
             <p class="text-xs text-zinc-300">@ 2023 All rights reverved</p>
         </div>
-        <div class="flex gap-4 text-2xl">
-            <a href="https://www.facebook.com/">
-                <i class="fa-brands fa-facebook"></i>
-            </a>
-            <a href="https://www.instagram.com/">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a href="https://www.twitter.com/">
-                <i class="fa-brands fa-twitter"></i>
-            </a>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+            <div class="flex items-center space-x-2">
+                <p class="text-zinc-300">Hugo tran</p>
+                <div class="flex gap-4 text-2xl">
+                    <a href="https://github.com/Tran-Hugo">
+                        <i class="fa-brands fa-github hover:text-novelize-primarylight"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/hugo-tran-202569233/">
+                        <i class="fa-brands fa-linkedin hover:text-novelize-primarylight"></i>
+                    </a>
+                </div>
+            </div>
+            <p class="hidden sm:block"> | </p>
+            <div class="flex items-center space-x-2">
+                <p class="text-zinc-300">Anisse Bouainbi</p>
+                <div class="flex gap-4 text-2xl">
+                    <a href="https://github.com/AnissBoua">
+                        <i class="fa-brands fa-github hover:text-novelize-primarylight"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/anisse-bouainbi/">
+                        <i class="fa-brands fa-linkedin hover:text-novelize-primarylight"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </template>

@@ -11,7 +11,7 @@
         <div class="absolute w-full h-full bg-novelize-dark/50"></div>
         <div class="absolute w-full h-full bg-darklayer opacity-20"></div>
         <div
-          class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-center gap-4 md:gap-10 h-full py-5 md:py-20 px-10 sm:px-20"
+          class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-center gap-4 md:gap-10 max-w-site h-full py-5 md:py-20 px-2 mx-auto"
         >
           <img
             v-if="novel.cover?.filepath"
@@ -19,7 +19,7 @@
             :src="novel.cover ? BACK_URL + novel.cover.filepath : ''"
             alt="novel cover"
           />
-          <div v-if="novel" :class="'flex flex-col'">
+          <div v-if="novel" :class="'flex flex-1 flex-col'">
             <div>
               <div
                 class="flex flex-col md:flex-row md:items-center justify-between"
@@ -56,7 +56,7 @@
                     </p>
                     <i
                       class="fa-heart text-2xl md:text-3xl cursor-pointer"
-                      :class="{ 'fa-regular': !isLiked, 'fa-solid': isLiked }"
+                      :class="{ 'fa-regular': !isLiked, 'fa-solid text-red-600': isLiked }"
                       @click="like"
                     ></i>
                   </div>
@@ -90,7 +90,7 @@
         </div>
       </div>
     </div>
-    <div class="lg:w-3/5 mx-2 md:mx-10 lg:mx-auto my-4">
+    <div class="max-w-site px-2 md:px-20 mx-auto my-4">
       <div class="flex justify-between items-center my-4">
         <h1 class="text-2xl py-2">Chapters</h1>
         <div v-if="novel.isAuthor">
@@ -157,7 +157,7 @@
         </div>
       </div>
     </div>
-    <div class="lg:w-2/3 mx-4 lg:mx-auto my-4">
+    <div class="max-w-site px-2 mx-auto my-4">
       <h1 class="text-base font-semibold">Comments</h1>
       <div v-if="token">
         <div class="flex items-center gap-4 my-4">
