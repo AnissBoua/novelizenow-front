@@ -179,7 +179,6 @@ function onCategorySelect(event) {
   if (category && !novel.value.categories.includes(category)) {
     novel.value.categories.push(category);
   }
-  console.log(novel.value);
 }
 
 function removeCategory(index) {

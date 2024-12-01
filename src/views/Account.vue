@@ -49,7 +49,6 @@ const userNovels = ref(null);
 axios.get('user/novels')
 .then((res) => {
     userNovels.value = res.data
-    console.log(res.data);
 })
 .catch((e) => console.error(e))
 

@@ -190,7 +190,6 @@ export default {
           content: `Your chapter has been added successfully.`,
           emits:"redirectToNewChapter"
         };
-        console.log(response);
         this.newChapterId = response.data.id; 
       } catch (e) {
         console.warn(e);

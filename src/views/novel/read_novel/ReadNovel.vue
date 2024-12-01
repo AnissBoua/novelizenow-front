@@ -440,7 +440,6 @@ const answer = ref("");
 if (novelSlug.value) {
   axios.get(`novel/bySlug/${novelSlug.value}`).then((res) => {
     novel.value = res.data;
-    console.log(novel.value);
 
     if (novel.value.status === "unpublished" && !novel.value.isAuthor) {
       router.push({ name: "home" });
@@ -449,7 +448,6 @@ if (novelSlug.value) {
       likesCount.value = res.data.count;
       if (token) {
         axios.get(`like/liked/${novel.value.id}`).then((res) => {
-          console.log(res.data.liked);
           isLiked.value = res.data.liked;
           likesUpdated.value = true;
         });
@@ -490,7 +488,6 @@ function buyNovel() {
     .post("order/", data)
     .then((res) => {
       isOrderSuccess.value = true;
-      console.log(res.data);
     })
     .catch((err) => {
       console.log(err);

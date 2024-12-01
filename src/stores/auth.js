@@ -38,8 +38,6 @@ export const useAuth = defineStore("auth", {
           window.location.reload();
         }
   
-        console.log(result.data.code);
-        console.log(result.code);
         // use result.code if does not work
         if (result.status === 401 ) {
           this.setToken(null);
@@ -150,7 +148,6 @@ export const useAuth = defineStore("auth", {
     async getAvatar() {
       await axios.get("/user/avatar").then((res) => {
         this.user.avatar = res.data.avatar;
-        console.log(this.user);
       }).catch((err) => {
         console.log(err);
       });

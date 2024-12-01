@@ -27,7 +27,6 @@ axios.get(import.meta.env.VITE_BACK_URL + 'api/offer')
         offers.value.forEach((offer) => {
             offer.selected = false;
         });
-        console.log(offers.value);
     })
     .catch((e) => console.error(e));
 
@@ -47,10 +46,8 @@ const initializePayment = () => {
         axios.post(import.meta.env.VITE_BACK_URL + 'api/stripe/payment-intent', {
             offerId: selectedOffer.id
         }).then(async (res) => {
-            console.log(res.data);
             const clientSecret = res.data.client_secret;
             paymentElement = await stripeStore.initElements(clientSecret);
-            console.log(paymentElement);
             paymentElement.mount('#payment-element');
         })
         .catch((e) => console.error(e));

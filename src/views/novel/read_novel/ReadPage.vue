@@ -59,7 +59,6 @@ export default {
             try {
                 let response = await axios.get(`chapter_pages/${this.chapterId}`);
                 this.data = response.data;
-                console.log(this.data);
             }
             catch (error) {
                 console.log(error);
@@ -78,7 +77,6 @@ export default {
                 case "next":
                     if (this.pageParam < this.data.pages.length) {
                         let nextPage = ++this.pageParam;
-                        console.log(`param : ${this.pageParam}`);
                         this.$router.push({ name: "read_page", params: { chapter_id: this.chapterId }, query: { page: nextPage } });
                     }
                     break;

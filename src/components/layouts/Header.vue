@@ -136,7 +136,6 @@ function toggleSearch(){
 function searchNovels(){
     axios.get('/novel/search?search=' + search.value )
     .then(res => {
-        console.log(res.data);
         novels.value = res.data;
     })
     .catch(err => {

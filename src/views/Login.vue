@@ -49,7 +49,6 @@ async function login() {
     password: password.value,
   };
   await axios.post("login", data).then((response) => {
-    console.log(response);
     if (response.status === 200 && response.data.token) {
       authStore.setToken(response.data.token);
       localStorage.setItem("refresh_token", response.data.refresh_token);
