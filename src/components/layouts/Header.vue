@@ -44,7 +44,7 @@
             </div>
             <div v-else class="w-full h-full" @click="toggleMenuUser" >
                 <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
-                    <p>{{user.username.slice(0, 1).toUpperCase()}}</p>
+                    <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
                 </div>
             </div>
             <div v-if="menuUser" class="absolute right-0 w-60 h-40 z-50 bg-novelize-darklight rounded-lg my-2">
