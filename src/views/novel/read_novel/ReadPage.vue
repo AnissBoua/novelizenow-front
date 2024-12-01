@@ -9,8 +9,12 @@
                 </RouterLink>
             </div>
             <div class="flex justify-end w-3/12 h-full items-center">
-                <div :class="'rounded-full border border-2 border-novelize-primary w-8 h-8 flex justify-center items-center mr-1 cursor-pointer' + (pageParam == 1 && ' border-novelize-primary/50 ') " @click="changePage('previous')"><i :class="'fa-solid fa-angle-left fa-xl text-white ' + (pageParam == 1 && ' text-zinc-400 ')" ></i></div>
-                <div class="rounded-full border border-2 border-novelize-primary w-8 h-8 flex justify-center items-center ml-1 cursor-pointer" @click="changePage('next')"><i class="fa-solid fa-angle-right fa-xl text-white" ></i></div>
+                <div class="rounded-full border border-2 border-novelize-primary w-8 h-8 flex justify-center items-center mr-1 cursor-pointer" :class="{'border-neutral-700': page == 1}" @click="changePage('previous')">
+                    <i class="fa-solid fa-angle-left fa-xl text-white" :class="{'text-neutral-700': page == 1}"></i>
+                </div>
+                <div class="rounded-full border border-2 border-novelize-primary w-8 h-8 flex justify-center items-center ml-1 cursor-pointer" :class="{'border-neutral-700': page == data.pages.length}" @click="changePage('next')">
+                    <i class="fa-solid fa-angle-right fa-xl text-white" :class="{'text-neutral-700': page == data.pages.length}" ></i>
+                </div>
             </div>
         </div>
         <div class="border border-zinc-700"></div>
@@ -37,21 +41,18 @@ import { RouterLink } from "vue-router";
 export default {
     data() {
         return {
-            chapterId: this.$route.params.chapter_id,
-            pageParam: this.$route.query.page,
             novelSlug: this.$route.params.slug,
+            chapterId: this.$route.params.chapter_id,
+            page: 0,
             data: null,
             error: "",
         };
     },
     async mounted() {
+        document.addEventListener("keydown", this.SHORTCUT_KEYs);
         await this.getPages();
-        if (!this.pageParam) {
-            this.$router.push({ name: "read_page", params: { chapter_id: this.chapterId }, query: { page: 1 } });
-            this.injectPage(this.pageParam);
-        }
-        if (this.data && this.pageParam) {
-            this.injectPage(this.pageParam);
+        if (!this.page) {
+            this.changePath(1);
         }
     },
     methods: {
@@ -65,31 +66,44 @@ export default {
                 this.error = error.response.data.detail;
             }
         },
-        injectPage(page) {
+        injectPage() {
             let htmlContainer = document.querySelector(".read_page_body_html");
             let order = this.data.pageState;
-            let selectedPage = order[page - 1];
-            const myPage = this.data.pages.find(obj => obj.id === selectedPage);
-            htmlContainer.innerHTML = myPage.html;
+            let selectedPage = order[this.page - 1];
+            const doc = this.data.pages.find(obj => obj.id === selectedPage);
+            htmlContainer.innerHTML = doc.html;
         },
         changePage(type) {
             switch (type) {
                 case "next":
-                    if (this.pageParam < this.data.pages.length) {
-                        let nextPage = ++this.pageParam;
-                        this.$router.push({ name: "read_page", params: { chapter_id: this.chapterId }, query: { page: nextPage } });
-                    }
+                    if (this.page < this.data.pages.length) this.changePath(++this.page);
                     break;
                 case "previous":
-                    if (this.pageParam > 1) {
-                        let previousPage = --this.pageParam;
-                        this.$router.push({ name: "read_page", params: { chapter_id: this.chapterId }, query: { page: previousPage } });
-                    }
+                    if (this.page > 1) this.changePath(--this.page);
                     break;
                 default:
                     console.warn(`unknown case: ${type}`);
             }
-        }
+        },
+        changePath(page) {
+            const url = this.$router.resolve({
+                name: "read_page",
+                params: { chapter_id: this.chapterId },
+                query: { page }
+            }).href;
+
+            window.history.replaceState(null, '', url);
+            this.page = page;
+            this.injectPage();
+        },
+        SHORTCUT_KEYs: function (event) {
+            if (event.keyCode === 37) {
+                this.changePage('previous');
+            }
+            if (event.keyCode === 39) {
+                this.changePage('next');
+            }
+        },
     },
     components: { RouterLink }
 }
