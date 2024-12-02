@@ -11,7 +11,7 @@ export const useHomeStore = defineStore('home', () => {
 
   async function get() {
     try {
-      await axios.get('/home').then(res => {
+      await axios.get('/home/').then(res => {
         carousel.value = res.data.carousel;
         chapters.value = res.data.chapters;
         categories.value = res.data.categories;

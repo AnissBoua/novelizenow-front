@@ -40,7 +40,7 @@
         </div>
         <div v-if="token && user" class="relative w-12 h-12 rounded" >
             <div v-if="user.avatar" class="w-full h-full" @click="toggleMenuUser">
-                <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar" alt="avatar">
+                <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar" alt="avatar" fetchpriority="high">
             </div>
             <div v-else class="w-full h-full" @click="toggleMenuUser" >
                 <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">

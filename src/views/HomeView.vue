@@ -27,7 +27,7 @@ import Carousel from '../components/Carousel.vue';
 import Chapter from '../components/Chapter.vue'
 import PopularCategories from '../components/home/PopularCategories.vue';
 import NewReleases from '../components/home/NewReleases.vue';
-import { useHomeStore } from '../stores/counter';
+import { useHomeStore } from '../stores/home';
 
 const store = useHomeStore();
 const minutes = 10; // refresh every 10 minutes, in case there are new chapters or novels
