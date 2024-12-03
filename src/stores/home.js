@@ -30,7 +30,6 @@ export const useHomeStore = defineStore('home', () => {
     chapters, 
     categories,
     newNovels,
-    get,
-    refresh
+    get
   }
 })
