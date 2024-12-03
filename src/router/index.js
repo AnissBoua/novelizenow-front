@@ -82,7 +82,6 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuth();
   if (authStore.getToken && !authStore.getUser) {
     await authStore.me();
-    await authStore.getAvatar();
   }
   
   if (noLogedPath.includes(to.path)) {

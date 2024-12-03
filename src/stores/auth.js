@@ -146,12 +146,5 @@ export const useAuth = defineStore("auth", {
         console.log(err);
       });
     },
-    async getAvatar() {
-      await axios.get("/user/avatar").then((res) => {
-        this.user.avatar = res.data.avatar;
-      }).catch((err) => {
-        console.log(err);
-      });
-    },
   },
 });
