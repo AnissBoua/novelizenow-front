@@ -30,8 +30,4 @@ import NewReleases from '../components/home/NewReleases.vue';
 import { useHomeStore } from '../stores/home';
 
 const store = useHomeStore();
-const minutes = 10; // refresh every 10 minutes, in case there are new chapters or novels
-setInterval(() => {
-  store.refresh(minutes);
-}, minutes * 60 * 1000);
 </script>

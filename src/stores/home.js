@@ -7,7 +7,6 @@ export const useHomeStore = defineStore('home', () => {
   const chapters = ref([]);
   const categories = ref([]);
   const newNovels = ref([]);
-  const lastfetch = ref(null);
 
   async function get() {
     try {
@@ -20,14 +19,6 @@ export const useHomeStore = defineStore('home', () => {
     } catch (error) {
       console.error(error);      
     }
-  }
-
-  function refresh(minutes) {
-    if (lastfetch.value && new Date() - lastfetch.value < minutes * 60 * 1000) {
-      return;
-    }
-    lastfetch.value = new Date();
-    get();
   }
 
   if (!carousel.value.length) {
