@@ -71,6 +71,16 @@ const router = createRouter({
           path: "coins",
           name: "shop_coins",
           component: () => import("../views/boutique/Shop.vue"),
+        },
+        {
+          path: "success",
+          name: "shop_success",
+          component: () => import("../views/boutique/Success.vue"),
+        },
+        {
+          path: "cancel",
+          name: "shop_cancel",
+          component: () => import("../views/boutique/Cancel.vue"),
         }
       ]
     },
