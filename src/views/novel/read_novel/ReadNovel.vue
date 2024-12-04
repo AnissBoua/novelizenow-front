@@ -165,7 +165,7 @@
             <img
               v-if="user.avatar"
               class="w-full h-full rounded-full object-cover object-top"
-              :src="BACK_URL + user.avatar"
+              :src="BACK_URL + user.avatar.filepath"
               alt="user avatar"
             />
             <div
@@ -274,7 +274,7 @@
                         <img
                           v-if="user.avatar"
                           class="w-full h-full rounded-full object-cover object-top"
-                          :src="BACK_URL + user.avatar"
+                          :src="BACK_URL + user.avatar.filepath"
                           alt="user avatar"
                         />
                         <div
