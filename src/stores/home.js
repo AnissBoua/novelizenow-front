@@ -14,6 +14,7 @@ export const useHomeStore = defineStore('home', () => {
         carousel.value = res.data.carousel;
         chapters.value = res.data.chapters;
 
+        console.log(res.data);
         console.log(res.data.categories);
         categories.value = res.data.categories;
         newNovels.value = res.data.newNovels;
