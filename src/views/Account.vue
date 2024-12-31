@@ -28,8 +28,8 @@
                 </div>
             </div>
         </div>
-        <div v-if="deletingNovelId" class="absolute top-0 w-full h-full bg-novelize-dark/70">
-            <div class="w-6/12 bg-novelize-darklight rounded-lg mx-auto py-2">
+        <div v-if="deletingNovelId" class="absolute top-0 w-full h-full bg-novelize-dark/70 px-4">
+            <div class="w-full md:w-6/12 bg-novelize-darklight rounded-lg mx-auto py-2">
                 <div class="flex justify-center items-center py-2 px-4">
                     <h4 class="text-xl">Supprimer le roman</h4>
                 </div>

@@ -1,6 +1,6 @@
 <template>
   <header class="relative flex justify-between items-center py-4 lg:py-6 px-4 sm:px-6 lg:px-20">
-    <div class="flex items-center gap-10 w-8/12 lg:w-9/12">
+    <div class="flex items-center gap-10 flex-1">
         <div>
             <RouterLink to="/">
                 <img class="hidden lg:block lg:w-32" src="@/assets/logos/novelizelogo.svg" alt="logo" >
@@ -32,37 +32,41 @@
         <div class="md:hidden" @click="toggleSearchMobile">
             <i class="fa-solid fa-magnifying-glass text-white"></i>
         </div>
-        <div>
-            <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Tableau de bord</RouterLink>
-        </div>
-        <div v-if="token" class="flex items-center gap-2">
-            <RouterLink :to="{name: 'shop_coins'}"  >
-                <CoinIcon />
-            </RouterLink>
-            <p>{{coins}}</p>
-        </div>
-
-        <div v-if="token && user" class="relative w-12 h-12 rounded" >
-            <div v-if="user.avatar" class="w-full h-full cursor-pointer" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar" fetchpriority="high">
+        <div class="hidden md:flex items-center gap-4">
+            <div v-if="token && user">
+                <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Tableau de bord</RouterLink>
             </div>
-            <div v-else class="w-full h-full cursor-pointer" @click="toggleMenuUser" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
-                    <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
+            <div v-if="token" class="flex items-center gap-2">
+                <RouterLink :to="{name: 'shop_coins'}" >
+                    <CoinIcon />
+                </RouterLink>
+                <p>{{coins}}</p>
+            </div>
+            <div v-if="token && user" class="relative w-12 h-12 rounded" >
+                <div v-if="user.avatar" class="w-full h-full cursor-pointer" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+                    <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar" fetchpriority="high">
+                </div>
+                <div v-else class="w-full h-full cursor-pointer" @click="toggleMenuUser" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+                    <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
+                        <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
+                    </div>
+                </div>
+                <div v-if="menuUser" class="absolute right-0 w-60 z-50 bg-novelize-darklight rounded-lg my-2" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+                    <div class="my-3 px-4">
+                        <p class="font-semibold"> {{ user.name }} {{ user.lastname }} </p>
+                        <p class="text-zinc-300">{{ user.email }}</p>
+                    </div>
+                    <div class="w-full h-[1px] bg-zinc-600"></div>
+                    <div>
+                        <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Se déconnecter</p>
+                    </div>
                 </div>
             </div>
-            <div v-if="menuUser" class="absolute right-0 w-60 z-50 bg-novelize-darklight rounded-lg my-2" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                <div class="my-3 px-4">
-                    <p class="font-semibold"> {{ user.name }} {{ user.lastname }} </p>
-                    <p class="text-zinc-300">{{ user.email }}</p>
-                </div>
-                <div class="w-full h-[1px] bg-zinc-600"></div>
-                <div>
-                    <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Se déconnecter</p>
-                </div>
-            </div>
         </div>
-        <div v-else class="flex items-center">
+        <div v-if="token && user" class="relative md:hidden" @click="mobilemenu = !mobilemenu">
+            <i class="fa-solid fa-user text-white"></i>
+        </div>
+        <div v-if="!token || !user" class="flex items-center">
             <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" :to="{name: 'login'}">Se connecter</RouterLink>
             <Button
                 class="hidden md:block mx-4"
@@ -72,7 +76,42 @@
             >
             </Button>
         </div>
-
+    </div>
+    <div v-if="mobilemenu && token && user" class="relative block md:hidden">
+        <div class="absolute right-0 z-50 h-max rounded" >
+            <div class="bg-novelize-darklight rounded-lg my-2" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+                <div class="flex items-center px-4">
+                    <div v-if="user.avatar" class="w-12 h-12 cursor-pointer" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+                        <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar" fetchpriority="high">
+                    </div>
+                    <div v-else class="w-full h-full cursor-pointer" @click="toggleMenuUser" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+                        <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
+                            <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
+                        </div>
+                    </div>
+                    <div class="my-3 px-4">
+                        <p class="font-semibold"> {{ user.name }} {{ user.lastname }} </p>
+                        <p class="text-zinc-300">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="w-full h-[1px] bg-zinc-600"></div>
+                <div class="flex flex-col gap-2 py-2 px-4">
+                    <div>
+                        <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Tableau de bord</RouterLink>
+                    </div>
+                    <div v-if="token" class="flex items-center gap-2">
+                        <RouterLink :to="{name: 'shop_coins'}" >
+                            <CoinIcon />
+                        </RouterLink>
+                        <p>{{coins}}</p>
+                    </div>
+                </div>
+                <div class="w-full h-[1px] bg-zinc-600"></div>
+                <div>
+                    <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Se déconnecter</p>
+                </div>
+            </div>
+        </div>
     </div>
     <div v-if="isSearchMobile" class="md:hidden absolute left-0 z-50 flex items-center justify-between w-full h-full bg-novelize-dark px-6">
         <input v-model="search" class="w-10/12 bg-novelize-darklight !text-white rounded-lg px-4 py-2" type="text" placeholder="Search" @input="debounceSeach" @focusin="toggleSearch" @focusout="toggleSearch">
@@ -146,6 +185,7 @@ function searchNovels(){
 const menuUser = ref(false);
 const isSearchMobile = ref(false);
 const timer = ref(false);
+const mobilemenu = ref(false);
 
 
 function toggleMenuUser() {
