@@ -5,11 +5,11 @@ import Footer from "./components/layouts/Footer.vue";
 </script>
 
 <template>
-  <body class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col">
     <Header></Header>
     <main class="flex-1">
       <RouterView :key="$route.fullPath"/>
     </main>
     <Footer></Footer>
-  </body>
+  </div>
 </template>

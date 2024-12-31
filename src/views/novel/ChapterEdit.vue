@@ -1,17 +1,17 @@
 <template>
   <div class="chapter_edit w-full">
-    <alert-modal @acceptWarning="onWarningAccepted" />
-      <div v-if="chapterId && data" class="path_container">
-        <!-- <router-link
-          :to="{
-            name: 'read_novel',
-            params: { novel_slug: data.novel.slug},
-          }"
-          > > Novel
-        </router-link> -->
-      </div>
     <div class="flex justify-center">
-      <form class="w-full sm:w-8/12 grid grid-cols-12 px-4 sm:px-0"> 
+      <form class="w-full sm:w-8/12 flex flex-col overflow-y-auto px-4 sm:px-0"> 
+        <div v-if="chapterId && data" class="path_container">
+          <router-link
+            :to="{
+              name: 'read_novel',
+              params: { novel_slug: data.novel.slug},
+            }"
+            class="!text-novelize-primarylight hover:!text-novelize-primary"
+            > Retour au roman
+          </router-link>
+        </div>
         <div class="flex justify-between items-center col-span-12 my-4">
           <h3>Formulaire de chapitre</h3>
           <div class="flex gap-4">
@@ -280,16 +280,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.chapter_edit {
-  height: 93dvh;
-}
-
-.drag_board_container {
-  min-height: 50vh;
-  border: 1px solid;
-  border-radius: 0.5rem;
-  padding: 1rem;
-}
-</style>
