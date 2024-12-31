@@ -1,5 +1,6 @@
 <template>
   <div class="chapter_edit w-full">
+    <alert-modal @acceptWarning="onWarningAccepted" />
     <div class="flex justify-center">
       <form class="w-full sm:w-8/12 flex flex-col overflow-y-auto px-4 sm:px-0"> 
         <div v-if="chapterId && data" class="path_container">
@@ -219,6 +220,8 @@ export default {
       };
     },
     openAlertDeletePage(data) {
+      console.log(data);
+      
       this.alertModalState = {
         open: true,
         title: "Supprimer la page",
