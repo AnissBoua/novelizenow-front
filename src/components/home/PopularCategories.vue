@@ -41,7 +41,7 @@ const props = defineProps({
 });
 
 const category = ref(null);
-const novels = ref(null);
+const novels = ref([]);
 const novel = ref(null);
 
 onMounted(() => {
