@@ -69,6 +69,8 @@ function selectNovel(novel) {
 }
 
 setInterval(() => {
+  console.log(novels.value);
+  
   const currentSlide = novels.value.indexOf(novel.value);
   novel.value = novels.value[(currentSlide + 1) % novels.value.length];
 }, 5000);
