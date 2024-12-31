@@ -358,6 +358,14 @@
             Buying Novel
           </h3>
           <div v-if="!isOrderSuccess">
+            <div v-if="orderError.length > 0" class="flex bg-red-500/20 text-red-500 rounded-md overflow-hidden space-x-4 my-4">
+              <div class="w-1 bg-red-500"></div>
+              <div class="py-2">
+                <p class="">
+                  {{ orderError }}
+                </p>
+              </div>
+            </div>
             <p class="text-center text-zinc-300 py-4">
               Are you sure you want to buy this novel ?
             </p>
@@ -385,9 +393,6 @@
               <Button v-if="!isBuying" label="Buy" @click="buyNovel"></Button>
               <Button v-else label="Buying..."> </Button>
             </div>
-            <p v-if="orderError.length > 0" class="mt-4 mb-2">
-              {{ orderError }}
-            </p>
           </div>
           <div v-if="isOrderSuccess">
             <p class="text-center text-zinc-300 py-2">
@@ -491,7 +496,7 @@ function buyNovel() {
     })
     .catch((err) => {
       console.log(err);
-      orderError.value = err.response.data.detail;
+      orderError.value = err.response.data.message;
       isBuying.value = false;
     });
 }
