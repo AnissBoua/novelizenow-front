@@ -2,7 +2,7 @@
   <header class="relative flex justify-between items-center py-4 lg:py-6 px-4 sm:px-6 lg:px-20">
     <div class="flex items-center gap-10 w-8/12 lg:w-9/12">
         <div>
-            <RouterLink to="/" @click="closeMenuUser">
+            <RouterLink to="/">
                 <img class="hidden lg:block lg:w-32" src="@/assets/logos/novelizelogo.svg" alt="logo" >
                 <img class="block lg:hidden lg:w-32" src="@/assets/logos/LogoMobile.png" alt="logo" >
             </RouterLink>
@@ -32,29 +32,29 @@
         <div class="md:hidden" @click="toggleSearchMobile">
             <i class="fa-solid fa-magnifying-glass text-white"></i>
         </div>
+        <div>
+            <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Dashboard</RouterLink>
+        </div>
         <div v-if="token" class="flex items-center gap-2">
             <RouterLink :to="{name: 'shop_coins'}"  >
                 <CoinIcon />
             </RouterLink>
             <p>{{coins}}</p>
         </div>
+
         <div v-if="token && user" class="relative w-12 h-12 rounded" >
-            <div v-if="user.avatar" class="w-full h-full" @click="toggleMenuUser">
+            <div v-if="user.avatar" class="w-full h-full cursor-pointer" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
                 <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar" fetchpriority="high">
             </div>
-            <div v-else class="w-full h-full" @click="toggleMenuUser" >
+            <div v-else class="w-full h-full cursor-pointer" @click="toggleMenuUser" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
                 <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
                     <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
                 </div>
             </div>
-            <div v-if="menuUser" class="absolute right-0 w-60 h-40 z-50 bg-novelize-darklight rounded-lg my-2">
+            <div v-if="menuUser" class="absolute right-0 w-60 z-50 bg-novelize-darklight rounded-lg my-2" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
                 <div class="my-3 px-4">
                     <p class="font-semibold"> {{ user.name }} {{ user.lastname }} </p>
                     <p class="text-zinc-300">{{ user.email }}</p>
-                </div>
-                <div class="w-full h-[1px] bg-zinc-600"></div>
-                <div>
-                    <RouterLink class="block hover:bg-novelize-primary/20 py-3 px-4" :to="{name: 'account'}" @click="closeMenuUser">My Account</RouterLink>
                 </div>
                 <div class="w-full h-[1px] bg-zinc-600"></div>
                 <div>
@@ -145,14 +145,18 @@ function searchNovels(){
 
 const menuUser = ref(false);
 const isSearchMobile = ref(false);
+const timer = ref(false);
 
 
-function toggleMenuUser(){
-    menuUser.value = !menuUser.value;
+function toggleMenuUser() {
+    menuUser.value = true;
+    clearTimeout(timer.value);
 }
 
 function closeMenuUser(){
-    menuUser.value = false;
+    timer.value = setTimeout(() => {
+        menuUser.value = false;
+    }, 300);
 }
 
 function toggleSearchMobile(){
