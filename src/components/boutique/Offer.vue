@@ -6,7 +6,7 @@
         <div class="w-full h-0.5 bg-zinc-700"></div>
         <div class="flex flex-col items-center w-full text-center my-4">
             <CoinIcon />
-            <p class="text-2xl font-semibold m-2">{{ offer.coins }} Coins</p>
+            <p class="text-2xl font-semibold m-2">{{ offer.coins }} Pièces</p>
         </div>
         <div class="flex justify-center rounded-b-lg py-2 bg-gradient-to-r from-novelize-secondarylight to-novelize-secondary  cursor-pointer" @click="initializeCheckout(offer.id)">
             <p class="text-base">{{ offer.price.toFixed(2) }} &euro;</p>

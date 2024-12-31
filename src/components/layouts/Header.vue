@@ -33,7 +33,7 @@
             <i class="fa-solid fa-magnifying-glass text-white"></i>
         </div>
         <div>
-            <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Dashboard</RouterLink>
+            <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Tableau de bord</RouterLink>
         </div>
         <div v-if="token" class="flex items-center gap-2">
             <RouterLink :to="{name: 'shop_coins'}"  >
@@ -58,12 +58,12 @@
                 </div>
                 <div class="w-full h-[1px] bg-zinc-600"></div>
                 <div>
-                    <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Logout</p>
+                    <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Se déconnecter</p>
                 </div>
             </div>
         </div>
         <div v-else class="flex items-center">
-            <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" :to="{name: 'login'}">Login</RouterLink>
+            <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" :to="{name: 'login'}">Se connecter</RouterLink>
             <Button
                 class="hidden md:block mx-4"
                 label="Sign up"
