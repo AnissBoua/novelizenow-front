@@ -2,6 +2,14 @@
     <section class="relative">
         <div class="mx-4 md:mx-20">
             <div class="relative">
+                <div class="flex bg-blue-500/20 text-blue-500 rounded-md overflow-hidden space-x-4 my-4">
+                    <div class="w-1 bg-blue-500"></div>
+                    <div class="py-2">
+                        <p class="font-bold">Créer et gérer vos romans depuis le tableau de bord</p>
+                        <p>Depuis votre tableau de bord, vous avez la possibilité de créer vos romans en quelques étapes simples. Une fois votre roman créé, vous pouvez ensuite ajouter différents chapitres et pages pour le structurer comme vous le souhaitez.</p>
+                        <p>Les utilisateurs pourront acheter votre roman, mais aussi le commenter et le liker pour interagir avec votre contenu. Cela vous permet de gérer et de suivre l'engagement des lecteurs directement depuis la plateforme.</p>
+                    </div>
+                </div>
                 <div class="flex items-center justify-between">
                     <h4>Mes romans</h4>
                     <Button 
