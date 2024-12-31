@@ -13,6 +13,8 @@ export const useHomeStore = defineStore('home', () => {
       await axios.get('/home/').then(res => {
         carousel.value = res.data.carousel;
         chapters.value = res.data.chapters;
+
+        console.log(res.data.categories);
         categories.value = res.data.categories;
         newNovels.value = res.data.newNovels;
       })
