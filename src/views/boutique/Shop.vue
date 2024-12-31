@@ -1,6 +1,6 @@
 <template>
     <div class="sm:w-10/12 lg:w-1/2 mx-4 sm:mx-auto">
-        <h2 class="text-xl font-semibold my-6">Recharge</h2>
+        <h2 class="text-xl font-semibold my-6">Recharger</h2>
         <div class="grid sm:grid-cols-2 gap-6">
             <Offer v-for="(offerObj, index) in offers" :key="index"
             :offer="offerObj"

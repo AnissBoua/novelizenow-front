@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="px-4 lg:px-0">
-      <h3 class="text-lg font-semibold my-4">Popular categories</h3>
+      <h3 class="text-lg font-semibold my-4">Catégories populaires</h3>
       <div class="my-4">
         <div class="flex flex-wrap gap-4" v-if="category">
           <div v-for="(cat, i) in categories" :key="i" @click="selectCategory(cat)" class="cursor-pointer">

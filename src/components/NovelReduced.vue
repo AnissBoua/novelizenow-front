@@ -62,7 +62,7 @@ function numberFormatter(number) {
           <Category :name="novel.categories[0].name" color="text-novelize-secondary" />
           <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="block max-h-14 overflow-y-hidden hover:text-novelize-primary text-lg font-semibold">{{ novel.title }}</RouterLink>
           <div class="flex items-center gap-6">
-            <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' Chapters'" />
+            <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' Chapitres'" />
             <div class="flex items-center gap-4">
               <IconText :text="novel.likesCount" color="text-novelize-secondary" icon="fa-solid fa-heart" />
               <IconText :text="novel.commentsCount" color="text-novelize-secondary" icon="fa-solid fa-comments"/>

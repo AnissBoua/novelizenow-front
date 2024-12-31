@@ -1,23 +1,23 @@
 <template>
   <div class="w-10/12 lg:w-6/12 mx-auto my-10">
     <h3 class="font-bold text-lg">
-      {{ novelId ? "Update a novel" : "Create novel" }}
+      {{ novelId ? "Modifier le roman" : "Créer un roman" }}
     </h3>
     <div class="flex flex-col gap-4 my-4">
       <TextInput
         v-model="novel.title"
-        placeholder="Titre Novel"
+        placeholder="Titre roman"
         id="titre"
         @blur="checkTitleLenght"
       />
       <TextAreaInput
         v-model="novel.resume"
-        placeholder="Résumé du Novel"
+        placeholder="Résumé du roman"
         id="resume"
       />
       <div class="flex flex-col sm:flex-row items-center gap-4">
         <div class="w-full sm:w-1/2">
-          <label for="price">Price</label>
+          <label for="price">Prix</label>
           <NumberInput
             v-model="novel.price"
             placeholder="Prix"
@@ -26,22 +26,22 @@
           />
         </div>
         <div class="w-full sm:w-1/2">
-          <label for="status">Status</label>
+          <label for="status">Statut</label>
           <select
             class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2 dark:text-white outline-none"
             name="categories"
             id="categories"
             v-model="novel.status"
           >
-            <option value="" disabled selected>Status</option>
-            <option value="published">Published</option>
-            <option value="unpublished">Unpublished</option>
+            <option value="" disabled selected>Statut</option>
+            <option value="published">Publié</option>
+            <option value="unpublished">Non publié</option>
           </select>
         </div>
       </div>
       <div class="grid sm:grid-cols-2 gap-8">
         <div class="flex flex-col">
-          <label class="my-2" for="cover">Cover :</label>
+          <label class="my-2" for="cover">Couverture :</label>
           <FileUpload
             :fileUpload="(event) => onFileUpload(event, 'cover')"
             placeholder="Cover"
@@ -49,7 +49,7 @@
           />
         </div>
         <div class="flex flex-col">
-          <label class="my-2" for="banner">Banner :</label>
+          <label class="my-2" for="banner">Bannière :</label>
           <FileUpload
             :fileUpload="(event) => onFileUpload(event, 'banner')"
             placeholder="Banner"
@@ -58,14 +58,14 @@
         </div>
       </div>
       <div class="my-4">
-        <p class="my-2">Categories</p>
+        <p class="my-2">Catégories</p>
         <select
           class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none"
           name="categories"
           id="categories"
           @change="onCategorySelect"
         >
-          <option value="" disabled selected>Choisir des categorie</option>
+          <option value="" disabled selected>Choisir des catégories</option>
           <option
             v-for="(category, index) in categories"
             :key="index"
@@ -88,12 +88,17 @@
           </div>
         </div>
       </div>
-      <div v-if="errors.general">
-        <p>{{ errors.general }}</p>
+      <div v-if="errors.general" class="flex bg-red-500/20 text-red-500 rounded-md overflow-hidden space-x-4 my-4">
+        <div class="w-1 bg-red-500"></div>
+        <div class="py-2">
+          <p class="">
+            {{ errors.general }}
+          </p>
+        </div>
       </div>
       <div class="self-end my-4">
         <Button
-          :label="'Create!'"
+          :label="'Créer'"
           @click="novelId ? updateNovel() : createNovel()"
         ></Button>
       </div>
@@ -187,11 +192,11 @@ function removeCategory(index) {
 
 function createNovel() {
   if (novel.value.title === "") {
-    errors.value.general = "Title is required";
+    errors.value.general = "Le titre est requis";
     return;
   }
   if (novel.value.price < 1) {
-    errors.value.general = "Price must be greater than 0";
+    errors.value.general = "Le prix doit être supérieur à 0";
     return;
   }
   const formData = new FormData();
@@ -237,7 +242,7 @@ function updateNovel() {
 
 function checkTitleLenght() {
   if (novel.value.title.length < 1) {
-    errors.value.general = "Title must be at least 1 character long";
+    errors.value.general = "Le titre doit comporter au moins 1 caractère";
   } else {
     errors.value.general = null;
   }
@@ -245,7 +250,7 @@ function checkTitleLenght() {
 
 function checkPrice() {
   if (novel.value.price < 0) {
-    errors.value.general = "Price must be positive";
+    errors.value.general = "Le prix doit être positif";
   } else {
     errors.value.general = null;
   }

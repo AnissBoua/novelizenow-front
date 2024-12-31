@@ -73,7 +73,7 @@
                     v-if="novel.resume.length > 300"
                     class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer font-semibold"
                     @click="showMoreResume"
-                    >{{ showMore ? "Show less" : "Show more" }}</span
+                    >{{ showMore ? "Afficher moins" : "Afficher plus" }}</span
                   >
                 </p>
               </div>
@@ -84,7 +84,7 @@
               class="flex justify-end md:block my-4"
               v-if="!isOrderSuccess && !novel.userBought && !novel.isAuthor"
             >
-              <Button label="Buy Now" @click="buyModal"></Button>
+              <Button label="Acheter" @click="buyModal"></Button>
             </div>
           </div>
         </div>
@@ -92,10 +92,10 @@
     </div>
     <div class="max-w-site px-2 md:px-20 mx-auto my-4">
       <div class="flex justify-between items-center my-4">
-        <h1 class="text-2xl py-2">Chapters</h1>
+        <h1 class="text-2xl py-2">Chapitres</h1>
         <div v-if="novel.isAuthor">
           <Button
-            label="Add chapter"
+            label="Ajouter un chapitre"
             :to="{ name: 'chapter_edit', params: { novel_id: novel.id } }"
           ></Button>
         </div>
@@ -143,7 +143,7 @@
             </div>
             <div v-else class="flex justify-between items-center">
               <p>
-                Chapter {{ index + 1 }} :
+                Chapitre {{ index + 1 }} :
                 <span
                   class="text-sm text-white font-semibold hover:text-zinc-500"
                   >{{ chapter.title }}
@@ -158,7 +158,7 @@
       </div>
     </div>
     <div class="max-w-site px-2 mx-auto my-4">
-      <h1 class="text-base font-semibold">Comments</h1>
+      <h1 class="text-base font-semibold">Commentaires</h1>
       <div v-if="token">
         <div class="flex items-center gap-4 my-4">
           <div class="w-12 h-12">
@@ -189,13 +189,13 @@
                 type="text"
                 name="comment"
                 id="comment"
-                placeholder="Write a comment..."
+                placeholder="Écrire un commentaire..."
               />
             </div>
           </div>
         </div>
         <div class="flex justify-end">
-          <Button label="Send" @click="sendComment"></Button>
+          <Button label="Envoyer" @click="sendComment"></Button>
         </div>
       </div>
       <div>
@@ -241,7 +241,7 @@
                 v-if="comment.content.length > 50"
                 class="md:hidden text-zinc-300 my-2"
               >
-                {{ comment.showMore ? "Show less" : "Show more" }}
+                {{ comment.showMore ? "Afficher moins" : "Afficher plus" }}
               </p>
             </div>
             <div>
@@ -251,7 +251,7 @@
                   class="text-novelize-primary hover:text-novelize-primarylight cursor-pointer"
                   @click="toggleAnswerInput(index)"
                 >
-                  Answer
+                  Répondre
                 </p>
                 <div
                   v-if="comment.comments && comment.comments.length > 0"
@@ -261,7 +261,7 @@
                   <p
                     class="text-novelize-primarylight hover:text-novelize-primary"
                   >
-                    {{ comment.comments.length }} Answers
+                    {{ comment.comments.length }} Réponses
                   </p>
                   <i class="fa-sharp fa-solid fa-chevron-down"></i>
                 </div>
@@ -296,11 +296,11 @@
                         type="text"
                         name="answer"
                         id="answer"
-                        placeholder="Write an answer..."
+                        placeholder="Écrire une réponse..."
                       />
                     </div>
                     <div class="flex justify-end">
-                      <Button label="Send" @click="sendAnswer(index)"></Button>
+                      <Button label="Envoyer" @click="sendAnswer(index)"></Button>
                     </div>
                   </div>
                 </div>
@@ -355,7 +355,7 @@
           <h3
             class="text-lg text-center text-novelize-primary font-semibold border-b border-b-zinc-500 py-2"
           >
-            Buying Novel
+            Acheter le roman
           </h3>
           <div v-if="!isOrderSuccess">
             <div v-if="orderError.length > 0" class="flex bg-red-500/20 text-red-500 rounded-md overflow-hidden space-x-4 my-4">
@@ -367,7 +367,7 @@
               </div>
             </div>
             <p class="text-center text-zinc-300 py-4">
-              Are you sure you want to buy this novel ?
+              Êtes-vous sûr de vouloir acheter ce roman ?
             </p>
             <div class="flex justify-between">
               <div>
@@ -385,21 +385,21 @@
             </div>
             <div class="flex justify-center items-center my-2">
               <Button
-                label="Cancel"
+                label="Annuler"
                 @click="toggleBuyingModal = false"
                 class="mr-2"
                 bgColor="bg-red-700"
               ></Button>
-              <Button v-if="!isBuying" label="Buy" @click="buyNovel"></Button>
-              <Button v-else label="Buying..."> </Button>
+              <Button v-if="!isBuying" label="Acheter" @click="buyNovel"></Button>
+              <Button v-else label="Achat en cours..."> </Button>
             </div>
           </div>
           <div v-if="isOrderSuccess">
             <p class="text-center text-zinc-300 py-2">
-              Your order has been successfully processed !
+              Votre commande a été traitée avec succès !
             </p>
             <div class="flex justify-center items-center">
-              <Button label="Ok" @click="toggleBuyingModal = false"></Button>
+              <Button label="Fermer" @click="toggleBuyingModal = false"></Button>
             </div>
           </div>
         </div>

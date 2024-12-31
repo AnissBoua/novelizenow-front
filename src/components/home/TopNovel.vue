@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold">Top Novels</h3>
+            <h3 class="text-lg font-semibold">Romans populaires</h3>
             <div class="basis-2/6 flex justify-between text-novelize-primary cursor-pointer">
-                <p class="hover:text-novelize-primarylight">Day</p>
-                <p class="hover:text-novelize-primarylight">Month</p>
-                <p class="hover:text-novelize-primarylight">Year</p>
+                <p class="hover:text-novelize-primarylight">Jour</p>
+                <p class="hover:text-novelize-primarylight">Mois</p>
+                <p class="hover:text-novelize-primarylight">Année</p>
             </div>
         </div>
         <div>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3 class="text-lg font-semibold my-4">New releases</h3>
+        <h3 class="text-lg font-semibold my-4">Nouveautés</h3>
         <div id="reduced_novels" class="flex gap-5 overflow-x-scroll">
             <div v-for="(novel, index) in novels" :key="index" class="w-96">
               <NovelReduced :novel="novel" />

@@ -27,10 +27,10 @@
     </div>
     <div v-if="error" class="h-full w-full flex flex-col items-center bg-novelize-darklight py-20">
         <h1 class="text-2xl text-center">Oopsy</h1>
-        <p class="text-center">{{ error }} you can <router-link class="!text-novelize-primary hover:!text-novelize-primarylight" :to="{
+        <p class="text-center">{{ error }} Vous pouvez <router-link class="!text-novelize-primary hover:!text-novelize-primarylight" :to="{
             name: 'read_novel',
             params: { novel_slug: novelSlug },
-        }">buy it here</router-link></p>
+        }">l'acheter ici</router-link></p>
     </div>
   </div>
 </template>

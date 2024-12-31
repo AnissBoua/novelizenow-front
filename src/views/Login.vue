@@ -1,6 +1,6 @@
 <template>
   <section class="flex flex-col gap-4 w-10/12 md:w-6/12 mx-auto my-40">
-    <h3>Login</h3>
+    <h3>Se connecter</h3>
     <div class="flex flex-col md:flex-row w-full gap-4 my-4">
       <div class="w-full md:w-1/2">
         <TextInput v-model="email" placeholder="Email" id="email" type="email" />
@@ -19,8 +19,8 @@
     </div>
     <div>
       <p>
-        You don't have an account ?
-        <RouterLink class="hover:text-novelize-primary" to="/register">Sign up here</RouterLink>
+        Vous n'avez pas de compte ?
+        <RouterLink class="hover:text-novelize-primary" to="/register">Inscrivez-vous ici</RouterLink>
       </p>
     </div>
   </section>
@@ -57,7 +57,7 @@ async function login() {
   })
   .catch((error) => {
     if (error.response.status) {
-      errors.value.general = "Wrong email or password";
+      errors.value.general = "Email ou mot de passe incorrect";
     }
   });
 }

@@ -13,41 +13,41 @@
     <div class="flex justify-center">
       <form class="w-full sm:w-8/12 grid grid-cols-12 px-4 sm:px-0"> 
         <div class="flex justify-between items-center col-span-12 my-4">
-          <h3>Chapter form</h3>
+          <h3>Formulaire de chapitre</h3>
           <div class="flex gap-4">
             <Button
               v-if="chapterId"
               @click.prevent="onSubmit('update')"
               class="col-start-11 mt-2"
-              label="Update"
+              label="Mettre à jour"
             />
             <Button
               v-else
               @click.prevent="onSubmit('add')"
               class="col-start-11 mt-2"
-              label="Add"
+              label="Ajouter"
             />
             <Button
               v-if="chapterId"
               @click.prevent="onSubmit('delete')"
               class="col-start-12 mt-2"
               bgColor="bg-red-600"
-              label="Delete"
+              label="Supprimer"
             />
           </div>
         </div>
         <div class="col-start-1 col-end-13 row-start-2">
-          <TextInput v-model="title" placeholder="Chapter title" id="titre" />
+          <TextInput v-model="title" placeholder="Titre du chapitre" id="titre" />
         </div>
         <div v-if="chapterId" class="col-span-12 font-semibold my-4">
-          <p>Status</p>
+          <p>Statut</p>
           <select class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none my-1" name="categories" id="categories" @change="onSelectionChange">
-              <option value="In progess" >In progess</option>
-              <option value="Published">Published</option>
+              <option value="In progess" >En cours</option>
+              <option value="Published">Publié</option>
           </select>
         </div>
         <div class="flex justify-end col-span-12">
-          <RouterLink v-if="chapterId" :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId } }" class="!text-novelize-primary hover:!text-novelize-primarylight ">New page </RouterLink>
+          <RouterLink v-if="chapterId" :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId } }" class="!text-novelize-primary hover:!text-novelize-primarylight ">Nouvelle page</RouterLink>
         </div>
         <draggable
           class="col-start-1 col-end-13 mt-3"
@@ -186,8 +186,8 @@ export default {
         let response = await axios.post("chapter", obj);
         this.alertModalState = {
           open: true,
-          title: "Chapter added",
-          content: `Your chapter has been added successfully.`,
+          title: "Chapitre ajouté",
+          content: `Votre chapitre a été ajouté avec succès.`,
           emits:"redirectToNewChapter"
         };
         this.newChapterId = response.data.id; 
@@ -203,8 +203,8 @@ export default {
         await axios.put(`chapter/${this.data.id}`, obj);
         this.alertModalState = {
           open: true,
-          title: "Chapter updated",
-          content: `Your chapter has been updated successfully.`,
+          title: "Chapitre mis à jour",
+          content: `Votre chapitre a été mis à jour avec succès.`,
         };
       } catch (e) {
         console.warn(e);
@@ -213,16 +213,16 @@ export default {
     openAlertDeleteChapter() {
       this.alertModalState = {
         open: true,
-        title: "Delete chapter",
-        content: `Can you confirm that you want to delete the chapter : ${this.data.title} with all the pages ?`,
+        title: "Supprimer le chapitre",
+        content: `Pouvez-vous confirmer que vous souhaitez supprimer le chapitre : ${this.data.title} avec toutes les pages ?`,
         emits: "deleteChapter",
       };
     },
     openAlertDeletePage(data) {
       this.alertModalState = {
         open: true,
-        title: "Delete page",
-        content: `Can you confirm that you want to delete the page with the intern id : ${data} ?`,
+        title: "Supprimer la page",
+        content: `Pouvez-vous confirmer que vous souhaitez supprimer la page avec l'ID interne : ${data} ?`,
         emits: "delete",
       };
       this.pageToDelete = data;
@@ -256,8 +256,8 @@ export default {
           this.pageToDelete = null;
           this.alertModalState = {
             open: true,
-            title: "Page deleted",
-            content: `Your page has been deleted successfully.`,
+            title: "Page supprimée",
+            content: `Votre page a été supprimée avec succès.`,
           };
         } catch (e) {
           console.warn(e);
@@ -269,8 +269,8 @@ export default {
         await axios.delete(`chapter/${this.chapterId}`);
         this.alertModalState = {
             open: true,
-            title: "Chapter deleted",
-            content: `Your chapter has been deleted successfully.`,
+            title: "Chapitre supprimé",
+            content: `Votre chapitre a été supprimé avec succès.`,
             emits: "redirectToNovel",
         };
       } catch (error) {

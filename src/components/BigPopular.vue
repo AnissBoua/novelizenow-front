@@ -61,7 +61,7 @@ const props = defineProps({
         <Category :name="category.name" color="text-novelize-secondary" />
         <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="text-lg hover:text-novelize-primary">{{ novel.title }}</RouterLink>
         <div class="flex items-center gap-10">
-            <IconText :text="novel.quantiteChapitre + ' chapters'" color="bg-novelize-primary"/>
+            <IconText :text="novel.quantiteChapitre + ' Chapitres'" color="bg-novelize-primary"/>
             <div class="flex gap-4">
                 <IconText :text="novel.likesCount" color="text-novelize-secondary" icon="fa-solid fa-heart" />
                 <IconText :text="novel.commentsCount" color="text-novelize-secondary" icon="fa-solid fa-comments"/>

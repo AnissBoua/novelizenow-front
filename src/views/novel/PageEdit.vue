@@ -8,7 +8,7 @@
             name: 'chapter_edit',
             params: { novel_id: novelId, chapter_id: chapterId },
           }"
-          > Go back
+          > Retour
         </router-link>
       </div>
       
@@ -30,8 +30,8 @@
         >/3000
       </p>
       <div class="flex justify-end col-start-8 col-end-8">
-        <button v-if="!pageId" @click="submitPage('add')" class="text-novelize-primary hover:text-novelize-primarylight">Add page</button>
-        <button v-else @click="submitPage('update')" class="text-novelize-primary hover:text-novelize-primarylight">Update page</button>
+        <button v-if="!pageId" @click="submitPage('add')" class="text-novelize-primary hover:text-novelize-primarylight">Ajouter une page</button>
+        <button v-else @click="submitPage('update')" class="text-novelize-primary hover:text-novelize-primarylight">Mettre à jour la page</button>
       </div>
     </div>
   </div>
@@ -145,8 +145,8 @@ export default {
         await axios.post("page", obj);
         this.alertModalState = {
           open: true,
-          title: "Page added",
-          content: `Your page has been added successfully.`,
+          title: "Page ajoutée",
+          content: `Votre page a été ajoutée avec succès.`,
         };
       } catch (e) {
         console.warn(e);
@@ -157,8 +157,8 @@ export default {
         await axios.put(`page/${this.data.id}`, obj);
         this.alertModalState = {
           open: true,
-          title: "Page updated",
-          content: `Your page has been updated successfully.`,
+          title: "Page mise à jour",
+          content: `Votre page a été mise à jour avec succès.`,
         };
       } catch (e) {
         console.warn(e);

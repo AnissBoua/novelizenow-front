@@ -17,7 +17,7 @@
         <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}"
          class="text-lg hover:text-novelize-primary">{{ title }}</RouterLink>
         <div class="flex items-center gap-2">
-          <IconText color="bg-novelize-secondary" :text="novel.title + ' - ' + novel.quantiteChapitre + ' chapters'" />
+          <IconText color="bg-novelize-secondary" :text="novel.title + ' - ' + novel.quantiteChapitre + ' Chapitres'" />
         </div>
       </div>
       <div class="flex justify-between">

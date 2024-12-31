@@ -9,7 +9,7 @@
 
         </div>
         <div class="hidden md:block relative w-8/12">
-            <input v-model="search" class="w-full bg-novelize-darklight !text-white rounded-lg  px-4 py-2" type="text" placeholder="Search" @input="debounceSeach" @focusin="toggleSearch" @focusout="toggleSearch">
+            <input v-model="search" class="w-full bg-novelize-darklight !text-white rounded-lg  px-4 py-2" type="text" placeholder="Rechercher" @input="debounceSeach" @focusin="toggleSearch" @focusout="toggleSearch">
             <div v-if="isSearching && novels && novels.length > 0" class="absolute z-50 flex flex-col gap-2 w-full bg-novelize-darklight rounded-lg my-2 p-1 lg:p-4">
                 <div v-for="(novel, index) in novels" :key="index" class="flex gap-4">
                     <img class="w-16 h-24 object-cover rounded-lg" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
@@ -19,7 +19,7 @@
                         </div>
                         <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="hover:text-novelize-primary">{{ novel.title }}</RouterLink>
                         <div class="flex gap-2 text-xs">
-                            <IconText :text="novel.quantiteChapitre + ' chapters'" color="bg-novelize-primary"/>
+                            <IconText :text="novel.quantiteChapitre + ' Chapitres'" color="bg-novelize-primary"/>
                             <p>-</p>
                             <p class="text-zinc-300">{{ novel.author.name }} {{ novel.author.lastname }}</p>
                         </div>
@@ -86,7 +86,7 @@
                     </div>
                     <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="hover:text-novelize-primary">{{ novel.title }}</RouterLink>
                     <div class="flex gap-2 text-xs">
-                        <IconText :text="novel.quantiteChapitre + ' chapters'" color="bg-novelize-primary"/>
+                        <IconText :text="novel.quantiteChapitre + ' Chapitres'" color="bg-novelize-primary"/>
                         <p>-</p>
                         <p class="text-zinc-300">{{ novel.author.name }} {{ novel.author.lastname }}</p>
                     </div>

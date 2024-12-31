@@ -14,7 +14,7 @@
            <p class="text-zinc-300 my-1"> {{ novel.resume }} </p>
            <div class="flex gap-4">
              <div class="flex items-center gap-2">
-               <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' chapters'" />
+               <IconText color="bg-novelize-primary" :text="novel.quantiteChapitre + ' Chapitres'" />
              </div>
              <div class="flex justify-between">
                <IconText :text="novel.likesCount" icon="fa-solid fa-heart" color="text-novelize-secondary"/>
@@ -29,8 +29,8 @@
             <router-link :to="{
                 name: 'author_novel',
                 params: { id: novel.id },
-            }" class="!text-novelize-secondary">Edit</router-link>
-            <p class="!text-red-500" @click="onDelete(novel.id)">Delete</p>
+            }" class="!text-novelize-secondary">Modifier</router-link>
+            <p class="!text-red-500 cursor-pointer" @click="onDelete(novel.id)">Supprimer</p>
           </div>
         </div>
       </div>

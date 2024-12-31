@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3 class="text-lg">Authors of the week</h3>
+        <h3 class="text-lg">Auteurs de la semaine</h3>
         <div class="my-6" v-for="(author, index) in authors" :key="index">
             <Author 
             :img="author.img"

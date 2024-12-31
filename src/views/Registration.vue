@@ -1,12 +1,12 @@
 <template>
   <section class="flex flex-col gap-4 w-10/12 md:w-1/2 mx-auto my-20">
-    <h3>Register</h3>
+    <h3>S'inscrire</h3>
     <div class="flex flex-col md:flex-row w-full gap-4">
       <div class="w-full md:w-1/2">
-        <TextInput v-model="name" placeholder="Name" id="name" />
+        <TextInput v-model="name" placeholder="Prénom" id="name" />
       </div>
       <div class="w-full md:w-1/2">
-        <TextInput v-model="lastname" placeholder="Lastname" id="lastname" />
+        <TextInput v-model="lastname" placeholder="Nom de famille" id="lastname" />
       </div>
     </div>
     <div>
@@ -23,7 +23,7 @@
       <div class="w-full md:w-1/2">
         <TextInput
           v-model="password"
-          placeholder="Password"
+          placeholder="Mot de passe"
           id="password"
           type="password"
           @blur="checkPasswordFormat"
@@ -32,7 +32,7 @@
       <div class="w-full md:w-1/2">
         <TextInput
           v-model="confirmpassword"
-          placeholder="Confirm password"
+          placeholder="Confirmer le mot de passe"
           id="confirmPassword"
           type="password"
           @blur="checkConfirmPassword"
@@ -63,9 +63,9 @@
     </div>
     <div>
       <p>
-        You already have an account ?
+        Vous avez déjà un compte ?
         <RouterLink class="hover:text-novelize-primary" to="/login"
-          >Login</RouterLink
+          >Se connecter</RouterLink
         >
       </p>
     </div>
@@ -101,11 +101,11 @@ function onFileUpload(event) {
 async function register() {
   if (compliantPassword.value === false) {
     errors.value.general =
-      "Password must contain at least 8 characters, 1 uppercase letter and 1 lowercase letter";
+      "Le mot de passe doit contenir au moins 8 caractères, 1 lettre majuscule et 1 lettre minuscule.";
     return;
   }
   if (password.value !== confirmpassword.value) {
-    errors.value.general = "Passwords do not match";
+    errors.value.general = "Les mots de passe ne correspondent pas.";
     return;
   }
   const formData = new FormData();
@@ -131,7 +131,7 @@ async function register() {
       if (error.response.status === 409) {
         errors.value.general = error.response.data.message;
       } else {
-        errors.value.general = "Registration failed";
+        errors.value.general = "L'inscription a échoué.";
       }
     });
 }
@@ -140,7 +140,7 @@ function checkPasswordFormat() {
   let regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.{8,})^";
   if (!password.value.match(regex)) {
     errors.value.general =
-      "Password must contain at least 8 characters, 1 uppercase letter and 1 lowercase letter";
+      "Le mot de passe doit contenir au moins 8 caractères, 1 lettre majuscule et 1 lettre minuscule.";
     compliantPassword.value = false;
   } else {
     errors.value.general = null;
@@ -150,7 +150,7 @@ function checkPasswordFormat() {
 
 function checkConfirmPassword() {
   if (password.value !== confirmpassword.value) {
-    errors.value.general = "Passwords do not match";
+    errors.value.general = "Les mots de passe ne correspondent pas.";
   } else {
     errors.value.general = null;
   }

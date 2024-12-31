@@ -11,7 +11,7 @@
         <Category v-if="novel.categories" :name="novel.categories[0].name" color="text-novelize-secondary" />
         <RouterLink :to="{name: 'read_novel', params: { novel_slug: novel.slug }}" class="text-lg hover:text-novelize-primary">{{ novel.title }}</RouterLink>
         <div class="flex gap-10">
-          <IconText :text="novel.quantiteChapitre + ' chapters'" color="bg-novelize-primary"/>
+          <IconText :text="novel.quantiteChapitre + ' Chapitres'" color="bg-novelize-primary"/>
           <div class="flex gap-4">
             <IconText :text="novel.likesCount" icon="fa-solid fa-heart" color="text-novelize-secondary"/>
             <IconText :text="novel.commentsCount" icon="fa-solid fa-comment" color="text-novelize-secondary"/>

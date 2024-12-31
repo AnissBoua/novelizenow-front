@@ -4,8 +4,8 @@
             <div class="w-1.5 bg-red-500">
             </div>
             <div class="py-2 text-red-100">
-                <p class="text-md font-semibold">Cancel</p>
-                <p>Your purchase has been cancelled., you'll be redirected to the home page in a few seconds.</p>
+                <p class="text-md font-semibold">Annuler</p>
+                <p>Votre achat a été annulé. Vous serez redirigé vers la page d'accueil dans quelques secondes.</p>
                 <h1></h1>
             </div>
         </div>
