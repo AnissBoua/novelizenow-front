@@ -58,8 +58,8 @@ watch(() => props.categories, (categories) => {
   novels.value = category.value.novel
 });
 
-function selectCategory(category) {
-  category.value = category;
+function selectCategory(cat) {
+  category.value = cat;
   novels.value = category.value.novel;
   novel.value = novels.value[0];
 }
