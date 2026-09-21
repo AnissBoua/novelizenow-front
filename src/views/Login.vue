@@ -1,49 +1,55 @@
 <template>
-  <section class="flex flex-col gap-4 w-10/12 md:w-6/12 mx-auto my-40">
-    <h3>Se connecter</h3>
-    <div class="flex flex-col md:flex-row w-full gap-4 my-4">
-      <div class="w-full md:w-1/2">
-        <TextInput v-model="email" placeholder="Email" id="email" type="email" />
-      </div>
-      <div class="w-full md:w-1/2">
-        <TextInput v-model="password" placeholder="Password" id="password" type="password" />
-      </div>
-    </div>
-    <div class="">
-      <div v-if="errors.general">
-        <p>{{ errors.general }}</p>
-      </div>
-      <div class="w-full flex justify-end">
-        <Button type="button" label="Login" @click="login()"></Button>
-      </div>
-    </div>
-    <div>
-      <p>
-        Vous n'avez pas de compte ?
-        <RouterLink class="hover:text-novelize-primary" to="/register">Inscrivez-vous ici</RouterLink>
-      </p>
-    </div>
-  </section>
+  <AuthLayout mode="login" :error="errors.general" :submitting="submitting" @submit="login">
+    <label class="block">
+      <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Adresse e-mail</span>
+      <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+        <iconify-icon icon="tabler:mail" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
+        <input v-model="email" type="email" placeholder="vous@exemple.com" autocomplete="email" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
+      </span>
+    </label>
+
+    <label class="block">
+      <span class="flex items-baseline justify-between gap-3 mb-1.5">
+        <span class="text-sm font-semibold text-[#333B54]">Mot de passe</span>
+        <a href="#" title="Bientôt disponible" class="text-[13px] font-semibold text-[#3138B0]">Mot de passe oublié ?</a>
+      </span>
+      <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+        <iconify-icon icon="tabler:lock" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
+        <input v-model="password" :type="reveal ? 'text' : 'password'" placeholder="Votre mot de passe" autocomplete="current-password" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
+        <button type="button" class="flex-none border-0 bg-transparent p-1 text-[#6B7286] hover:text-[#3138B0]" @click="reveal = !reveal">
+          <iconify-icon :icon="reveal ? 'tabler:eye-off' : 'tabler:eye'" class="text-[18px]"></iconify-icon>
+        </button>
+      </span>
+    </label>
+
+    <label class="flex items-center gap-2.5 text-sm text-[#3A4260]">
+      <input v-model="remember" type="checkbox" class="w-[17px] h-[17px] accent-[#3138B0] flex-none">
+      Rester connecté sur cet appareil
+    </label>
+  </AuthLayout>
 </template>
 
 <script setup>
-import { RouterLink } from "vue-router";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { useAuth } from "@/stores/auth.js";
-import TextInput from '@/components/inputs/TextInput.vue';
-
+import AuthLayout from "@/components/auth/AuthLayout.vue";
 
 const router = useRouter();
 const authStore = useAuth();
 const email = ref("");
 const password = ref("");
+const remember = ref(false);
+const reveal = ref(false);
+const submitting = ref(false);
 const errors = ref({
   general: null,
 });
 
 async function login() {
+  submitting.value = true;
+  errors.value.general = null;
   const data = {
     email: email.value,
     password: password.value,
@@ -59,6 +65,9 @@ async function login() {
     if (error.response.status) {
       errors.value.general = "Email ou mot de passe incorrect";
     }
+  })
+  .finally(() => {
+    submitting.value = false;
   });
 }
 </script>

@@ -9,21 +9,25 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      meta: { theme: "light" },
     },
     {
       path: "/register",
       name: "register",
       component: () => import("../views/Registration.vue"),
+      meta: { hideChrome: true, theme: "light" },
     },
     {
       path: "/login",
       name: "login",
       component: () => import("../views/Login.vue"),
+      meta: { hideChrome: true, theme: "light" },
     },
     {
       path: "/account",
       name: "account",
       component: () => import("../views/Account.vue"),
+      meta: { theme: "light" },
     },
     {
       path: "/novel/",
@@ -32,14 +36,13 @@ const router = createRouter({
           path: ":novel_slug",
           name: "read_novel",
           component: () => import("../views/novel/read_novel/ReadNovel.vue"),
+          meta: { theme: "light" },
         },
         {
           path: ":slug/:chapter_id",
           name: "read_page",
           component: () => import("../views/novel/read_novel/ReadPage.vue"),
-          query: {
-            page: '1'
-          }
+          meta: { hideChrome: true, theme: "light" },
         },
       ]
     },
@@ -51,16 +54,13 @@ const router = createRouter({
           path: ":novel_id/chapter/:chapter_id?",
           name: "chapter_edit",
           component: () => import("../views/novel/ChapterEdit.vue"),
-        },
-        {
-          path: ":novel_id/:chapter_id/page/:page_id?",
-          name: "page_edit",
-          component: () => import("../views/novel/PageEdit.vue"),
+          meta: { theme: "light" },
         },
         {
           path: "novel/:id?",
           name: "author_novel",
           component: () => import("@/views/backoffice/author/Novel.vue"),
+          meta: { theme: "light" },
         },
       ],
     },
@@ -71,16 +71,19 @@ const router = createRouter({
           path: "coins",
           name: "shop_coins",
           component: () => import("../views/boutique/Shop.vue"),
+          meta: { theme: "light" },
         },
         {
           path: "success",
           name: "shop_success",
           component: () => import("../views/boutique/Success.vue"),
+          meta: { theme: "light" },
         },
         {
           path: "cancel",
           name: "shop_cancel",
           component: () => import("../views/boutique/Cancel.vue"),
+          meta: { theme: "light" },
         }
       ]
     },

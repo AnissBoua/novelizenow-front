@@ -1,83 +1,69 @@
 <template>
-  <section class="flex flex-col gap-4 w-10/12 md:w-1/2 mx-auto my-20">
-    <h3>S'inscrire</h3>
-    <div class="flex flex-col md:flex-row w-full gap-4">
-      <div class="w-full md:w-1/2">
-        <TextInput v-model="name" placeholder="Prénom" id="name" />
-      </div>
-      <div class="w-full md:w-1/2">
-        <TextInput v-model="lastname" placeholder="Nom de famille" id="lastname" />
-      </div>
+  <AuthLayout mode="register" :error="errors.general" :submitting="submitting" @submit="register">
+    <div class="grid grid-cols-2 gap-3.5">
+      <label class="block">
+        <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Prénom</span>
+        <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+          <iconify-icon icon="tabler:feather" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
+          <input v-model="name" type="text" placeholder="Lise" autocomplete="given-name" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
+        </span>
+      </label>
+      <label class="block">
+        <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Nom</span>
+        <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+          <input v-model="lastname" type="text" placeholder="Marchand" autocomplete="family-name" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
+        </span>
+      </label>
     </div>
-    <div>
-      <div class="w-full">
-        <TextInput
-          v-model="email"
-          placeholder="Email"
-          id="email"
-          type="email"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col md:flex-row w-full gap-4">
-      <div class="w-full md:w-1/2">
-        <TextInput
-          v-model="password"
-          placeholder="Mot de passe"
-          id="password"
-          type="password"
-          @blur="checkPasswordFormat"
-        />
-      </div>
-      <div class="w-full md:w-1/2">
-        <TextInput
-          v-model="confirmpassword"
-          placeholder="Confirmer le mot de passe"
-          id="confirmPassword"
-          type="password"
-          @blur="checkConfirmPassword"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col md:flex-row md:items-end gap-4">
-      <div class="flex flex-col w-full md:w-1/2">
-        <label class="my-2" for="cover">Avatar :</label>
-        <FileUpload
-          :fileUpload="(event) => onFileUpload(event)"
-          placeholder="Banner"
-          id="banner"
-        />
-      </div>
-      <div class="w-full md:w-1/2">
-        <TextInput v-model="username" placeholder="Username" id="username" />
-      </div>
+    <span class="block text-[13px] text-[#6B7286] -mt-1.5">C'est le nom affiché sur vos chapitres. Modifiable à tout moment.</span>
+
+    <label class="block">
+      <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Nom d'utilisateur</span>
+      <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+        <iconify-icon icon="tabler:at" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
+        <input v-model="username" type="text" placeholder="lisemarchand" autocomplete="username" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
+      </span>
+    </label>
+
+    <label class="block">
+      <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Adresse e-mail</span>
+      <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+        <iconify-icon icon="tabler:mail" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
+        <input v-model="email" type="email" placeholder="vous@exemple.com" autocomplete="email" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
+      </span>
+    </label>
+
+    <div class="grid grid-cols-2 gap-3.5">
+      <label class="block">
+        <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Mot de passe</span>
+        <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+          <iconify-icon icon="tabler:lock" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
+          <input v-model="password" :type="reveal ? 'text' : 'password'" placeholder="8 caractères minimum" autocomplete="new-password" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]" @blur="checkPasswordFormat">
+          <button type="button" class="flex-none border-0 bg-transparent p-1 text-[#6B7286] hover:text-[#3138B0]" @click="reveal = !reveal">
+            <iconify-icon :icon="reveal ? 'tabler:eye-off' : 'tabler:eye'" class="text-[18px]"></iconify-icon>
+          </button>
+        </span>
+      </label>
+      <label class="block">
+        <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Confirmer</span>
+        <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
+          <input v-model="confirmpassword" :type="reveal ? 'text' : 'password'" placeholder="8 caractères minimum" autocomplete="new-password" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]" @blur="checkConfirmPassword">
+        </span>
+      </label>
     </div>
 
-    <div>
-      <div v-if="errors.general">
-        <p>{{ errors.general }}</p>
-      </div>
-      <div class="flex justify-end w-full">
-        <Button :label="'Sign up'" @click="register()"></Button>
-      </div>
-    </div>
-    <div>
-      <p>
-        Vous avez déjà un compte ?
-        <RouterLink class="hover:text-novelize-primary" to="/login"
-          >Se connecter</RouterLink
-        >
-      </p>
-    </div>
-  </section>
+    <label class="flex items-start gap-2.5 text-sm leading-relaxed text-[#3A4260]">
+      <input v-model="acceptedTerms" type="checkbox" required class="w-[17px] h-[17px] mt-0.5 accent-[#3138B0] flex-none">
+      <span>J'accepte les <a href="#" title="Bientôt disponible" class="text-[#3138B0] font-semibold">conditions d'utilisation</a> et la <a href="#" title="Bientôt disponible" class="text-[#3138B0] font-semibold">politique de confidentialité</a>.</span>
+    </label>
+  </AuthLayout>
 </template>
 
 <script setup>
-import TextInput from "@/components/inputs/TextInput.vue";
-import FileUpload from "@/components/inputs/FileUpload.vue";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import axios from "axios";
+import AuthLayout from "@/components/auth/AuthLayout.vue";
 
 const router = useRouter();
 
@@ -87,16 +73,13 @@ const username = ref("");
 const email = ref("");
 const password = ref("");
 const confirmpassword = ref("");
-const avatar = ref(null);
+const acceptedTerms = ref(false);
+const reveal = ref(false);
+const submitting = ref(false);
 const errors = ref({
   general: null,
 });
 let compliantPassword = ref(false);
-
-function onFileUpload(event) {
-  const file = event.target.files[0];
-  avatar.value = file;
-}
 
 async function register() {
   if (compliantPassword.value === false) {
@@ -108,14 +91,14 @@ async function register() {
     errors.value.general = "Les mots de passe ne correspondent pas.";
     return;
   }
+  submitting.value = true;
+  errors.value.general = null;
   const formData = new FormData();
   formData.append("name", name.value);
   formData.append("lastname", lastname.value);
+  formData.append("username", username.value);
   formData.append("email", email.value);
   formData.append("password", password.value);
-  if (avatar.value) {
-    formData.append("avatar", avatar.value);
-  }
   await axios
     .post("registration", formData, {
       headers: {
@@ -133,6 +116,9 @@ async function register() {
       } else {
         errors.value.general = "L'inscription a échoué.";
       }
+    })
+    .finally(() => {
+      submitting.value = false;
     });
 }
 

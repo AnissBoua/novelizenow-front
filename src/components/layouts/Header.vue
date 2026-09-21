@@ -1,137 +1,124 @@
 <template>
-  <header class="relative flex justify-between items-center py-4 lg:py-6 px-4 sm:px-6 lg:px-20">
-    <div class="flex items-center gap-10 flex-1">
-        <div>
-            <RouterLink to="/">
-                <img class="hidden lg:block lg:w-32" src="@/assets/logos/novelizelogo.svg" alt="logo" >
-                <img class="block lg:hidden lg:w-32" src="@/assets/logos/LogoMobile.png" alt="logo" >
-            </RouterLink>
+  <header class="sticky top-0 z-30 bg-white border-b border-[#E2E4EC] font-figtree text-[#101323]">
+    <div class="max-w-[1340px] mx-auto px-4 sm:px-6 py-2.5 flex items-center gap-4">
+      <RouterLink to="/" class="flex items-center gap-2 flex-none">
+        <img class="h-7 w-auto rounded-lg" src="@/assets/logos/novelizelogoimg.svg" alt="logo">
+        <span class="font-sora font-semibold text-[17px] tracking-[-0.025em] text-[#101323]">NovelizeNow</span>
+      </RouterLink>
 
-        </div>
-        <div class="hidden md:block relative w-8/12">
-            <input v-model="search" class="w-full bg-novelize-darklight !text-white rounded-lg  px-4 py-2" type="text" placeholder="Rechercher" @input="debounceSeach" @focusin="toggleSearch" @focusout="toggleSearch">
-            <div v-if="isSearching && novels && novels.length > 0" class="absolute z-50 flex flex-col gap-2 w-full bg-novelize-darklight rounded-lg my-2 p-1 lg:p-4">
-                <div v-for="(novel, index) in novels" :key="index" class="flex gap-4">
-                    <img class="w-16 h-24 object-cover rounded-lg" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
-                    <div class="col-span-5">
-                        <div class="flex gap-2 mb-2">
-                            <p v-for="(category, index) in novel.categories" :key="index" class="text-novelize-secondary text-xs">{{ category.name }}</p>
-                        </div>
-                        <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="hover:text-novelize-primary">{{ novel.title }}</RouterLink>
-                        <div class="flex gap-2 text-xs">
-                            <IconText :text="novel.quantiteChapitre + ' Chapitres'" color="bg-novelize-primary"/>
-                            <p>-</p>
-                            <p class="text-zinc-300">{{ novel.author.name }} {{ novel.author.lastname }}</p>
-                        </div>
-                    </div>
+      <form class="hidden md:flex flex-1 min-w-0" @submit.prevent>
+        <label class="relative flex-1 flex items-center gap-2 bg-[#F3F4F8] border border-[#E2E4EC] rounded-lg px-3 h-[42px]">
+          <iconify-icon icon="tabler:search" class="text-[18px] text-[#868DA3]"></iconify-icon>
+          <input
+            v-model="search"
+            type="search"
+            placeholder="Chercher un roman, un auteur, une catégorie"
+            class="flex-1 min-w-0 bg-transparent border-0 outline-none text-[15px] !text-[#101323] placeholder:text-[#868DA3]"
+            @input="debounceSeach"
+            @focusin="toggleSearch"
+            @focusout="toggleSearch"
+          >
+          <div v-if="isSearching && novels && novels.length > 0" class="absolute left-0 top-full mt-2 z-50 flex flex-col gap-2 w-full bg-white border border-[#E2E4EC] rounded-lg p-2 shadow-lg">
+            <RouterLink v-for="(novel, index) in novels" :key="index" :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="flex gap-3 p-1 rounded-md hover:bg-[#F3F4F8]">
+              <img class="w-12 h-16 object-cover rounded-md flex-none" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
+              <div class="min-w-0">
+                <div class="flex gap-2 mb-1">
+                  <p v-for="(category, i) in novel.categories" :key="i" class="text-[#3138B0] text-xs capitalize">{{ category.name }}</p>
                 </div>
+                <p class="text-sm font-medium truncate">{{ novel.title }}</p>
+                <p class="text-xs text-[#6B7286]">{{ novel.quantiteChapitre }} chapitres · {{ novel.author.name }} {{ novel.author.lastname }}</p>
+              </div>
+            </RouterLink>
+          </div>
+        </label>
+      </form>
+
+      <div class="md:hidden flex-1"></div>
+      <button type="button" class="md:hidden flex-none" @click="toggleSearchMobile">
+        <iconify-icon icon="tabler:search" class="text-[18px]"></iconify-icon>
+      </button>
+
+      <div v-if="token && user" class="hidden md:flex items-center gap-3 flex-none">
+        <RouterLink :to="{name: 'shop_coins'}" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FBEEDA] text-[#7A5313] text-sm font-semibold hover:bg-[#F7E3C2]">
+          <iconify-icon icon="tabler:coin" class="text-[18px] text-[#B4741A]"></iconify-icon>{{ coins ?? 0 }}
+        </RouterLink>
+        <RouterLink :to="{name: 'author_novel'}" class="px-4 py-2 rounded-lg bg-[#3138B0] text-white text-sm font-semibold hover:bg-[#232878]">
+          <span class="flex items-center gap-2"><iconify-icon icon="tabler:pencil" class="text-[17px]"></iconify-icon>Écrire</span>
+        </RouterLink>
+        <div class="relative w-[34px] h-[34px]" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
+          <RouterLink :to="{name: 'account'}" class="block w-full h-full cursor-pointer">
+            <img v-if="user.avatar" class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar">
+            <div v-else class="flex items-center justify-center w-full h-full rounded-full bg-[#E9EAF7] text-[#3138B0] font-sora text-xs font-semibold">
+              {{ initials }}
             </div>
+          </RouterLink>
+          <div v-if="menuUser" class="absolute right-0 top-full mt-2 w-56 z-50 bg-white border border-[#E2E4EC] rounded-lg shadow-lg">
+            <div class="py-3 px-4">
+              <p class="font-semibold">{{ user.name }} {{ user.lastname }}</p>
+              <p class="text-[#6B7286] text-sm truncate">{{ user.email }}</p>
+            </div>
+            <div class="h-px bg-[#EEEFF4]"></div>
+            <RouterLink :to="{name: 'account'}" class="block py-2.5 px-4 text-sm hover:bg-[#F3F4F8]">Mon compte</RouterLink>
+            <p class="cursor-pointer text-sm py-2.5 px-4 hover:bg-[#F3F4F8]" @click="logout">Se déconnecter</p>
+          </div>
         </div>
+      </div>
+      <div v-else class="hidden md:flex items-center gap-4 flex-none">
+        <RouterLink :to="{name: 'login'}" class="text-[15px] font-medium text-[#555D75] hover:text-[#3138B0]">Se connecter</RouterLink>
+        <RouterLink :to="{name: 'register'}" class="px-4 py-2 rounded-lg bg-[#3138B0] text-white text-[15px] font-semibold hover:bg-[#232878]">Créer un compte</RouterLink>
+      </div>
+
+      <div v-if="token && user" class="relative md:hidden flex-none" @click="mobilemenu = !mobilemenu">
+        <img v-if="user.avatar" class="w-8 h-8 rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar">
+        <div v-else class="flex items-center justify-center w-8 h-8 rounded-full bg-[#E9EAF7] text-[#3138B0] font-sora text-xs font-semibold">{{ initials }}</div>
+      </div>
     </div>
-    <div class="flex items-center gap-4 sm:gap-8">
-        <div class="md:hidden" @click="toggleSearchMobile">
-            <i class="fa-solid fa-magnifying-glass text-white"></i>
-        </div>
-        <div class="hidden md:flex items-center gap-4">
-            <div v-if="token && user">
-                <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Tableau de bord</RouterLink>
-            </div>
-            <div v-if="token" class="flex items-center gap-2">
-                <RouterLink :to="{name: 'shop_coins'}" >
-                    <CoinIcon />
-                </RouterLink>
-                <p>{{coins}}</p>
-            </div>
-            <div v-if="token && user" class="relative w-12 h-12 rounded" >
-                <div v-if="user.avatar" class="w-full h-full cursor-pointer" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                    <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar" fetchpriority="high">
-                </div>
-                <div v-else class="w-full h-full cursor-pointer" @click="toggleMenuUser" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                    <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
-                        <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
-                    </div>
-                </div>
-                <div v-if="menuUser" class="absolute right-0 w-60 z-50 bg-novelize-darklight rounded-lg my-2" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                    <div class="my-3 px-4">
-                        <p class="font-semibold"> {{ user.name }} {{ user.lastname }} </p>
-                        <p class="text-zinc-300">{{ user.email }}</p>
-                    </div>
-                    <div class="w-full h-[1px] bg-zinc-600"></div>
-                    <div>
-                        <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Se déconnecter</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div v-if="token && user" class="relative md:hidden" @click="mobilemenu = !mobilemenu">
-            <i class="fa-solid fa-user text-white"></i>
-        </div>
-        <div v-if="!token || !user" class="flex items-center">
-            <RouterLink class="rounded-md hover:bg-novelize-primary/40 px-5 py-2" :to="{name: 'login'}">Se connecter</RouterLink>
-            <Button
-                class="hidden md:block mx-4"
-                label="Sign up"
-                :btnStyle="1"
-                :to="{name: 'register'}"
-            >
-            </Button>
-        </div>
+
+    <div v-if="mobilemenu && token && user" class="md:hidden border-t border-[#EEEFF4] bg-white">
+      <div class="px-4 py-3">
+        <p class="font-semibold">{{ user.name }} {{ user.lastname }}</p>
+        <p class="text-[#6B7286] text-sm truncate">{{ user.email }}</p>
+      </div>
+      <div class="h-px bg-[#EEEFF4]"></div>
+      <div class="flex flex-col gap-1 py-2">
+        <RouterLink :to="{name: 'account'}" class="px-4 py-2 text-sm">Mon compte</RouterLink>
+        <RouterLink :to="{name: 'author_novel'}" class="px-4 py-2 text-sm font-semibold text-[#3138B0]">Écrire</RouterLink>
+        <RouterLink :to="{name: 'shop_coins'}" class="flex items-center gap-2 px-4 py-2 text-sm">
+          <iconify-icon icon="tabler:coin" class="text-[18px] text-[#B4741A]"></iconify-icon>{{ coins ?? 0 }} pièces
+        </RouterLink>
+        <p class="px-4 py-2 text-sm cursor-pointer" @click="logout">Se déconnecter</p>
+      </div>
     </div>
-    <div v-if="mobilemenu && token && user" class="relative block md:hidden">
-        <div class="absolute right-0 z-50 h-max rounded" >
-            <div class="bg-novelize-darklight rounded-lg my-2" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                <div class="flex items-center px-4">
-                    <div v-if="user.avatar" class="w-12 h-12 cursor-pointer" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                        <img class="w-full h-full rounded-full object-cover" :src="BACK_URL + user.avatar.filepath" alt="avatar" fetchpriority="high">
-                    </div>
-                    <div v-else class="w-full h-full cursor-pointer" @click="toggleMenuUser" @mouseover="toggleMenuUser" @mouseleave="closeMenuUser">
-                        <div class="flex items-center justify-center w-full h-full bg-novelize-primary rounded-full ">
-                            <p>{{ user.name.slice(0, 1).toUpperCase() + user.lastname.slice(0, 1).toUpperCase()}}</p>
-                        </div>
-                    </div>
-                    <div class="my-3 px-4">
-                        <p class="font-semibold"> {{ user.name }} {{ user.lastname }} </p>
-                        <p class="text-zinc-300">{{ user.email }}</p>
-                    </div>
-                </div>
-                <div class="w-full h-[1px] bg-zinc-600"></div>
-                <div class="flex flex-col gap-2 py-2 px-4">
-                    <div>
-                        <RouterLink class="block bg-indigo-800 hover:bg-indigo-900 rounded-md !text-white py-2 px-4" :to="{name: 'account'}">Tableau de bord</RouterLink>
-                    </div>
-                    <div v-if="token" class="flex items-center gap-2">
-                        <RouterLink :to="{name: 'shop_coins'}" >
-                            <CoinIcon />
-                        </RouterLink>
-                        <p>{{coins}}</p>
-                    </div>
-                </div>
-                <div class="w-full h-[1px] bg-zinc-600"></div>
-                <div>
-                    <p class="cursor-pointer hover:bg-novelize-primary/20 py-3 px-4" @click="logout">Se déconnecter</p>
-                </div>
-            </div>
-        </div>
+
+    <div v-if="isSearchMobile" class="md:hidden absolute inset-0 z-50 flex items-center gap-3 w-full h-[58px] bg-white px-4 border-b border-[#E2E4EC]">
+      <input
+        v-model="search"
+        type="text"
+        placeholder="Chercher un roman, un auteur, une catégorie"
+        class="flex-1 bg-[#F3F4F8] rounded-lg px-3 py-2 border border-[#E2E4EC] outline-none !text-[#101323]"
+        @input="debounceSeach"
+        @focusin="toggleSearch"
+        @focusout="toggleSearch"
+      >
+      <iconify-icon icon="tabler:x" class="text-xl" @click="toggleSearchMobile"></iconify-icon>
+      <div v-if="isSearching && novels && novels.length > 0" class="absolute left-0 top-full w-full z-50 flex flex-col gap-2 bg-white border-t border-[#E2E4EC] p-2">
+        <RouterLink v-for="(novel, index) in novels" :key="index" :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="flex gap-3 p-1">
+          <img class="w-12 h-16 object-cover rounded-md flex-none" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
+          <div class="min-w-0">
+            <p class="text-sm font-medium truncate">{{ novel.title }}</p>
+            <p class="text-xs text-[#6B7286]">{{ novel.author.name }} {{ novel.author.lastname }}</p>
+          </div>
+        </RouterLink>
+      </div>
     </div>
-    <div v-if="isSearchMobile" class="md:hidden absolute left-0 z-50 flex items-center justify-between w-full h-full bg-novelize-dark px-6">
-        <input v-model="search" class="w-10/12 bg-novelize-darklight !text-white rounded-lg px-4 py-2" type="text" placeholder="Search" @input="debounceSeach" @focusin="toggleSearch" @focusout="toggleSearch">
-        <i class="fa-solid fa-xmark text-2xl text-white" @click="toggleSearchMobile"></i>
-        <div v-if="isSearching && novels && novels.length > 0" class="absolute top-16 left-0 z-50 flex flex-col gap-2 w-full bg-novelize-darklight my-2 p-1 lg:p-4">
-            <div v-for="(novel, index) in novels" :key="index" class="flex gap-4">
-                <img class="w-16 h-24 object-cover rounded-lg" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
-                <div class="col-span-5">
-                    <div class="flex gap-2 mb-2">
-                        <p v-for="(category, index) in novel.categories" :key="index" class="text-novelize-secondary text-xs">{{ category.name }}</p>
-                    </div>
-                    <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="hover:text-novelize-primary">{{ novel.title }}</RouterLink>
-                    <div class="flex gap-2 text-xs">
-                        <IconText :text="novel.quantiteChapitre + ' Chapitres'" color="bg-novelize-primary"/>
-                        <p>-</p>
-                        <p class="text-zinc-300">{{ novel.author.name }} {{ novel.author.lastname }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+    <div class="border-t border-[#EEEFF4]">
+      <div class="max-w-[1340px] mx-auto px-4 sm:px-6 flex items-center gap-5 overflow-x-auto">
+        <RouterLink to="/" class="flex-none py-2.5 text-sm font-semibold text-[#3138B0] border-b-2 border-[#3138B0]">Le fil</RouterLink>
+        <RouterLink v-for="cat in homeStore.categories" :key="cat.id" to="/" class="flex-none py-2.5 text-sm font-medium text-[#333B54] border-b-2 border-transparent hover:text-[#3138B0]">{{ cat.name }}</RouterLink>
+        <span class="flex-1 min-w-[8px]"></span>
+        <RouterLink :to="{path: '/', hash: '#categories'}" class="flex-none py-2.5 text-sm font-semibold text-[#3138B0]">Toutes les catégories</RouterLink>
+      </div>
     </div>
   </header>
 </template>
@@ -140,12 +127,8 @@
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuth } from '@/stores/auth.js'
-import Button from '../Button.vue';
-import CoinIcon from '../CoinIcon.vue';
-import IconText from '../IconText.vue';
-import { watch } from 'vue';
-import { ref } from 'vue';
-
+import { useHomeStore } from '@/stores/home.js'
+import { computed, ref, watch } from 'vue'
 import axios from 'axios';
 
 const BACK_URL = import.meta.env.VITE_BACK_URL;
@@ -153,6 +136,13 @@ const BACK_URL = import.meta.env.VITE_BACK_URL;
 const store = useAuth()
 const { token, coins, user } = storeToRefs(store);
 const { logout } = store;
+
+const homeStore = useHomeStore();
+
+const initials = computed(() => {
+  if (!user.value) return '';
+  return (user.value.name?.slice(0, 1) ?? '').toUpperCase() + (user.value.lastname?.slice(0, 1) ?? '').toUpperCase();
+});
 
 const novels = ref();
 const isSearching = ref(false);
@@ -187,7 +177,6 @@ const isSearchMobile = ref(false);
 const timer = ref(false);
 const mobilemenu = ref(false);
 
-
 function toggleMenuUser() {
     menuUser.value = true;
     clearTimeout(timer.value);
@@ -207,9 +196,3 @@ watch(token, (newToken) => {
     token.value = newToken;
 })
 </script>
-
-<style scoped lang="scss">
-a.router-link-exact-active{
-    color: $color-primary;
-}
-</style>

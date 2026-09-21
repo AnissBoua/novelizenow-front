@@ -6,6 +6,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sora: ['Sora', 'system-ui', 'sans-serif'],
+        figtree: ['Figtree', 'system-ui', 'sans-serif'],
+        newsreader: ['Newsreader', 'serif'],
+        plexmono: ['"IBM Plex Mono"', 'monospace'],
+      },
       colors: {
         novelize: {
           primary: '#3138B0',

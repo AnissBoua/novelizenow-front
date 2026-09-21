@@ -15,6 +15,8 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
+const AUTH_ENDPOINTS = ["/token/refresh", "login", "registration"];
+
 axios.interceptors.response.use(
   (response) => {
     return response;
@@ -22,7 +24,7 @@ axios.interceptors.response.use(
   async (error) => {
     if (
       error.response.status === 401 &&
-      error.response.config.url != "/token/refresh"
+      !AUTH_ENDPOINTS.includes(error.response.config.url)
     ) {
       const authStore = useAuth();
       authStore.verifyToken();

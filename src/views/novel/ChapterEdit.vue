@@ -1,285 +1,294 @@
 <template>
-  <div class="chapter_edit w-full">
-    <alert-modal @acceptWarning="onWarningAccepted" />
-    <div class="flex justify-center">
-      <form class="w-full sm:w-8/12 flex flex-col overflow-y-auto px-4 sm:px-0"> 
-        <div v-if="chapterId && data" class="path_container">
-          <router-link
-            :to="{
-              name: 'read_novel',
-              params: { novel_slug: data.novel.slug},
-            }"
-            class="!text-novelize-primarylight hover:!text-novelize-primary"
-            > Retour au roman
-          </router-link>
+  <div class="min-h-screen bg-[#F3F4F8] font-figtree text-[#101323]">
+
+    <div class="sticky top-0 z-30 bg-[#FFFCF6] border-b border-[#EADFCB]">
+      <div class="max-w-[1240px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center gap-3.5">
+        <RouterLink :to="{name: 'author_novel', params: {id: novelId}}" class="flex-none flex items-center justify-center w-[38px] h-[38px] rounded-lg border border-[#EADFCB] bg-white text-[#555D75] hover:border-[#E9A23B] hover:text-[#7A5313]">
+          <iconify-icon icon="tabler:arrow-left" class="text-[19px]"></iconify-icon>
+        </RouterLink>
+        <div class="flex-1 basis-[260px] min-w-[200px]">
+          <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#7A5313]">{{ kicker }}</span>
+          <span class="block font-sora text-[18px] font-semibold tracking-[-0.02em] mt-1">{{ title || "Chapitre sans titre" }}</span>
         </div>
-        <div class="flex justify-between items-center col-span-12 my-4">
-          <h3>Formulaire de chapitre</h3>
-          <div class="flex gap-4">
-            <Button
-              v-if="chapterId"
-              @click.prevent="onSubmit('update')"
-              class="col-start-11 mt-2"
-              label="Mettre à jour"
-            />
-            <Button
-              v-else
-              @click.prevent="onSubmit('add')"
-              class="col-start-11 mt-2"
-              label="Ajouter"
-            />
-            <Button
-              v-if="chapterId"
-              @click.prevent="onSubmit('delete')"
-              class="col-start-12 mt-2"
-              bgColor="bg-red-600"
-              label="Supprimer"
+        <div class="flex-none flex flex-wrap gap-2">
+          <button type="button" class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#EADFCB] bg-white text-[15px] font-semibold text-[#333B54] hover:border-[#E9A23B] hover:text-[#7A5313]" @click="focus = !focus">
+            <iconify-icon :icon="focus ? 'tabler:layout-sidebar-right-expand' : 'tabler:focus-centered'" class="text-[18px]"></iconify-icon>{{ focus ? "Tout afficher" : "Concentration" }}
+          </button>
+          <RouterLink v-if="chapterId && novel.slug" :to="{name: 'read_page', params: {slug: novel.slug, chapter_id: chapterId}}" class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#EADFCB] bg-white text-[15px] font-semibold text-[#333B54] hover:border-[#E9A23B] hover:text-[#7A5313]">
+            <iconify-icon icon="tabler:eye" class="text-[18px]"></iconify-icon>Aperçu
+          </RouterLink>
+          <button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-lg border-0 bg-[#3138B0] text-white text-[15px] font-semibold hover:bg-[#232878] disabled:opacity-60" :disabled="saving" @click="chapterId ? updateChapter() : createChapter()">
+            <iconify-icon icon="tabler:send" class="text-[18px]"></iconify-icon>{{ saving ? "Enregistrement…" : (chapterId ? "Enregistrer les modifications" : "Créer le chapitre") }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <main class="max-w-[1240px] mx-auto px-4 sm:px-6 py-8 pb-24 flex flex-wrap gap-6 items-start">
+
+      <div class="flex-[100_1_520px] min-w-[300px] flex flex-col gap-4">
+
+        <div v-if="errorMsg" class="text-sm text-[#6B0504] bg-[#FBEAEA] border border-[#F1C7C7] rounded-lg px-3.5 py-2.5">{{ errorMsg }}</div>
+
+        <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <label class="block">
+            <span class="flex justify-between gap-3 font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">
+              <span>Titre du chapitre</span><span>{{ title.length }} / 255</span>
+            </span>
+            <input v-model="title" type="text" placeholder="Un titre, même provisoire" class="w-full mt-2 h-[46px] px-3.5 border border-[#DCDEE8] rounded-lg bg-white font-newsreader text-[20px] font-medium">
+          </label>
+
+          <div class="flex flex-wrap gap-1.5 mt-6 p-1 bg-[#F3F4F8] border border-[#E2E4EC] rounded-xl max-w-[280px]">
+            <button v-for="s in statusOptions" :key="s.value" type="button" class="flex-1 min-w-[100px] px-3 py-2.5 rounded-lg text-[15px] font-semibold" :class="status === s.value ? 'bg-white border border-[#DCDEE8] text-[#101323]' : 'border border-transparent text-[#555D75]'" @click="status = s.value">{{ s.label }}</button>
+          </div>
+          <p class="text-sm text-[#6B7286] mt-3">{{ status === 'published' ? "Visible par les lecteurs (le chapitre 1 est gratuit, les suivants nécessitent l'achat du roman)." : "Le brouillon n'est visible que par vous." }}</p>
+        </section>
+
+        <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <h2 class="font-sora text-lg font-semibold tracking-[-0.02em]">Texte du chapitre</h2>
+          <div class="chapter-editor mt-4">
+            <QuillEditor
+              v-model:content="html"
+              ref="quillRef"
+              theme="snow"
+              contentType="html"
+              :toolbar="toolbar"
+              placeholder="Écrivez le chapitre…"
+              @textChange="onEditorChange"
             />
           </div>
+        </section>
+
+        <section v-if="chapterId" class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <h2 class="font-sora text-lg font-semibold tracking-[-0.02em]">Supprimer le chapitre</h2>
+          <p class="text-[15px] leading-relaxed text-[#555D75] mt-2.5 max-w-[58ch]">Supprime le chapitre, définitivement.</p>
+          <button type="button" class="mt-5 px-5 py-3 rounded-lg border border-[#E3C9C9] bg-white text-[15px] font-semibold text-[#9B2C2C] hover:bg-[#FCF3F3] hover:border-[#D9A9A9]" @click="deletingChapter = true">Supprimer le chapitre</button>
+        </section>
+      </div>
+
+      <aside v-if="!focus" class="flex-[1_1_300px] min-w-[260px] flex flex-col gap-4 sticky top-[80px]">
+
+        <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Ce chapitre</span>
+          <dl class="mt-4 grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));">
+            <div>
+              <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Mots</dt>
+              <dd class="mt-1.5 font-sora text-xl font-semibold tracking-[-0.02em]">{{ fmt(wordCount) }}</dd>
+            </div>
+            <div>
+              <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Lecture</dt>
+              <dd class="mt-1.5 font-sora text-xl font-semibold tracking-[-0.02em]">{{ readMinutes }} min</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <h2 class="font-sora text-base font-semibold">Prix</h2>
+          <p class="text-sm leading-relaxed text-[#555D75] mt-2">{{ novel.price ? "Le roman coûte " + novel.price + " pièces, le premier chapitre du roman est gratuit." : "" }}</p>
+          <RouterLink :to="{name: 'author_novel', params: {id: novelId}}" class="inline-block text-sm font-semibold mt-2.5 text-[#3138B0] hover:text-[#232878]">Changer le prix du roman</RouterLink>
+        </section>
+
+        <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <h2 class="font-sora text-base font-semibold">{{ chapterId ? "Avant de republier" : "Avant de publier" }}</h2>
+          <div class="flex flex-col gap-3 mt-4">
+            <div v-for="c in checklist" :key="c.label" class="flex items-start gap-2.5">
+              <iconify-icon :icon="c.ok ? 'tabler:circle-check-filled' : 'tabler:circle'" class="text-[19px] flex-none mt-px" :class="c.ok ? 'text-[#3138B0]' : 'text-[#B9BECD]'"></iconify-icon>
+              <span class="flex-1 min-w-0">
+                <span class="block text-sm font-semibold" :class="c.ok ? 'text-[#101323]' : 'text-[#555D75]'">{{ c.label }}</span>
+                <span class="block text-[13px] leading-snug text-[#6B7286] mt-0.5">{{ c.note }}</span>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section v-if="neighbours.length" class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <h2 class="flex items-center gap-2 font-sora text-base font-semibold">
+            <iconify-icon icon="tabler:list-numbers" class="text-[19px] text-[#3138B0]"></iconify-icon>Autour de ce chapitre
+          </h2>
+          <div class="flex flex-col mt-3">
+            <RouterLink v-for="n in neighbours" :key="n.id" :to="{name: 'chapter_edit', params: {novel_id: novelId, chapter_id: n.id}}" class="flex items-center gap-3 py-3 border-b border-[#EDEFF4] last:border-b-0 text-inherit hover:text-[#3138B0]">
+              <span class="flex-none w-[24px] font-plexmono text-[13px] text-[#868DA3]">{{ n.num }}</span>
+              <span class="flex-1 min-w-0">
+                <span class="block font-newsreader text-[16px] font-medium leading-tight">{{ n.title || "Sans titre" }}</span>
+                <span class="block text-[13px] text-[#6B7286] mt-1">{{ n.status === 'published' ? 'Publié' : 'En cours' }}</span>
+              </span>
+            </RouterLink>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <div v-if="deletingChapter" class="fixed inset-0 z-40 bg-[#101323]/50 flex items-center justify-center px-4" @click.self="deletingChapter = false">
+      <div class="w-full max-w-[420px] bg-white rounded-2xl p-6">
+        <h3 class="font-sora text-lg font-semibold text-center pb-3.5 border-b border-[#EEEFF4]">Supprimer le chapitre</h3>
+        <p class="text-[#9B2C2C] font-semibold mt-4">Cette action est irréversible.</p>
+        <p class="text-[#555D75] mt-1.5">Le texte de ce chapitre sera perdu.</p>
+        <div class="flex justify-center gap-3 mt-5">
+          <button type="button" class="px-5 py-2.5 rounded-lg border border-[#DCDEE8] bg-white text-sm font-semibold hover:border-[#3138B0]" @click="deletingChapter = false">Annuler</button>
+          <button type="button" class="px-5 py-2.5 rounded-lg border-0 bg-[#9B2C2C] text-white text-sm font-semibold hover:bg-[#7C2222]" @click="confirmDeleteChapter">Supprimer</button>
         </div>
-        <div class="col-start-1 col-end-13 row-start-2">
-          <TextInput v-model="title" placeholder="Titre du chapitre" id="titre" />
-        </div>
-        <div v-if="chapterId" class="col-span-12 font-semibold my-4">
-          <p>Statut</p>
-          <select class="bg-novelize-darklight text-white text-sm rounded-lg rounded-b-none block w-full p-2.5 dark:text-white outline-none my-1" name="categories" id="categories" @change="onSelectionChange">
-              <option value="In progess" >En cours</option>
-              <option value="Published">Publié</option>
-          </select>
-        </div>
-        <div class="flex justify-end col-span-12">
-          <RouterLink v-if="chapterId" :to="{ name: 'page_edit', params: { novel_id: novelId, chapter_id: chapterId } }" class="!text-novelize-primary hover:!text-novelize-primarylight ">Nouvelle page</RouterLink>
-        </div>
-        <draggable
-          class="col-start-1 col-end-13 mt-3"
-          v-model="pageState"
-          item-key="id"
-        >
-          <template #item="{ element: pageId }">
-            <DraggablePageCard
-              :page="getPagesByIds(pageId)"
-              :chapterId="chapterId"
-              :novelId="novelId"
-              @up="moveUpOrDown"
-              @down="moveUpOrDown"
-              @delete="openAlertDeletePage"
-            />
-          </template>
-        </draggable>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import { storeToRefs } from "pinia";
-import { useModalStore } from "@/stores/modals.js";
+<script setup>
+import { ref, computed } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import axios from "axios";
-import alertModal from "@/components/alertModal.vue";
-import Select from "@/components/inputs/Select.vue";
-import DraggablePageCard from "../../components/DraggablePageCard.vue";
-import draggable from "vuedraggable";
-import TextInput from '@/components/inputs/TextInput.vue';
 
+const route = useRoute();
+const router = useRouter();
 
-export default {
-  setup() {
-    let modalStore = useModalStore();
-    const { alertModalState } = storeToRefs(modalStore);
+const novelId = route.params.novel_id;
+const chapterId = route.params.chapter_id ?? null;
 
-    return {
-      modalStore,
-      alertModalState,
-    };
-  },
-  components: {
-    alertModal,
-    Select,
-    DraggablePageCard,
-    draggable,
-    TextInput,
-  },
-  data() {
-    return {
-      novelId: this.$route.params.novel_id,
-      chapterId: this.$route.params.chapter_id,
-      data: null,
-      title: null,
-      initialValue: null,
-      status: null,
-      pageState: [],
-      pages: null,
-      pageToDelete: null,
-      newChapterId: null,
-    };
-  },
-  async mounted() {
-    if (this.chapterId) {
-      try {
-        let response = await axios.get(`chapter/${this.chapterId}`);
-        this.data = response.data;
-        this.title = response.data.title;
-        this.initialValue = response.data.status;
-        this.status = response.data.status;
-        this.pages = response.data.pages;
-        if (response.data.pageState.length === 0) {
-          response.data.pages.forEach((page) => {
-            this.pageState.push(page.id);
-          });
-        } else {
-          this.pageState = response.data.pageState;
-        }
-        if (this.pageState.length !== this.pages.length) {
-          this.pages.forEach((page) => {
-            if (this.pageState.indexOf(page.id) === -1) {
-              this.pageState.push(page.id);
-              this.onSubmit("update");
-            }
-          });
-        }
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-  },
-  methods: {
-    getPagesByIds(id) {
-      const page = this.pages.find((page) => page.id === id);
-      return page;
-    },
-    moveUpOrDown(data) {
-      const oldIndex = this.pageState.indexOf(data.id);
-      let newIndex;
-      if (data.where === "up") {
-        newIndex = this.pageState.indexOf(data.id) - 1;
-      } else {
-        newIndex = this.pageState.indexOf(data.id) + 1;
-      }
-      if (newIndex >= 0 && newIndex < this.pageState.length) {
-        this.pageState.splice(oldIndex, 1);
-        this.pageState.splice(newIndex, 0, data.id);
-      }
-    },
-    onSubmit(type) {
-      let obj = {
-        title: this.title,
-        status: this.status,
-        novel: this.novelId,
-        pageState: this.pageState,
-      };
-      switch (type) {
-        case "add":
-          this.addChapter(obj);
-          break;
-        case "update":
-          this.updateChapter(obj);
-          break;
-        case "delete":
-          this.openAlertDeleteChapter();
-          break;
-        default:
-          throw new Error(`the submit type : ${type} is not supported`);
-      }
-    },
-    async addChapter(obj) {
-      obj["status"] = "in_progress";
-      try {
-        let response = await axios.post("chapter", obj);
-        this.alertModalState = {
-          open: true,
-          title: "Chapitre ajouté",
-          content: `Votre chapitre a été ajouté avec succès.`,
-          emits:"redirectToNewChapter"
-        };
-        this.newChapterId = response.data.id; 
-      } catch (e) {
-        console.warn(e);
-      }
-    },
-    onSelectionChange(event) {
-      this.status = event.target.value;
-    },
-    async updateChapter(obj) {
-      try {
-        await axios.put(`chapter/${this.data.id}`, obj);
-        this.alertModalState = {
-          open: true,
-          title: "Chapitre mis à jour",
-          content: `Votre chapitre a été mis à jour avec succès.`,
-        };
-      } catch (e) {
-        console.warn(e);
-      }
-    },
-    openAlertDeleteChapter() {
-      this.alertModalState = {
-        open: true,
-        title: "Supprimer le chapitre",
-        content: `Pouvez-vous confirmer que vous souhaitez supprimer le chapitre : ${this.data.title} avec toutes les pages ?`,
-        emits: "deleteChapter",
-      };
-    },
-    openAlertDeletePage(data) {
-      console.log(data);
-      
-      this.alertModalState = {
-        open: true,
-        title: "Supprimer la page",
-        content: `Pouvez-vous confirmer que vous souhaitez supprimer la page avec l'ID interne : ${data} ?`,
-        emits: "delete",
-      };
-      this.pageToDelete = data;
-    },
-    onWarningAccepted(data) {
-      switch (data) {
-        case "delete":
-          this.deletePage();
-          break;
-        case "deleteChapter":
-          this.deleteChapter();
-          break;
-        case "redirectToNovel":
-          this.$router.push({name:"read_novel", params:{novel_slug:this.data.novel.slug}})
-          break;
-        case "redirectToNewChapter":
-          this.$router.push({name:"chapter_edit", params:{chapter_id:this.newChapterId}})
-          break;
-        default:
-          throw new Error(`The case ${data} is not treated`);
-      }
-    },
-    async deletePage() {
-      if (this.pageToDelete) {
-        try {
-          await axios.delete(`page/${this.pageToDelete}`);
-          const index = this.pageState.indexOf(this.pageToDelete);
-          if (index > -1) {
-            this.pageState.splice(index, 1);
-          }
-          this.pageToDelete = null;
-          this.alertModalState = {
-            open: true,
-            title: "Page supprimée",
-            content: `Votre page a été supprimée avec succès.`,
-          };
-        } catch (e) {
-          console.warn(e);
-        }
-      }
-    },
-    async deleteChapter() {
-      try {
-        await axios.delete(`chapter/${this.chapterId}`);
-        this.alertModalState = {
-            open: true,
-            title: "Chapitre supprimé",
-            content: `Votre chapitre a été supprimé avec succès.`,
-            emits: "redirectToNovel",
-        };
-      } catch (error) {
-        console.warn(error);
-      }
-    }
-  },
-};
+const title = ref("");
+const status = ref("in_progress");
+const html = ref("");
+const content = ref("");
+const quillRef = ref(null);
+const saving = ref(false);
+const errorMsg = ref("");
+const focus = ref(false);
+
+const toolbar = [
+  [{ header: [1, 2, 3, false] }],
+  ["bold", "italic", "underline", "strike"],
+  [{ align: [] }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ color: [] }],
+];
+
+const statusOptions = [
+  { value: "in_progress", label: "Brouillon" },
+  { value: "published", label: "Publié" },
+];
+
+const novel = ref({ title: "", slug: null, price: null, chapters: [] });
+
+axios.get("novel/" + novelId).then((res) => {
+  novel.value.title = res.data.title;
+  novel.value.slug = res.data.slug;
+  novel.value.price = res.data.price;
+  novel.value.chapters = res.data.chapters ?? [];
+}).catch((e) => console.log(e));
+
+if (chapterId) {
+  axios.get("chapter/" + chapterId).then((res) => {
+    title.value = res.data.title;
+    status.value = res.data.status;
+    html.value = res.data.html || "";
+    content.value = res.data.content || "";
+  }).catch((e) => console.log(e));
+}
+
+function onEditorChange() {
+  if (!quillRef.value) return;
+  content.value = quillRef.value.getText().trim();
+}
+
+const kicker = computed(() => {
+  const position = novel.value.chapters.findIndex((c) => c.id == chapterId);
+  const num = position >= 0 ? "Chapitre " + (position + 1) + " · " : chapterId ? "" : "Nouveau chapitre · ";
+  return num + (novel.value.title || "");
+});
+
+const wordCount = computed(() => (content.value.trim() ? content.value.trim().split(/\s+/).length : 0));
+const readMinutes = computed(() => Math.max(1, Math.round(wordCount.value / 200)));
+function fmt(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+const checklist = computed(() => {
+  const titleOk = title.value.trim().length >= 3;
+  const hasText = wordCount.value > 0;
+  const lengthOk = wordCount.value >= 300;
+  return [
+    { label: "Un titre", ok: titleOk, note: titleOk ? "Modifiable après publication" : "Trois caractères au minimum" },
+    { label: "Du texte", ok: hasText, note: hasText ? fmt(wordCount.value) + " mots" : "Écrivez le chapitre ci-dessus" },
+    { label: "Une longueur confortable", ok: lengthOk, note: fmt(wordCount.value) + " mots pour l'instant" },
+  ];
+});
+
+const neighbours = computed(() => {
+  if (!chapterId) return [];
+  const list = novel.value.chapters;
+  const index = list.findIndex((c) => c.id == chapterId);
+  if (index === -1) return [];
+  const result = [];
+  if (index > 0) result.push({ ...list[index - 1], num: index });
+  if (index < list.length - 1) result.push({ ...list[index + 1], num: index + 2 });
+  return result;
+});
+
+function buildPayload() {
+  return {
+    title: title.value,
+    status: status.value,
+    novel: novelId,
+    content: content.value,
+    html: html.value,
+  };
+}
+
+function createChapter() {
+  if (!title.value.trim()) {
+    errorMsg.value = "Le titre est requis.";
+    return;
+  }
+  errorMsg.value = "";
+  saving.value = true;
+  axios.post("chapter", buildPayload()).then((res) => {
+    router.push({ name: "chapter_edit", params: { novel_id: novelId, chapter_id: res.data.id } });
+  }).catch((e) => {
+    errorMsg.value = "La création a échoué.";
+    console.log(e);
+  }).finally(() => {
+    saving.value = false;
+  });
+}
+
+function updateChapter() {
+  saving.value = true;
+  axios.put("chapter/" + chapterId, buildPayload()).then(() => {
+    errorMsg.value = "";
+  }).catch((e) => {
+    errorMsg.value = "L'enregistrement a échoué.";
+    console.log(e);
+  }).finally(() => {
+    saving.value = false;
+  });
+}
+
+const deletingChapter = ref(false);
+function confirmDeleteChapter() {
+  axios.delete("chapter/" + chapterId).then(() => {
+    router.push({ name: "author_novel", params: { id: novelId } });
+  }).catch((e) => console.log(e));
+}
 </script>
+
+<style>
+.chapter-editor .ql-toolbar.ql-snow {
+  border: 1px solid #DCDEE8;
+  border-radius: 10px 10px 0 0;
+  background: #F8F9FC;
+}
+.chapter-editor .ql-container.ql-snow {
+  border: 1px solid #DCDEE8;
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  min-height: 420px;
+  font-family: "Newsreader", serif;
+  font-size: 17px;
+  line-height: 1.7;
+  background: #FFFCF6;
+}
+.chapter-editor .ql-editor.ql-blank::before {
+  color: #868DA3;
+  font-style: normal;
+}
+</style>

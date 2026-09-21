@@ -1,8 +1,13 @@
 
+iconify-icon {
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+
 body {
-  background-color: $dark-theme;
-  color: $color-text-primary;
-  font-family: 'Quicksand', sans-serif; 
+  background-color: #F3F4F8;
+  color: #101323;
+  font-family: 'Quicksand', sans-serif;
   font-weight: 500;
   font-size: 14px;
   margin: 0;
@@ -19,10 +24,6 @@ a {
   text-decoration: none;
 }
 
-a:visited {
-  color: $color-text-primary;
-}
-
-.fa-solid{
-  color: $color-primary
+:where(a:visited) {
+  color: inherit;
 }

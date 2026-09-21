@@ -7,6 +7,10 @@ export const useHomeStore = defineStore('home', () => {
   const chapters = ref([]);
   const categories = ref([]);
   const newNovels = ref([]);
+  const freeChaptersCount = ref(0);
+  const totalCategoriesCount = ref(0);
+  const hasMoreChapters = ref(true);
+  const loadingMore = ref(false);
 
   async function get() {
     try {
@@ -15,9 +19,25 @@ export const useHomeStore = defineStore('home', () => {
         chapters.value = res.data.chapters;
         categories.value = res.data.categories;
         newNovels.value = res.data.newNovels;
+        freeChaptersCount.value = res.data.freeChaptersCount;
+        totalCategoriesCount.value = res.data.totalCategoriesCount;
       })
     } catch (error) {
-      console.error(error);      
+      console.error(error);
+    }
+  }
+
+  async function loadMoreChapters() {
+    if (loadingMore.value || !hasMoreChapters.value) return;
+    loadingMore.value = true;
+    try {
+      const res = await axios.get('/home/chapters', { params: { offset: chapters.value.length } });
+      chapters.value = [...chapters.value, ...res.data.chapters];
+      hasMoreChapters.value = res.data.hasMore;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      loadingMore.value = false;
     }
   }
 
@@ -25,11 +45,16 @@ export const useHomeStore = defineStore('home', () => {
     get();
   }
 
-  return { 
-    carousel, 
-    chapters, 
+  return {
+    carousel,
+    chapters,
     categories,
     newNovels,
-    get
+    freeChaptersCount,
+    totalCategoriesCount,
+    hasMoreChapters,
+    loadingMore,
+    get,
+    loadMoreChapters,
   }
 })

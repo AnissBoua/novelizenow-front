@@ -6,10 +6,10 @@ import Footer from "./components/layouts/Footer.vue";
 
 <template>
   <div class="min-h-screen flex flex-col">
-    <Header></Header>
-    <main class="flex-1">
+    <Header v-if="!$route.meta.hideChrome"></Header>
+    <main class="flex-1" :class="$route.meta.theme === 'light' ? 'bg-[#F3F4F8]' : ''">
       <RouterView :key="$route.fullPath"/>
     </main>
-    <Footer></Footer>
+    <Footer v-if="!$route.meta.hideChrome"></Footer>
   </div>
 </template>
