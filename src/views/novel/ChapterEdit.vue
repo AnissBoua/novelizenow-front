@@ -18,7 +18,7 @@
             <iconify-icon icon="tabler:eye" class="text-[18px]"></iconify-icon>Aperçu
           </RouterLink>
           <button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-lg border-0 bg-[#3138B0] text-white text-[15px] font-semibold hover:bg-[#232878] disabled:opacity-60" :disabled="saving" @click="chapterId ? updateChapter() : createChapter()">
-            <iconify-icon icon="tabler:send" class="text-[18px]"></iconify-icon>{{ saving ? "Enregistrement…" : (chapterId ? "Enregistrer les modifications" : "Créer le chapitre") }}
+            <iconify-icon icon="tabler:send" class="text-[18px]"></iconify-icon>{{ saving ? "Enregistrement…" : status === "scheduled" ? "Programmer" : (chapterId ? "Enregistrer les modifications" : "Créer le chapitre") }}
           </button>
         </div>
       </div>
@@ -37,11 +37,6 @@
             </span>
             <input v-model="title" type="text" placeholder="Un titre, même provisoire" class="w-full mt-2 h-[46px] px-3.5 border border-[#DCDEE8] rounded-lg bg-white font-newsreader text-[20px] font-medium">
           </label>
-
-          <div class="flex flex-wrap gap-1.5 mt-6 p-1 bg-[#F3F4F8] border border-[#E2E4EC] rounded-xl max-w-[280px]">
-            <button v-for="s in statusOptions" :key="s.value" type="button" class="flex-1 min-w-[100px] px-3 py-2.5 rounded-lg text-[15px] font-semibold" :class="status === s.value ? 'bg-white border border-[#DCDEE8] text-[#101323]' : 'border border-transparent text-[#555D75]'" @click="status = s.value">{{ s.label }}</button>
-          </div>
-          <p class="text-sm text-[#6B7286] mt-3">{{ status === 'published' ? "Visible par les lecteurs (le chapitre 1 est gratuit, les suivants nécessitent l'achat du roman)." : "Le brouillon n'est visible que par vous." }}</p>
         </section>
 
         <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
@@ -83,6 +78,27 @@
         </section>
 
         <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+          <h2 class="font-sora text-base font-semibold">Parution</h2>
+          <div class="flex flex-wrap gap-1 mt-3.5 p-1 bg-[#F3F4F8] border border-[#E2E4EC] rounded-xl">
+            <button v-for="s in statusOptions" :key="s.value" type="button" class="flex-auto px-1.5 py-2.5 rounded-lg text-sm font-semibold whitespace-nowrap" :class="status === s.value ? 'bg-white border border-[#DCDEE8] text-[#101323]' : 'border border-transparent text-[#555D75]'" @click="selectStatus(s.value)">{{ s.label }}</button>
+          </div>
+          <div v-if="status === 'scheduled'" class="flex flex-wrap gap-3 mt-4">
+            <label class="flex-1 basis-[130px] min-w-[120px]">
+              <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Date</span>
+              <input v-model="publishDate" type="date" :min="todayIso" class="w-full mt-2 h-[44px] px-2.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px]">
+            </label>
+            <label class="flex-1 basis-[100px] min-w-[100px]">
+              <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Heure</span>
+              <input v-model="publishTime" type="time" class="w-full mt-2 h-[44px] px-2.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px]">
+            </label>
+          </div>
+          <div class="flex items-start gap-3 mt-4 p-3.5 border border-[#EDEFF4] rounded-xl bg-[#F8F9FC]">
+            <iconify-icon icon="tabler:calendar-event" class="text-[19px] text-[#3138B0] flex-none mt-0.5"></iconify-icon>
+            <p class="text-sm leading-relaxed text-[#555D75]">{{ statusNote }}</p>
+          </div>
+        </section>
+
+        <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
           <h2 class="font-sora text-base font-semibold">Prix</h2>
           <p class="text-sm leading-relaxed text-[#555D75] mt-2">{{ novel.price ? "Le roman coûte " + novel.price + " pièces, le premier chapitre du roman est gratuit." : "" }}</p>
           <RouterLink :to="{name: 'author_novel', params: {id: novelId}}" class="inline-block text-sm font-semibold mt-2.5 text-[#3138B0] hover:text-[#232878]">Changer le prix du roman</RouterLink>
@@ -110,7 +126,7 @@
               <span class="flex-none w-[24px] font-plexmono text-[13px] text-[#868DA3]">{{ n.num }}</span>
               <span class="flex-1 min-w-0">
                 <span class="block font-newsreader text-[16px] font-medium leading-tight">{{ n.title || "Sans titre" }}</span>
-                <span class="block text-[13px] text-[#6B7286] mt-1">{{ n.status === 'published' ? 'Publié' : 'En cours' }}</span>
+                <span class="block text-[13px] text-[#6B7286] mt-1">{{ n.status === 'published' ? 'Publié' : n.status === 'scheduled' ? `Programmé · ${formatPublishAt(n.publishAt)}` : 'En cours' }}</span>
               </span>
             </RouterLink>
           </div>
@@ -138,6 +154,7 @@ import { RouterLink, useRoute, useRouter } from "vue-router";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import axios from "axios";
+import { formatPublishAt } from "@/utils/rhythm.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -164,8 +181,37 @@ const toolbar = [
 
 const statusOptions = [
   { value: "in_progress", label: "Brouillon" },
+  { value: "scheduled", label: "Programmé" },
   { value: "published", label: "Publié" },
 ];
+
+const publishDate = ref("");
+const publishTime = ref("07:00");
+
+function localIsoDate(date) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+const todayIso = localIsoDate(new Date());
+
+function selectStatus(value) {
+  status.value = value;
+  if (value === "scheduled" && !publishDate.value) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    publishDate.value = localIsoDate(tomorrow);
+  }
+}
+
+const statusNote = computed(() => {
+  if (status.value === "scheduled") {
+    if (!publishDate.value || !publishTime.value) return "Choisissez la date et l'heure de parution.";
+    const date = new Date(`${publishDate.value}T${publishTime.value}`);
+    return `Le chapitre paraîtra le ${date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} à ${publishTime.value}. D'ici là, il reste invisible pour les lecteurs.`;
+  }
+  if (status.value === "published") return "Visible par les lecteurs (le chapitre 1 est gratuit, les suivants nécessitent l'achat du roman).";
+  return "Le brouillon n'est visible que par vous.";
+});
 
 const novel = ref({ title: "", slug: null, price: null, chapters: [] });
 
@@ -180,6 +226,11 @@ if (chapterId) {
   axios.get("chapter/" + chapterId).then((res) => {
     title.value = res.data.title;
     status.value = res.data.status;
+    if (res.data.publishAt) {
+      const [date, time] = res.data.publishAt.split(" ");
+      publishDate.value = date;
+      publishTime.value = time.slice(0, 5);
+    }
     html.value = res.data.html || "";
     content.value = res.data.content || "";
   }).catch((e) => console.log(e));
@@ -231,6 +282,7 @@ function buildPayload() {
     novel: novelId,
     content: content.value,
     html: html.value,
+    publishAt: status.value === "scheduled" ? `${publishDate.value}T${publishTime.value}` : null,
   };
 }
 
@@ -244,7 +296,7 @@ function createChapter() {
   axios.post("chapter", buildPayload()).then((res) => {
     router.push({ name: "chapter_edit", params: { novel_id: novelId, chapter_id: res.data.id } });
   }).catch((e) => {
-    errorMsg.value = "La création a échoué.";
+    errorMsg.value = e.response?.data?.error ?? "La création a échoué.";
     console.log(e);
   }).finally(() => {
     saving.value = false;
@@ -256,7 +308,7 @@ function updateChapter() {
   axios.put("chapter/" + chapterId, buildPayload()).then(() => {
     errorMsg.value = "";
   }).catch((e) => {
-    errorMsg.value = "L'enregistrement a échoué.";
+    errorMsg.value = e.response?.data?.error ?? "L'enregistrement a échoué.";
     console.log(e);
   }).finally(() => {
     saving.value = false;

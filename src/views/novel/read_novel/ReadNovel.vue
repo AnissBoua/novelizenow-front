@@ -6,7 +6,7 @@
       <div class="max-w-[1340px] mx-auto px-4 sm:px-6 pt-3.5 flex items-center gap-2 text-[13px] text-[#6B7286]">
         <RouterLink to="/" class="text-[#6B7286]">Le fil</RouterLink>
         <iconify-icon icon="tabler:chevron-right" class="text-[14px]"></iconify-icon>
-        <RouterLink v-if="firstCategory" to="/" class="text-[#6B7286]">{{ firstCategory }}</RouterLink>
+        <RouterLink v-if="firstCategory" :to="{name: 'category', params: {id: firstCategory.id}}" class="text-[#6B7286] capitalize hover:text-[#3138B0]">{{ firstCategory.name }}</RouterLink>
         <iconify-icon v-if="firstCategory" icon="tabler:chevron-right" class="text-[14px]"></iconify-icon>
         <span class="text-[#333B54]">{{ novel.title }}</span>
       </div>
@@ -27,6 +27,9 @@
             <span v-for="cat in novel.categories" :key="cat.id" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F7E3C2] text-[#7A5313] text-[13px] font-semibold capitalize">
               <iconify-icon icon="tabler:tag" class="text-[15px]"></iconify-icon>{{ cat.name }}
             </span>
+            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E9EAF7] text-[#3138B0] text-[13px] font-semibold">
+              <iconify-icon :icon="novel.progress === 'completed' ? 'tabler:circle-check' : novel.progress === 'paused' ? 'tabler:player-pause' : 'tabler:progress'" class="text-[15px]"></iconify-icon>{{ progressBadge }}
+            </span>
             <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FBEEDA] text-[#7A5313] text-[13px] font-semibold">
               <iconify-icon icon="tabler:gift" class="text-[15px]"></iconify-icon>{{ freeChaptersLabel }}
             </span>
@@ -37,7 +40,7 @@
           <div class="flex items-center gap-2.5 mt-3.5">
             <img v-if="novel.author.avatar" class="w-9 h-9 rounded-full object-cover flex-none" :src="BACK_URL + novel.author.avatar.filepath" alt="">
             <span v-else class="w-9 h-9 flex-none rounded-full bg-[#F7E3C2] flex items-center justify-center font-sora text-[13px] font-semibold text-[#7A5313]">{{ initials(novel.author) }}</span>
-            <span class="text-[16px] text-[#3A4260]">par <span class="font-semibold text-[#101323]">{{ novel.author.name }} {{ novel.author.lastname }}</span> · {{ novel.author.novelCount }} {{ novel.author.novelCount > 1 ? 'romans publiés' : 'roman publié' }}</span>
+            <span class="text-[16px] text-[#3A4260]">par <RouterLink :to="{name: 'author', params: {id: novel.author.id}}" class="font-semibold text-[#101323] hover:text-[#3138B0]">{{ novel.author.name }} {{ novel.author.lastname }}</RouterLink> · {{ novel.author.novelCount }} {{ novel.author.novelCount > 1 ? 'romans publiés' : 'roman publié' }}</span>
           </div>
 
           <p v-if="novel.resume" class="font-newsreader text-[19px] leading-relaxed text-[#3A4260] mt-5 max-w-[62ch]">{{ novel.resume }}</p>
@@ -61,6 +64,9 @@
             <RouterLink v-if="firstChapter" :to="chapterLink(firstChapter)" class="px-5 py-3 rounded-lg bg-[#101323] text-white text-[16px] font-semibold hover:bg-[#262B45]">
               <span class="flex items-center gap-2"><iconify-icon icon="tabler:book-2" class="text-[19px]"></iconify-icon>Lire le chapitre 1</span>
             </RouterLink>
+            <button v-if="token" type="button" class="px-4 py-3 rounded-lg text-[16px] font-semibold flex items-center gap-2 border" :class="novel.inLibrary ? 'bg-[#E9EAF7] text-[#3138B0] border-[#3138B0]' : 'border-[#E2E4EC] bg-white text-[#333B54] hover:border-[#E9A23B] hover:text-[#7A5313]'" @click="toggleLibrary">
+              <iconify-icon :icon="novel.inLibrary ? 'tabler:bookmark-filled' : 'tabler:bookmark-plus'" class="text-[19px]"></iconify-icon>{{ novel.inLibrary ? 'Dans ma bibliothèque' : 'Ajouter à ma bibliothèque' }}
+            </button>
             <button type="button" class="px-4 py-3 rounded-lg text-[16px] font-semibold flex items-center gap-2" :class="likeButtonClass" @click="like">
               <iconify-icon :icon="isLiked ? 'tabler:heart-filled' : 'tabler:heart'" class="text-[19px]"></iconify-icon>{{ likesCount }}
             </button>
@@ -110,10 +116,14 @@
                 <span class="flex-none w-8 font-plexmono text-[13px] text-[#868DA3]">{{ String(entry.num).padStart(2, '0') }}</span>
                 <span class="flex-1 min-w-0">
                   <span class="block font-newsreader text-[18px] font-medium leading-tight truncate">{{ entry.chapter.title }}</span>
+                  <span class="block text-[12px] text-[#6B7286] mt-0.5">{{ chapterMeta(entry) }}</span>
                 </span>
               </RouterLink>
-              <span v-if="entry.unlocked" class="flex-none flex items-center gap-1.5 text-[13px] font-semibold px-2.5 py-1 rounded-md bg-[#FBEEDA] text-[#7A5313]">
-                <iconify-icon icon="tabler:book-2" class="text-[15px]"></iconify-icon>Gratuit
+              <span v-if="entry.read" class="flex-none flex items-center gap-1.5 text-[13px] font-semibold px-2.5 py-1 rounded-md bg-[#E9EAF7] text-[#3138B0]">
+                <iconify-icon icon="tabler:check" class="text-[15px]"></iconify-icon>Lu
+              </span>
+              <span v-else-if="entry.unlocked" class="flex-none flex items-center gap-1.5 text-[13px] font-semibold px-2.5 py-1 rounded-md bg-[#FBEEDA] text-[#7A5313]">
+                <iconify-icon icon="tabler:book-2" class="text-[15px]"></iconify-icon>{{ entry.num === 1 ? 'Gratuit' : 'Débloqué' }}
               </span>
               <span v-else class="flex-none flex items-center gap-1.5 text-[13px] font-semibold px-2.5 py-1 rounded-md bg-[#F1F2F7] text-[#101323]">
                 <iconify-icon icon="tabler:lock" class="text-[15px]"></iconify-icon>Verrouillé
@@ -148,9 +158,12 @@
               <span v-if="c.user.avatar" class="w-[38px] h-[38px] flex-none rounded-full overflow-hidden"><img class="w-full h-full object-cover" :src="BACK_URL + c.user.avatar.filepath" alt=""></span>
               <span v-else class="w-[38px] h-[38px] flex-none rounded-full bg-[#E9EAF7] flex items-center justify-center font-sora text-[13px] font-semibold text-[#3138B0]">{{ initials(c.user) }}</span>
               <div class="flex-1 min-w-0">
-                <div class="text-sm text-[#6B7286]"><span class="font-semibold text-[#101323]">{{ c.user.username || c.user.name }}</span></div>
+                <div class="text-sm text-[#6B7286]"><span class="font-semibold text-[#101323]">{{ c.user.username || c.user.name }}</span><template v-if="relativeTime(c.dateCreation)"> · {{ relativeTime(c.dateCreation) }}</template></div>
                 <p class="font-newsreader text-[18px] leading-relaxed text-[#3A4260] mt-1">{{ c.content }}</p>
                 <div class="flex items-center gap-4 mt-2.5">
+                  <button type="button" class="flex items-center gap-1.5 text-[13px] font-semibold" :class="c.isLiked ? 'text-[#7A5313]' : 'text-[#555D75] hover:text-[#7A5313]'" @click="toggleCommentLike(c)">
+                    <iconify-icon :icon="c.isLiked ? 'tabler:heart-filled' : 'tabler:heart'" class="text-[16px] text-[#B4741A]"></iconify-icon>{{ c.likesCount ?? 0 }}
+                  </button>
                   <button v-if="token" type="button" class="text-[13px] font-semibold text-[#555D75] hover:text-[#3138B0]" @click="toggleAnswerInput(index)">Répondre</button>
                   <button v-if="c.comments && c.comments.length" type="button" class="flex items-center gap-1.5 text-[13px] font-semibold text-[#3138B0] hover:text-[#232878]" @click="toggleAnswers(index)">
                     {{ c.comments.length }} réponse{{ c.comments.length > 1 ? 's' : '' }}
@@ -172,8 +185,11 @@
                     <span v-if="a.user.avatar" class="w-8 h-8 flex-none rounded-full overflow-hidden"><img class="w-full h-full object-cover" :src="BACK_URL + a.user.avatar.filepath" alt=""></span>
                     <span v-else class="w-8 h-8 flex-none rounded-full bg-[#E9EAF7] flex items-center justify-center font-sora text-xs font-semibold text-[#3138B0]">{{ initials(a.user) }}</span>
                     <div class="min-w-0">
-                      <div class="text-sm font-semibold text-[#101323]">{{ a.user.username || a.user.name }}</div>
-                      <p class="font-newsreader text-[16px] leading-relaxed text-[#3A4260]">{{ a.content }}</p>
+                      <div class="text-sm text-[#6B7286]"><span class="font-semibold text-[#101323]">{{ a.user.username || a.user.name }}</span><template v-if="relativeTime(a.dateCreation)"> · {{ relativeTime(a.dateCreation) }}</template></div>
+                      <p class="font-newsreader text-[16px] leading-relaxed text-[#3A4260] mt-0.5">{{ a.content }}</p>
+                      <button type="button" class="flex items-center gap-1.5 text-[13px] font-semibold mt-1.5" :class="a.isLiked ? 'text-[#7A5313]' : 'text-[#555D75] hover:text-[#7A5313]'" @click="toggleCommentLike(a)">
+                        <iconify-icon :icon="a.isLiked ? 'tabler:heart-filled' : 'tabler:heart'" class="text-[15px] text-[#B4741A]"></iconify-icon>{{ a.likesCount ?? 0 }}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -191,24 +207,46 @@
           <div class="grid gap-4 mt-5 pt-5 border-t border-[#EEEFF4]" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
             <div>
               <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Statut</div>
-              <div class="text-[15px] font-semibold mt-1 capitalize">{{ novel.status === 'published' ? 'Publié' : novel.status }}</div>
+              <div class="text-[15px] font-semibold mt-1">{{ progressLabels[novel.progress] ?? progressLabels.ongoing }}</div>
             </div>
             <div>
               <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Chapitres</div>
               <div class="text-[15px] font-semibold mt-1">{{ publishedChapters.length }} {{ publishedChapters.length > 1 ? 'publiés' : 'publié' }}</div>
             </div>
+            <div v-if="rhythmFact">
+              <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Rythme</div>
+              <div class="text-[15px] font-semibold mt-1">{{ rhythmFact }}</div>
+            </div>
             <div v-if="publishedDate">
               <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Première parution</div>
               <div class="text-[15px] font-semibold mt-1">{{ publishedDate }}</div>
             </div>
+            <div v-if="novel.wordCount">
+              <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Longueur</div>
+              <div class="text-[15px] font-semibold mt-1">≈ {{ fmtNum(novel.wordCount) }} mots</div>
+            </div>
           </div>
           <div v-if="novel.categories.length" class="flex flex-wrap gap-2 mt-5">
-            <span v-for="cat in novel.categories" :key="cat.id" class="px-3 py-1.5 rounded-full border border-[#E2E4EC] bg-[#F7F8FC] text-[13px] font-medium text-[#333B54] capitalize">{{ cat.name }}</span>
+            <RouterLink v-for="cat in novel.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}" class="px-3 py-1.5 rounded-full border border-[#E2E4EC] bg-[#F7F8FC] text-[13px] font-medium text-[#333B54] capitalize hover:border-[#3138B0] hover:text-[#3138B0]">{{ cat.name }}</RouterLink>
           </div>
         </section>
       </main>
 
       <aside class="flex-1 basis-[300px] min-w-[260px] grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+
+        <section v-if="novel.readingProgress" class="bg-white border border-[#E2E4EC] rounded-2xl p-5">
+          <h2 class="flex items-center gap-2 font-sora text-base font-semibold">
+            <iconify-icon icon="tabler:bookmark" class="text-[19px] text-[#3138B0]"></iconify-icon>Votre lecture
+          </h2>
+          <p class="text-sm text-[#555D75] mt-2">Chapitre {{ novel.readingProgress.chapterIndex + 1 }} · {{ novel.readingProgress.chapterTitle }}</p>
+          <span class="block h-1.5 rounded-full bg-[#E6E7EE] mt-3">
+            <span class="block h-1.5 rounded-full bg-[#E9A23B]" :style="{ width: readingProgressPercent + '%' }"></span>
+          </span>
+          <div class="flex justify-between font-plexmono text-[11px] text-[#6B7286] mt-2">
+            <span>{{ novel.readingProgress.chapterIndex + 1 }} / {{ publishedChapters.length }}</span><span>{{ readingProgressPercent }} %</span>
+          </div>
+          <RouterLink :to="chapterLink({id: novel.readingProgress.chapterId})" class="block text-center mt-3.5 px-4 py-2.5 rounded-lg bg-[#3138B0] text-white text-sm font-semibold hover:bg-[#232878]">Reprendre au chapitre {{ novel.readingProgress.chapterIndex + 1 }}</RouterLink>
+        </section>
 
         <section v-if="token && !novel.userBought && !novel.isAuthor" id="pieces" class="bg-[#FFFBF4] border border-[#E9A23B] rounded-2xl p-5">
           <h2 class="flex items-center gap-2 font-sora text-base font-semibold">
@@ -222,7 +260,7 @@
           <button type="button" class="block w-full text-center mt-4 px-4 py-3 rounded-lg border-0 bg-[#E9A23B] text-[#2A1B05] text-[15px] font-semibold hover:bg-[#F2B558]" @click="buyModal">
             Débloquer pour {{ novel.price }} pièces
           </button>
-          <span class="block text-[13px] text-[#6B7286] mt-2.5">Solde : {{ coins ?? 0 }} pièces.</span>
+          <span class="block text-[13px] text-[#6B7286] mt-2.5">Solde : {{ coins ?? 0 }} pièces. Il vous restera {{ Math.max(0, (coins ?? 0) - novel.price) }} pièces.</span>
         </section>
 
         <section v-else-if="!token" id="pieces" class="bg-[#FFFBF4] border border-[#E9A23B] rounded-2xl p-5">
@@ -238,13 +276,20 @@
             <img v-if="novel.author.avatar" class="w-[46px] h-[46px] rounded-full object-cover flex-none" :src="BACK_URL + novel.author.avatar.filepath" alt="">
             <span v-else class="w-[46px] h-[46px] flex-none rounded-full bg-[#F7E3C2] flex items-center justify-center font-sora text-[15px] font-semibold text-[#7A5313]">{{ initials(novel.author) }}</span>
             <span class="flex-1 min-w-0">
-              <span class="block font-sora text-[16px] font-semibold">{{ novel.author.name }} {{ novel.author.lastname }}</span>
-              <span class="block text-[13px] text-[#555D75] mt-0.5">{{ novel.author.novelCount }} {{ novel.author.novelCount > 1 ? 'romans' : 'roman' }}</span>
+              <RouterLink :to="{name: 'author', params: {id: novel.author.id}}" class="block font-sora text-[16px] font-semibold text-[#101323] hover:text-[#3138B0]">{{ novel.author.name }} {{ novel.author.lastname }}</RouterLink>
+              <span class="block text-[13px] text-[#555D75] mt-0.5">{{ novel.author.novelCount }} {{ novel.author.novelCount > 1 ? 'romans' : 'roman' }} · {{ fmtNum(novel.author.totalLikesReceived ?? 0) }} j'aime</span>
             </span>
           </div>
+          <p v-if="novel.author.bio" class="font-newsreader text-[15px] leading-relaxed text-[#3A4260] mt-3">{{ novel.author.bio }}</p>
           <div class="flex gap-2 mt-3.5">
-            <button type="button" title="Bientôt disponible" class="flex-1 px-3.5 py-2.5 rounded-lg border border-[#DCDEE8] bg-white text-sm font-semibold text-[#555D75] opacity-60 cursor-not-allowed">Suivre</button>
-            <button type="button" title="Bientôt disponible" class="flex-1 px-3.5 py-2.5 rounded-lg border border-[#E2E4EC] bg-white text-sm font-semibold text-[#101323] opacity-60 cursor-not-allowed">Ses romans</button>
+            <button
+              v-if="!novel.isAuthor"
+              type="button"
+              class="flex-1 px-3.5 py-2.5 rounded-lg border text-sm font-semibold"
+              :class="novel.author.isFollowing ? 'border-[#3138B0] bg-[#E9EAF7] text-[#3138B0]' : 'border-[#DCDEE8] bg-white text-[#555D75]'"
+              @click="toggleFollow"
+            >{{ novel.author.isFollowing ? 'Suivi' : 'Suivre' }}</button>
+            <RouterLink :to="{name: 'author', params: {id: novel.author.id}}" class="flex-1 text-center px-3.5 py-2.5 rounded-lg border border-[#E2E4EC] bg-white text-sm font-semibold text-[#101323] hover:border-[#3138B0] hover:text-[#3138B0]">Ses romans</RouterLink>
           </div>
         </section>
 
@@ -258,7 +303,7 @@
               <span v-else class="w-10 flex-none aspect-[2/3] rounded-md bg-[#E6E7EE] border border-[#E2E4EC] block"></span>
               <span class="flex-1 min-w-0">
                 <span class="block font-newsreader text-[17px] font-medium leading-tight truncate">{{ n.title }}</span>
-                <span class="block text-xs text-[#555D75] mt-1">{{ n.categories?.[0]?.name }}</span>
+                <span class="block text-xs text-[#555D75] mt-1">{{ n.categories?.[0]?.name }}<template v-if="n.quantiteChapitre"> · {{ n.quantiteChapitre }} {{ n.quantiteChapitre > 1 ? 'chapitres' : 'chapitre' }}</template></span>
               </span>
             </RouterLink>
           </div>
@@ -309,6 +354,7 @@ import { RouterLink, useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useAuth } from "@/stores/auth.js";
 import { useHomeStore } from "@/stores/home.js";
+import { progressLabels, rhythmLabel } from "@/utils/rhythm.js";
 import axios from "axios";
 
 const authStore = useAuth();
@@ -347,15 +393,58 @@ function initials(person) {
   return (person.name?.slice(0, 1) ?? "").toUpperCase() + (person.lastname?.slice(0, 1) ?? "").toUpperCase();
 }
 
+function fmtNum(n) {
+  return new Intl.NumberFormat("fr-FR").format(n ?? 0);
+}
+
+function relativeTime(value) {
+  if (!value) return "";
+  const date = new Date(value.replace(" ", "T"));
+  if (Number.isNaN(date.getTime())) return "";
+  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (seconds < 60) return "à l'instant";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `il y a ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `il y a ${hours} h`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "hier";
+  if (days < 30) return `il y a ${days} jours`;
+  return date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function toggleLibrary() {
+  axios.post("library/", { novel: novel.value.id }).then((res) => {
+    novel.value.inLibrary = res.data.inLibrary;
+  });
+}
+
+function toggleFollow() {
+  if (!token.value) {
+    router.push({ name: "login" });
+    return;
+  }
+  axios.post(`follow/${novel.value.author.id}`).then((res) => {
+    novel.value.author.isFollowing = res.data.following;
+    novel.value.author.followersCount = res.data.followersCount;
+  });
+}
+
+function toggleCommentLike(c) {
+  if (!token.value) {
+    router.push({ name: "login" });
+    return;
+  }
+  axios.post(`comment/${c.id}/like`).then((res) => {
+    c.isLiked = res.data.liked;
+    c.likesCount = res.data.likesCount;
+  });
+}
+
 if (novelSlug.value) {
   axios.get(`novel/bySlug/${novelSlug.value}`).then((res) => {
     novel.value = res.data;
     likesCount.value = novel.value.likesCount ?? 0;
-
-    if (novel.value.status === "unpublished" && !novel.value.isAuthor) {
-      router.push({ name: "home" });
-      return;
-    }
 
     if (token.value) {
       axios.get(`like/liked/${novel.value.id}`).then((res) => {
@@ -374,20 +463,50 @@ const publishedChapters = computed(() => {
 
 const firstChapter = computed(() => publishedChapters.value[0] ?? null);
 
-const firstCategory = computed(() => novel.value?.categories?.[0]?.name ?? "");
+const firstCategory = computed(() => novel.value?.categories?.[0] ?? null);
 
 const chaptersWithLock = computed(() => publishedChapters.value.map((chapter, index) => ({
   chapter,
   num: index + 1,
   unlocked: index === 0 || novel.value.userBought || novel.value.isAuthor || isOrderSuccess.value,
+  read: novel.value.readingProgress != null && index <= novel.value.readingProgress.chapterIndex,
 })));
 
 const displayChapters = computed(() => (ascending.value ? chaptersWithLock.value : [...chaptersWithLock.value].reverse()));
 const visibleChapters = computed(() => (showAllChapters.value ? displayChapters.value : displayChapters.value.slice(0, 8)));
 
+function chapterMeta(entry) {
+  const parts = [];
+  if (entry.chapter.dateCreation) {
+    const date = new Date(entry.chapter.dateCreation.replace(" ", "T"));
+    if (!Number.isNaN(date.getTime())) parts.push(date.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }));
+  }
+  if (entry.chapter.wordCount) parts.push(`${new Intl.NumberFormat("fr-FR").format(entry.chapter.wordCount)} mots`);
+  return parts.join(" · ");
+}
+
+const progressBadge = computed(() => {
+  const progress = novel.value?.progress ?? "ongoing";
+  const label = progressLabels[progress] ?? progressLabels.ongoing;
+  const rhythm = novel.value?.rhythm;
+  if (progress !== "ongoing" || (rhythm !== "weekly" && rhythm !== "biweekly")) return label;
+  return `${label} · ${rhythmLabel(rhythm, novel.value.releaseDay)}`;
+});
+
+const rhythmFact = computed(() => {
+  if ((novel.value?.progress ?? "ongoing") !== "ongoing" || !novel.value?.rhythm) return "";
+  const label = rhythmLabel(novel.value.rhythm, novel.value.releaseDay);
+  return label.charAt(0).toUpperCase() + label.slice(1);
+});
+
+const readingProgressPercent = computed(() => {
+  if (!novel.value?.readingProgress || !publishedChapters.value.length) return 0;
+  return Math.round(((novel.value.readingProgress.chapterIndex + 1) / publishedChapters.value.length) * 100);
+});
+
 const publishedDate = computed(() => {
-  if (!novel.value?.date_creation) return "";
-  const date = new Date(novel.value.date_creation.replace(" ", "T"));
+  if (!novel.value?.publishedAt) return "";
+  const date = new Date(novel.value.publishedAt.replace(" ", "T"));
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 });

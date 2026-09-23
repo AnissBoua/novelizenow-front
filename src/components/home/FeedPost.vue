@@ -1,10 +1,13 @@
 <template>
   <article class="bg-white border border-[#E2E4EC] rounded-2xl p-5">
     <div class="flex items-center gap-3">
-      <span class="flex-none w-[38px] h-[38px] rounded-full bg-[#E9EAF7] flex items-center justify-center font-sora text-[13px] font-semibold text-[#3138B0]">{{ authorInitials }}</span>
+      <RouterLink :to="authorLink" class="flex-none w-[38px] h-[38px] rounded-full overflow-hidden bg-[#E9EAF7] flex items-center justify-center font-sora text-[13px] font-semibold text-[#3138B0]">
+        <img v-if="novel.author.avatar" class="w-full h-full object-cover" :src="BACK_URL + novel.author.avatar.filepath" :alt="`${novel.author.name} ${novel.author.lastname}`">
+        <template v-else>{{ authorInitials }}</template>
+      </RouterLink>
       <div class="flex-1 min-w-0">
         <div class="text-[15px] text-[#333B54]">
-          <span class="font-semibold text-[#3138B0]">{{ novel.author.name }} {{ novel.author.lastname }}</span>
+          <RouterLink :to="authorLink" class="font-semibold text-[#3138B0] hover:text-[#232878]">{{ novel.author.name }} {{ novel.author.lastname }}</RouterLink>
           a publié un chapitre de
           <RouterLink :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="font-semibold text-[#101323] hover:text-[#232878]">{{ novel.title }}</RouterLink>
         </div>
@@ -61,6 +64,7 @@ const authorInitials = computed(() => {
   const a = novel.value.author;
   return (a.name?.slice(0, 1) ?? '').toUpperCase() + (a.lastname?.slice(0, 1) ?? '').toUpperCase();
 });
+const authorLink = computed(() => ({ name: 'author', params: { id: novel.value.author.id } }));
 const chapterLink = computed(() => ({
   name: 'read_page',
   params: { slug: novel.value.slug, chapter_id: props.chapter.id },

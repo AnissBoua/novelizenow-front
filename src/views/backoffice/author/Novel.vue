@@ -7,7 +7,7 @@
           <iconify-icon icon="tabler:arrow-left" class="text-[19px]"></iconify-icon>
         </RouterLink>
         <div class="flex-1 basis-[260px] min-w-[200px]">
-          <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#7A5313]">{{ novelId ? "Mon roman" : "Nouveau roman" }}</span>
+          <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#7A5313]">{{ novelId ? `Mon roman · ${publishedAt ? "Publié" : "Non publié"}` : "Nouveau roman" }}</span>
           <span class="block font-sora text-[18px] font-semibold tracking-[-0.02em] mt-1">{{ novelId ? (novel.title || "Sans titre") : "Créer un roman" }}</span>
         </div>
         <span v-if="saved" class="flex-none flex items-center gap-1.5 text-[14px] font-semibold text-[#7A5313]">
@@ -17,6 +17,16 @@
           <RouterLink v-if="novelId && novel.slug" :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#EADFCB] bg-white text-[15px] font-semibold text-[#333B54] hover:border-[#E9A23B] hover:text-[#7A5313]">
             <iconify-icon icon="tabler:eye" class="text-[18px]"></iconify-icon>Aperçu
           </RouterLink>
+          <button
+            v-if="novelId"
+            type="button"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[15px] font-semibold disabled:opacity-60"
+            :class="publishedAt ? 'border border-[#EADFCB] bg-white text-[#333B54] hover:border-[#E9A23B] hover:text-[#7A5313]' : 'border-0 bg-[#E9A23B] text-[#2A1B05] hover:bg-[#DE9526]'"
+            :disabled="togglingVisibility"
+            @click="toggleVisibility"
+          >
+            <iconify-icon :icon="publishedAt ? 'tabler:eye-off' : 'tabler:world-upload'" class="text-[18px]"></iconify-icon>{{ publishedAt ? "Dépublier" : "Publier" }}
+          </button>
           <button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-lg border-0 bg-[#3138B0] text-white text-[15px] font-semibold hover:bg-[#232878] disabled:opacity-60" :disabled="saving" @click="novelId ? updateNovel() : createNovel()">
             <iconify-icon icon="tabler:send" class="text-[18px]"></iconify-icon>{{ saving ? "Enregistrement…" : (novelId ? "Enregistrer les modifications" : "Créer le roman") }}
           </button>
@@ -81,11 +91,35 @@
         </section>
 
         <section class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
-          <h2 class="font-sora text-lg font-semibold tracking-[-0.02em]">État</h2>
-          <div class="flex flex-wrap gap-1.5 mt-5 p-1 bg-[#F3F4F8] border border-[#E2E4EC] rounded-xl max-w-[320px]">
-            <button v-for="s in statusOptions" :key="s.value" type="button" class="flex-1 min-w-[110px] px-3 py-2.5 rounded-lg text-[15px] font-semibold" :class="novel.status === s.value ? 'bg-white border border-[#DCDEE8] text-[#101323]' : 'border border-transparent text-[#555D75]'" @click="novel.status = s.value">{{ s.label }}</button>
+          <h2 class="font-sora text-lg font-semibold tracking-[-0.02em]">Rythme et état</h2>
+          <p class="text-[15px] leading-relaxed text-[#555D75] mt-2 max-w-[56ch]">Le rythme annoncé et l'état du roman s'affichent sur sa page.</p>
+
+          <div class="flex flex-col gap-5 mt-5">
+            <div>
+              <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">État</span>
+              <div class="flex flex-wrap gap-1.5 mt-2.5 p-1 bg-[#F3F4F8] border border-[#E2E4EC] rounded-xl">
+                <button v-for="(label, value) in progressLabels" :key="value" type="button" class="flex-1 min-w-[110px] px-3 py-2.5 rounded-lg text-[15px] font-semibold" :class="novel.progress === value ? 'bg-white border border-[#DCDEE8] text-[#101323]' : 'border border-transparent text-[#555D75]'" @click="novel.progress = value">{{ label }}</button>
+              </div>
+            </div>
+            <div>
+              <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Rythme annoncé</span>
+              <div class="flex flex-wrap gap-1.5 mt-2.5 p-1 bg-[#F3F4F8] border border-[#E2E4EC] rounded-xl">
+                <button v-for="r in rhythmOptions" :key="r.value" type="button" class="flex-1 min-w-[120px] px-3 py-2.5 rounded-lg text-[15px] font-semibold" :class="novel.rhythm === r.value ? 'bg-white border border-[#DCDEE8] text-[#101323]' : 'border border-transparent text-[#555D75]'" @click="novel.rhythm = r.value">{{ r.label }}</button>
+              </div>
+            </div>
+            <label v-if="novel.rhythm === 'weekly' || novel.rhythm === 'biweekly'" class="block max-w-[280px]">
+              <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Jour de parution</span>
+              <select v-model.number="novel.releaseDay" class="w-full mt-2 h-[44px] px-3 border border-[#DCDEE8] rounded-lg bg-white text-[15px] capitalize">
+                <option :value="null">Aucun jour fixe</option>
+                <option v-for="(day, index) in weekDays" :key="day" :value="index + 1">{{ day }}</option>
+              </select>
+            </label>
           </div>
-          <p class="text-sm text-[#6B7286] mt-3">{{ novel.status === 'published' ? "Visible dans le fil et la librairie." : "Masqué du fil et de la librairie." }}</p>
+
+          <div class="flex items-start gap-3.5 mt-5 p-4 border border-[#EDEFF4] rounded-xl bg-[#F8F9FC]">
+            <iconify-icon icon="tabler:calendar-event" class="text-[20px] text-[#3138B0] flex-none mt-0.5"></iconify-icon>
+            <p class="text-sm leading-relaxed text-[#555D75]">{{ rhythmNote }}</p>
+          </div>
         </section>
 
         <section class="bg-[#FFFBF4] border border-[#E9A23B] rounded-2xl p-6">
@@ -103,7 +137,7 @@
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex-1 basis-[240px] min-w-[220px]">
               <h2 class="font-sora text-lg font-semibold tracking-[-0.02em]">Chapitres</h2>
-              <p class="text-[15px] leading-relaxed text-[#555D75] mt-2">{{ publishedChaptersCount }} publié{{ publishedChaptersCount > 1 ? 's' : '' }} · {{ draftChaptersCount }} en cours</p>
+              <p class="text-[15px] leading-relaxed text-[#555D75] mt-2">{{ publishedChaptersCount }} publié{{ publishedChaptersCount > 1 ? 's' : '' }} · {{ draftChaptersCount }} en cours<template v-if="scheduledChaptersCount"> · {{ scheduledChaptersCount }} programmé{{ scheduledChaptersCount > 1 ? 's' : '' }}</template></p>
             </div>
             <RouterLink :to="{name: 'chapter_edit', params: {novel_id: novelId}}" class="flex-none flex items-center gap-2 px-5 py-3 rounded-lg bg-[#3138B0] text-white text-[15px] font-semibold hover:bg-[#232878]">
               <iconify-icon icon="tabler:plus" class="text-[18px]"></iconify-icon>Nouveau chapitre
@@ -116,7 +150,7 @@
             <div v-for="(ch, index) in chapters" :key="ch.id" class="flex flex-wrap items-center gap-3.5 py-3.5 border-b border-[#EDEFF4] last:border-b-0">
               <span class="flex-none w-[28px] font-plexmono text-[13px] text-[#868DA3]">{{ index + 1 }}</span>
               <RouterLink :to="{name: 'chapter_edit', params: {novel_id: novelId, chapter_id: ch.id}}" class="flex-1 basis-[200px] min-w-[160px] font-newsreader text-[17px] font-medium text-[#101323] hover:text-[#3138B0]">{{ ch.title || "Sans titre" }}</RouterLink>
-              <span class="flex-none px-2.5 py-1 rounded-full font-plexmono text-[11px] tracking-wider uppercase" :class="ch.status === 'published' ? 'bg-[#E9EAF7] text-[#3138B0]' : 'bg-[#EDEFF4] text-[#555D75]'">{{ ch.status === 'published' ? 'Publié' : 'En cours' }}</span>
+              <span class="flex-none px-2.5 py-1 rounded-full font-plexmono text-[11px] tracking-wider uppercase" :class="ch.status === 'published' ? 'bg-[#E9EAF7] text-[#3138B0]' : ch.status === 'scheduled' ? 'bg-[#FBEEDA] text-[#7A5313]' : 'bg-[#EDEFF4] text-[#555D75]'">{{ ch.status === 'published' ? 'Publié' : ch.status === 'scheduled' ? `Programmé · ${formatPublishAt(ch.publishAt)}` : 'En cours' }}</span>
               <div class="flex-none flex gap-1.5">
                 <RouterLink :to="{name: 'chapter_edit', params: {novel_id: novelId, chapter_id: ch.id}}" class="flex items-center justify-center w-[34px] h-[34px] rounded-lg border border-[#D8DBE6] bg-white text-[#555D75] hover:border-[#3138B0] hover:text-[#3138B0]"><iconify-icon icon="tabler:pencil" class="text-[16px]"></iconify-icon></RouterLink>
                 <button type="button" class="flex items-center justify-center w-[34px] h-[34px] rounded-lg border border-[#D8DBE6] bg-white text-[#555D75] hover:border-[#B9BECD] hover:text-[#101323]" @click="deletingChapterId = ch.id"><iconify-icon icon="tabler:trash" class="text-[16px]"></iconify-icon></button>
@@ -143,7 +177,7 @@
               <span class="block text-[13px] text-[#555D75] mt-1.5">{{ novelId ? (chapters ? chapters.length : 0) + " chapitres" : "aucun chapitre" }}</span>
               <span class="flex flex-wrap gap-1.5 mt-2.5">
                 <span class="px-2.5 py-1 rounded-full bg-[#F7E3C2] text-[#7A5313] text-[12px] font-semibold">{{ novel.categories[0] ? novel.categories[0].name : "Sans catégorie" }}</span>
-                <span class="px-2.5 py-1 rounded-full bg-[#E9EAF7] text-[#3138B0] text-[12px] font-semibold">{{ novel.status === 'published' ? 'Publié' : 'Non publié' }}</span>
+                <span class="px-2.5 py-1 rounded-full bg-[#E9EAF7] text-[#3138B0] text-[12px] font-semibold">{{ publishedAt ? 'Publié' : 'Non publié' }}</span>
               </span>
             </div>
           </div>
@@ -218,6 +252,7 @@ import { ref, computed, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useAuth } from "@/stores/auth.js";
+import { weekDays, progressLabels, rhythmLabel, formatPublishAt } from "@/utils/rhythm.js";
 
 const BACK_URL = import.meta.env.VITE_BACK_URL;
 const authStore = useAuth();
@@ -234,7 +269,9 @@ const novel = ref({
   title: "",
   resume: "",
   price: 0,
-  status: "unpublished",
+  progress: "ongoing",
+  rhythm: null,
+  releaseDay: null,
   image: null,
   categories: [],
   slug: null,
@@ -246,10 +283,8 @@ watch(novel, () => { saved.value = false; }, { deep: true });
 const coverPreview = ref(null);
 const chapters = ref(null);
 
-const statusOptions = [
-  { value: "unpublished", label: "Non publié" },
-  { value: "published", label: "Publié" },
-];
+const publishedAt = ref(null);
+const togglingVisibility = ref(false);
 
 let novelId = null;
 if (route.params.id) {
@@ -262,7 +297,10 @@ if (route.params.id) {
         novel.value.title = res.data.title;
         novel.value.resume = res.data.resume;
         novel.value.price = res.data.price;
-        novel.value.status = res.data.status;
+        publishedAt.value = res.data.publishedAt ?? null;
+        novel.value.progress = res.data.progress ?? "ongoing";
+        novel.value.rhythm = res.data.rhythm ?? null;
+        novel.value.releaseDay = res.data.releaseDay ?? null;
         novel.value.categories = res.data.categories;
         novel.value.slug = res.data.slug;
         novel.value.likesCount = res.data.likesCount;
@@ -307,7 +345,9 @@ function buildFormData() {
   formData.append("title", novel.value.title);
   formData.append("resume", novel.value.resume);
   formData.append("price", novel.value.price);
-  formData.append("status", novel.value.status);
+  formData.append("progress", novel.value.progress);
+  formData.append("rhythm", novel.value.rhythm ?? "");
+  formData.append("releaseDay", novel.value.releaseDay ?? "");
   if (novel.value.image) formData.append("cover", novel.value.image);
   novel.value.categories.forEach((category) => {
     formData.append("category[]", category.id);
@@ -328,7 +368,7 @@ function createNovel() {
   saving.value = true;
   axios.post("novel/", buildFormData()).then((res) => {
     if (res.status === 201) {
-      router.push({ name: "account" });
+      router.push({ name: "author_novel", params: { id: res.data.id } });
     }
   }).catch((e) => {
     errors.value.general = "La création a échoué.";
@@ -352,6 +392,19 @@ function updateNovel() {
   });
 }
 
+function toggleVisibility() {
+  togglingVisibility.value = true;
+  errors.value.general = null;
+  axios.post(`novel/${novelId}/visibility`).then((res) => {
+    publishedAt.value = res.data.publishedAt;
+  }).catch((e) => {
+    errors.value.general = "Le changement de visibilité a échoué.";
+    console.log(e);
+  }).finally(() => {
+    togglingVisibility.value = false;
+  });
+}
+
 function checkTitleLenght() {
   errors.value.general = novel.value.title.length < 1 ? "Le titre doit comporter au moins 1 caractère" : null;
 }
@@ -361,7 +414,23 @@ function checkPrice() {
 }
 
 const publishedChaptersCount = computed(() => (chapters.value ?? []).filter((c) => c.status === "published").length);
-const draftChaptersCount = computed(() => (chapters.value ?? []).filter((c) => c.status !== "published").length);
+const draftChaptersCount = computed(() => (chapters.value ?? []).filter((c) => c.status === "in_progress").length);
+const scheduledChaptersCount = computed(() => (chapters.value ?? []).filter((c) => c.status === "scheduled").length);
+
+const rhythmOptions = [
+  { value: "weekly", label: "Chaque semaine" },
+  { value: "biweekly", label: "Deux fois par mois" },
+  { value: "irregular", label: "Irrégulier" },
+];
+
+const rhythmNote = computed(() => {
+  if (novel.value.progress !== "ongoing") {
+    return `Les lecteurs verront « ${progressLabels[novel.value.progress]} » sur la page du roman. Le rythme n'y est pas affiché tant que le roman n'est pas en cours.`;
+  }
+  if (!novel.value.rhythm) return "Choisissez un rythme pour l'afficher sur la page du roman.";
+  if (novel.value.rhythm === "irregular") return "Sans rythme fixe, la page du roman affiche « En cours » et « Rythme : irrégulier », sans jour de parution.";
+  return `Les lecteurs verront « En cours · ${rhythmLabel(novel.value.rhythm, novel.value.releaseDay)} » sur la page du roman.`;
+});
 
 const checklist = computed(() => {
   const titleOk = novel.value.title.trim().length >= 3;

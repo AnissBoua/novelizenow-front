@@ -8,6 +8,7 @@ export const useHomeStore = defineStore('home', () => {
   const categories = ref([]);
   const newNovels = ref([]);
   const freeChaptersCount = ref(0);
+  const publishedNovelsCount = ref(0);
   const totalCategoriesCount = ref(0);
   const hasMoreChapters = ref(true);
   const loadingMore = ref(false);
@@ -20,6 +21,7 @@ export const useHomeStore = defineStore('home', () => {
         categories.value = res.data.categories;
         newNovels.value = res.data.newNovels;
         freeChaptersCount.value = res.data.freeChaptersCount;
+        publishedNovelsCount.value = res.data.publishedNovelsCount;
         totalCategoriesCount.value = res.data.totalCategoriesCount;
       })
     } catch (error) {
@@ -51,6 +53,7 @@ export const useHomeStore = defineStore('home', () => {
     categories,
     newNovels,
     freeChaptersCount,
+    publishedNovelsCount,
     totalCategoriesCount,
     hasMoreChapters,
     loadingMore,

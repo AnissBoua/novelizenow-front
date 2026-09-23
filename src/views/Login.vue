@@ -9,10 +9,7 @@
     </label>
 
     <label class="block">
-      <span class="flex items-baseline justify-between gap-3 mb-1.5">
-        <span class="text-sm font-semibold text-[#333B54]">Mot de passe</span>
-        <a href="#" title="Bientôt disponible" class="text-[13px] font-semibold text-[#3138B0]">Mot de passe oublié ?</a>
-      </span>
+      <span class="block text-sm font-semibold text-[#333B54] mb-1.5">Mot de passe</span>
       <span class="flex items-center gap-2.5 bg-white border border-[#DCDEE8] rounded-lg px-3.5 h-[46px]">
         <iconify-icon icon="tabler:lock" class="text-[18px] text-[#868DA3] flex-none"></iconify-icon>
         <input v-model="password" :type="reveal ? 'text' : 'password'" placeholder="Votre mot de passe" autocomplete="current-password" required class="flex-1 min-w-0 border-0 bg-transparent outline-none text-[15px]">
@@ -20,11 +17,6 @@
           <iconify-icon :icon="reveal ? 'tabler:eye-off' : 'tabler:eye'" class="text-[18px]"></iconify-icon>
         </button>
       </span>
-    </label>
-
-    <label class="flex items-center gap-2.5 text-sm text-[#3A4260]">
-      <input v-model="remember" type="checkbox" class="w-[17px] h-[17px] accent-[#3138B0] flex-none">
-      Rester connecté sur cet appareil
     </label>
   </AuthLayout>
 </template>
@@ -40,7 +32,6 @@ const router = useRouter();
 const authStore = useAuth();
 const email = ref("");
 const password = ref("");
-const remember = ref(false);
 const reveal = ref(false);
 const submitting = ref(false);
 const errors = ref({

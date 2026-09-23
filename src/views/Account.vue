@@ -64,6 +64,12 @@
                 <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Identifiant</span>
                 <input v-model="profileForm.username" type="text" class="w-full mt-2 h-[44px] px-3.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px]">
               </label>
+              <label class="block mt-4">
+                <span class="flex justify-between gap-3 font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">
+                  <span>Bio</span><span>{{ profileForm.bio.length }} / 280</span>
+                </span>
+                <textarea v-model="profileForm.bio" rows="3" maxlength="280" placeholder="Une phrase sur vous ou votre façon d'écrire, affichée sur vos romans." class="w-full mt-2 px-3.5 py-2.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px] leading-relaxed resize-y"></textarea>
+              </label>
 
               <div v-if="profileError" class="text-sm text-[#6B0504] bg-[#FBEAEA] border border-[#F1C7C7] rounded-lg px-3.5 py-2.5 mt-4">{{ profileError }}</div>
               <div v-if="profileSaved" class="text-sm text-[#3A6B1F] bg-[#EEF7E8] border border-[#CDE7BD] rounded-lg px-3.5 py-2.5 mt-4">Profil mis à jour.</div>
@@ -78,12 +84,16 @@
               <h2 class="font-sora text-lg font-semibold tracking-[-0.02em]">Activité</h2>
               <dl class="mt-4 grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
                 <div>
-                  <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Commentaires</dt>
-                  <dd class="mt-2 font-sora text-2xl font-semibold tracking-[-0.02em]">{{ user.commentsCount ?? 0 }}</dd>
+                  <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Chapitres lus</dt>
+                  <dd class="mt-2 font-sora text-2xl font-semibold tracking-[-0.02em]">{{ user.chaptersReadCount ?? 0 }}</dd>
                 </div>
                 <div>
-                  <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Romans achetés</dt>
-                  <dd class="mt-2 font-sora text-2xl font-semibold tracking-[-0.02em]">{{ user.ordersCount ?? 0 }}</dd>
+                  <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Romans suivis</dt>
+                  <dd class="mt-2 font-sora text-2xl font-semibold tracking-[-0.02em]">{{ user.followedNovelsCount ?? 0 }}</dd>
+                </div>
+                <div>
+                  <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Commentaires</dt>
+                  <dd class="mt-2 font-sora text-2xl font-semibold tracking-[-0.02em]">{{ user.commentsCount ?? 0 }}</dd>
                 </div>
                 <div>
                   <dt class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Auteurs soutenus</dt>
@@ -147,7 +157,7 @@
                     <div class="flex-1 basis-[240px] min-w-[200px]">
                       <div class="flex flex-wrap items-center gap-2.5">
                         <RouterLink :to="{name: 'read_novel', params: {novel_slug: entry.novel.slug}}" class="font-sora text-[18px] font-semibold tracking-[-0.02em] text-[#101323] hover:text-[#3138B0]">{{ entry.novel.title }}</RouterLink>
-                        <span class="px-2.5 py-1 rounded-full font-plexmono text-[11px] tracking-wider uppercase" :class="entry.novel.status === 'published' ? 'bg-[#E9EAF7] text-[#3138B0]' : 'bg-[#EDEFF4] text-[#555D75]'">{{ entry.novel.status === 'published' ? 'Publié' : 'Brouillon' }}</span>
+                        <span class="px-2.5 py-1 rounded-full font-plexmono text-[11px] tracking-wider uppercase" :class="entry.novel.publishedAt ? 'bg-[#E9EAF7] text-[#3138B0]' : 'bg-[#EDEFF4] text-[#555D75]'">{{ entry.novel.publishedAt ? 'Publié' : 'Brouillon' }}</span>
                       </div>
                       <span class="block text-sm text-[#6B7286] mt-1.5">{{ entry.novel.quantiteChapitre }} {{ entry.novel.quantiteChapitre > 1 ? 'chapitres' : 'chapitre' }}</span>
                       <div class="flex flex-wrap gap-4 mt-2.5 text-sm text-[#555D75]">
@@ -170,6 +180,26 @@
           </template>
 
           <template v-else-if="tab === 'Lecture'">
+            <div v-if="readingProgress && readingProgress.length" class="bg-white border border-[#E2E4EC] rounded-2xl p-6 mb-4">
+              <h2 class="font-sora text-xl font-semibold tracking-[-0.02em]">Reprendre la lecture</h2>
+              <p class="text-[15px] leading-relaxed text-[#555D75] mt-2 max-w-[56ch]">Les romans que vous avez commencés.</p>
+
+              <div class="flex flex-col gap-3 mt-6">
+                <RouterLink v-for="entry in readingProgress" :key="entry.novel.id" :to="{name: 'read_page', params: {slug: entry.novel.slug, chapter_id: entry.chapterId}}" class="flex flex-wrap items-center gap-3.5 border border-[#EDEFF4] rounded-xl p-5 bg-[#F8F9FC] hover:border-[#DCDEE8]">
+                  <img v-if="entry.novel.cover" class="flex-none w-[52px] aspect-[2/3] object-cover rounded-md border border-[#E2E4EC]" :src="BACK_URL + entry.novel.cover.filepath" :alt="entry.novel.title">
+                  <span v-else class="flex-none w-[52px] aspect-[2/3] rounded-md bg-[#E6E7EE] border border-[#E2E4EC] block"></span>
+                  <div class="flex-1 basis-[200px] min-w-[180px]">
+                    <span class="block font-sora text-[16px] font-semibold text-[#101323]">{{ entry.novel.title }}</span>
+                    <span class="block text-sm text-[#6B7286] mt-1">Chapitre {{ entry.chapterIndex + 1 }} · {{ entry.chapterTitle }}</span>
+                    <span class="block h-1.5 rounded-full bg-[#E6E7EE] mt-2.5 max-w-[220px]">
+                      <span class="block h-1.5 rounded-full bg-[#E9A23B]" :style="{ width: progressPercent(entry) + '%' }"></span>
+                    </span>
+                  </div>
+                  <span class="flex-none px-4 py-2.5 rounded-lg border border-[#D8DBE6] bg-white text-sm font-semibold text-[#3138B0]">Reprendre</span>
+                </RouterLink>
+              </div>
+            </div>
+
             <div class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
               <h2 class="font-sora text-xl font-semibold tracking-[-0.02em]">Confort de lecture</h2>
               <p class="text-[15px] leading-relaxed text-[#555D75] mt-2 max-w-[56ch]">Ces réglages s'appliquent à tous les chapitres.</p>
@@ -203,14 +233,51 @@
             </div>
           </template>
 
+          <template v-else-if="tab === 'Bibliothèque'">
+            <div class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
+              <h2 class="font-sora text-xl font-semibold tracking-[-0.02em]">Bibliothèque</h2>
+              <p class="text-[15px] leading-relaxed text-[#555D75] mt-2 max-w-[56ch]">Les romans que vous avez mis de côté pour plus tard.</p>
+
+              <p v-if="library && !library.length" class="text-[#6B7286] mt-6">Aucun roman dans votre bibliothèque pour le moment.</p>
+
+              <div v-if="library" class="flex flex-col gap-3 mt-6">
+                <div v-for="entry in library" :key="entry.novel.id" class="flex flex-wrap items-start gap-3.5 border border-[#EDEFF4] rounded-xl p-5 bg-[#F8F9FC]">
+                  <img v-if="entry.novel.cover" class="flex-none w-[52px] aspect-[2/3] object-cover rounded-md border border-[#E2E4EC]" :src="BACK_URL + entry.novel.cover.filepath" :alt="entry.novel.title">
+                  <span v-else class="flex-none w-[52px] aspect-[2/3] rounded-md bg-[#E6E7EE] border border-[#E2E4EC] block"></span>
+                  <div class="flex-1 basis-[200px] min-w-[180px]">
+                    <RouterLink :to="{name: 'read_novel', params: {novel_slug: entry.novel.slug}}" class="font-sora text-[18px] font-semibold tracking-[-0.02em] text-[#101323] hover:text-[#3138B0]">{{ entry.novel.title }}</RouterLink>
+                    <span class="block text-sm text-[#6B7286] mt-1.5">{{ entry.novel.author.name }} {{ entry.novel.author.lastname }} · {{ entry.novel.quantiteChapitre }} {{ entry.novel.quantiteChapitre > 1 ? 'chapitres' : 'chapitre' }}</span>
+                  </div>
+                  <button type="button" class="flex-none px-4 py-2.5 rounded-lg border border-[#D8DBE6] bg-white text-sm font-semibold text-[#9B2C2C] hover:bg-[#FCF3F3]" @click="removeFromLibrary(entry.novel.id)">Retirer</button>
+                </div>
+              </div>
+            </div>
+          </template>
+
           <template v-else-if="tab === 'Sécurité'">
             <div class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
               <h2 class="font-sora text-xl font-semibold tracking-[-0.02em]">Connexion</h2>
-              <label class="block mt-5 max-w-[360px]">
-                <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">E-mail</span>
-                <input type="email" :value="user.email" disabled class="w-full mt-2 h-[44px] px-3.5 border border-[#DCDEE8] rounded-lg bg-[#F3F4F8] text-[15px] text-[#555D75]">
+              <div class="grid gap-4 mt-5" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <label class="block">
+                  <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">E-mail</span>
+                  <input v-model="credentialsForm.email" type="email" class="w-full mt-2 h-[44px] px-3.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px]">
+                </label>
+                <label class="block">
+                  <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Nouveau mot de passe</span>
+                  <input v-model="credentialsForm.newPassword" type="password" placeholder="Laisser vide pour ne pas changer" autocomplete="new-password" class="w-full mt-2 h-[44px] px-3.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px]">
+                </label>
+              </div>
+              <label class="block mt-4 max-w-[360px]">
+                <span class="block font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Mot de passe actuel</span>
+                <input v-model="credentialsForm.currentPassword" type="password" placeholder="Requis pour confirmer" autocomplete="current-password" class="w-full mt-2 h-[44px] px-3.5 border border-[#DCDEE8] rounded-lg bg-white text-[15px]">
               </label>
-              <p class="text-sm text-[#6B7286] mt-4">La modification de l'e-mail et du mot de passe depuis cette page arrive bientôt.</p>
+
+              <div v-if="credentialsError" class="text-sm text-[#6B0504] bg-[#FBEAEA] border border-[#F1C7C7] rounded-lg px-3.5 py-2.5 mt-4">{{ credentialsError }}</div>
+              <div v-if="credentialsSaved" class="text-sm text-[#3A6B1F] bg-[#EEF7E8] border border-[#CDE7BD] rounded-lg px-3.5 py-2.5 mt-4">Identifiants mis à jour.</div>
+
+              <div class="flex flex-wrap items-center gap-3 mt-5">
+                <button type="button" class="px-5 py-3 rounded-lg border-0 bg-[#3138B0] text-white text-[15px] font-semibold hover:bg-[#232878] disabled:opacity-60" :disabled="savingCredentials" @click="saveCredentials">{{ savingCredentials ? 'Mise à jour…' : 'Mettre à jour' }}</button>
+              </div>
             </div>
 
             <div class="bg-white border border-[#E2E4EC] rounded-2xl p-6">
@@ -270,6 +337,7 @@ const tabs = [
   { key: 'Pièces', label: 'Pièces & achats', icon: 'tabler:coins' },
   { key: 'Écrire', label: 'Écrire', icon: 'tabler:pencil' },
   { key: 'Lecture', label: 'Lecture', icon: 'tabler:book-2' },
+  { key: 'Bibliothèque', label: 'Bibliothèque', icon: 'tabler:bookmark' },
   { key: 'Sécurité', label: 'Sécurité', icon: 'tabler:shield-lock' },
 ];
 const tab = ref('Profil');
@@ -279,7 +347,7 @@ const initials = computed(() => {
   return (user.value.name?.slice(0, 1) ?? '').toUpperCase() + (user.value.lastname?.slice(0, 1) ?? '').toUpperCase();
 });
 
-const profileForm = ref({ name: '', lastname: '', username: '' });
+const profileForm = ref({ name: '', lastname: '', username: '', bio: '' });
 const savingProfile = ref(false);
 const profileError = ref('');
 const profileSaved = ref(false);
@@ -290,6 +358,7 @@ function resetProfileForm() {
     name: user.value?.name ?? '',
     lastname: user.value?.lastname ?? '',
     username: user.value?.username ?? '',
+    bio: user.value?.bio ?? '',
   };
   profileError.value = '';
   profileSaved.value = false;
@@ -312,6 +381,7 @@ function saveProfile() {
   formData.append('name', profileForm.value.name);
   formData.append('lastname', profileForm.value.lastname);
   formData.append('username', profileForm.value.username);
+  formData.append('bio', profileForm.value.bio);
   if (pendingAvatar.value) {
     formData.append('avatar', pendingAvatar.value);
   }
@@ -345,6 +415,27 @@ axios.get('user/novels').then((res) => {
   userNovels.value = res.data;
 }).catch((err) => console.error(err));
 
+const library = ref(null);
+axios.get('library/me').then((res) => {
+  library.value = res.data;
+}).catch((err) => console.error(err));
+
+const readingProgress = ref(null);
+axios.get('/reading-progress/me').then((res) => {
+  readingProgress.value = res.data;
+}).catch((err) => console.error(err));
+
+function progressPercent(entry) {
+  if (!entry.totalChapters) return 0;
+  return Math.round(((entry.chapterIndex + 1) / entry.totalChapters) * 100);
+}
+
+function removeFromLibrary(novelId) {
+  axios.post('library/', { novel: novelId }).then(() => {
+    library.value = library.value.filter((entry) => entry.novel.id !== novelId);
+  }).catch((err) => console.error(err));
+}
+
 const deletingNovelId = ref(null);
 function confirmDelete() {
   const novelId = deletingNovelId.value;
@@ -366,6 +457,39 @@ function confirmDeleteAccount() {
     deleteAccountError.value = err.response?.data?.message ?? "La suppression a échoué.";
   }).finally(() => {
     deletingAccountLoading.value = false;
+  });
+}
+
+const credentialsForm = ref({ email: '', currentPassword: '', newPassword: '' });
+const savingCredentials = ref(false);
+const credentialsError = ref('');
+const credentialsSaved = ref(false);
+
+watch(user, (u) => {
+  if (u) credentialsForm.value.email = u.email ?? '';
+}, { immediate: true });
+
+function saveCredentials() {
+  credentialsError.value = '';
+  credentialsSaved.value = false;
+  if (!credentialsForm.value.currentPassword) {
+    credentialsError.value = "Entrez votre mot de passe actuel pour confirmer.";
+    return;
+  }
+  savingCredentials.value = true;
+  axios.post('me/credentials', {
+    email: credentialsForm.value.email,
+    current_password: credentialsForm.value.currentPassword,
+    new_password: credentialsForm.value.newPassword || undefined,
+  }).then((res) => {
+    authStore.user = { ...authStore.user, ...res.data };
+    credentialsSaved.value = true;
+    credentialsForm.value.currentPassword = '';
+    credentialsForm.value.newPassword = '';
+  }).catch((err) => {
+    credentialsError.value = err.response?.data?.message ?? "La mise à jour a échoué.";
+  }).finally(() => {
+    savingCredentials.value = false;
   });
 }
 

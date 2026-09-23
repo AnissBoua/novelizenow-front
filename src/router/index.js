@@ -24,6 +24,24 @@ const router = createRouter({
       meta: { hideChrome: true, theme: "light" },
     },
     {
+      path: "/categories",
+      name: "categories",
+      component: () => import("../views/Categories.vue"),
+      meta: { theme: "light" },
+    },
+    {
+      path: "/categories/:id",
+      name: "category",
+      component: () => import("../views/Category.vue"),
+      meta: { theme: "light" },
+    },
+    {
+      path: "/authors/:id",
+      name: "author",
+      component: () => import("../views/Author.vue"),
+      meta: { theme: "light" },
+    },
+    {
       path: "/account",
       name: "account",
       component: () => import("../views/Account.vue"),

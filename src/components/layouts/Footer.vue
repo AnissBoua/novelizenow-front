@@ -13,7 +13,7 @@
           <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286]">Lire</div>
           <div class="flex flex-col gap-2 mt-3">
             <RouterLink to="/" class="text-sm text-[#3A4260] hover:text-[#3138B0]">Le fil</RouterLink>
-            <RouterLink :to="{path: '/', hash: '#categories'}" class="text-sm text-[#3A4260] hover:text-[#3138B0]">Catégories</RouterLink>
+            <RouterLink :to="{name: 'categories'}" class="text-sm text-[#3A4260] hover:text-[#3138B0]">Catégories</RouterLink>
             <RouterLink :to="{path: '/', hash: '#nouveautes'}" class="text-sm text-[#3A4260] hover:text-[#3138B0]">Nouveautés</RouterLink>
           </div>
         </div>

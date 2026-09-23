@@ -23,16 +23,18 @@
         <div id="categories">
           <div class="font-plexmono text-[11px] tracking-wider uppercase text-[#6B7286] px-3">Catégories</div>
           <div class="flex flex-col gap-0.5 mt-2">
-            <RouterLink v-for="cat in store.categories" :key="cat.id" to="/" class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-[15px] text-[#333B54] hover:bg-white hover:text-[#3138B0] capitalize">
+            <RouterLink v-for="cat in store.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}" class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-[15px] text-[#333B54] hover:bg-white hover:text-[#3138B0] capitalize">
               {{ cat.name }}
               <span class="font-plexmono text-xs text-[#6B7286]">{{ cat.novelCount }}</span>
             </RouterLink>
-            <RouterLink :to="{path: '/', hash: '#categories'}" class="px-3 py-2 text-sm font-semibold text-[#3138B0]">Toutes les catégories</RouterLink>
+            <RouterLink :to="{name: 'categories'}" class="px-3 py-2 text-sm font-semibold text-[#3138B0]">Toutes les catégories</RouterLink>
           </div>
         </div>
       </aside>
 
       <main class="flex-[100_1_460px] min-w-[300px] flex flex-col gap-4">
+        <ContinueReading v-if="token" />
+
         <section v-if="store.carousel.length" id="tendances" class="bg-white border border-[#E2E4EC] rounded-2xl p-4">
           <div class="flex items-baseline justify-between gap-3.5 flex-wrap">
             <h2 class="flex items-center gap-2 font-sora text-base font-semibold">
@@ -99,6 +101,7 @@ import { useAuth } from '../stores/auth';
 import Hero from '../components/home/Hero.vue';
 import FeedPost from '../components/home/FeedPost.vue';
 import CoinPacks from '../components/home/CoinPacks.vue';
+import ContinueReading from '../components/home/ContinueReading.vue';
 import FreeReads from '../components/home/FreeReads.vue';
 import AuthorsToDiscover from '../components/home/AuthorsToDiscover.vue';
 import WriteCta from '../components/home/WriteCta.vue';

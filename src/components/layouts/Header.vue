@@ -18,7 +18,23 @@
             @focusin="toggleSearch"
             @focusout="toggleSearch"
           >
-          <div v-if="isSearching && novels && novels.length > 0" class="absolute left-0 top-full mt-2 z-50 flex flex-col gap-2 w-full bg-white border border-[#E2E4EC] rounded-lg p-2 shadow-lg">
+          <div v-if="isSearching && hasSearchResults" class="absolute left-0 top-full mt-2 z-50 flex flex-col gap-2 w-full bg-white border border-[#E2E4EC] rounded-lg p-2 shadow-lg">
+            <RouterLink v-for="cat in categoryResults" :key="'cat-' + cat.id" :to="{name: 'category', params: {id: cat.id}}" class="flex items-center gap-3 p-1 rounded-md hover:bg-[#F3F4F8]">
+              <span class="w-8 h-8 flex-none rounded-lg bg-[#E9EAF7] flex items-center justify-center">
+                <iconify-icon :icon="cat.icon || 'tabler:category'" class="text-[17px] text-[#3138B0]"></iconify-icon>
+              </span>
+              <span class="text-sm font-medium capitalize">{{ cat.name }}</span>
+              <span class="ml-auto text-xs text-[#6B7286]">Catégorie</span>
+            </RouterLink>
+            <RouterLink v-for="author in authorResults" :key="'author-' + author.id" :to="{name: 'author', params: {id: author.id}}" class="flex items-center gap-3 p-1 rounded-md hover:bg-[#F3F4F8]">
+              <img v-if="author.avatar" class="w-8 h-8 flex-none rounded-full object-cover" :src="BACK_URL + author.avatar" alt="">
+              <span v-else class="w-8 h-8 flex-none rounded-full bg-[#E9EAF7] flex items-center justify-center font-sora text-xs font-semibold text-[#3138B0]">{{ authorInitials(author) }}</span>
+              <span class="min-w-0">
+                <span class="block text-sm font-medium capitalize truncate">{{ author.name }} {{ author.lastname }}</span>
+                <span class="block text-xs text-[#6B7286]">{{ author.novelCount }} {{ author.novelCount > 1 ? 'romans' : 'roman' }}</span>
+              </span>
+              <span class="ml-auto text-xs text-[#6B7286]">Auteur</span>
+            </RouterLink>
             <RouterLink v-for="(novel, index) in novels" :key="index" :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="flex gap-3 p-1 rounded-md hover:bg-[#F3F4F8]">
               <img class="w-12 h-16 object-cover rounded-md flex-none" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
               <div class="min-w-0">
@@ -101,7 +117,23 @@
         @focusout="toggleSearch"
       >
       <iconify-icon icon="tabler:x" class="text-xl" @click="toggleSearchMobile"></iconify-icon>
-      <div v-if="isSearching && novels && novels.length > 0" class="absolute left-0 top-full w-full z-50 flex flex-col gap-2 bg-white border-t border-[#E2E4EC] p-2">
+      <div v-if="isSearching && hasSearchResults" class="absolute left-0 top-full w-full z-50 flex flex-col gap-2 bg-white border-t border-[#E2E4EC] p-2">
+        <RouterLink v-for="cat in categoryResults" :key="'cat-' + cat.id" :to="{name: 'category', params: {id: cat.id}}" class="flex items-center gap-3 p-1">
+          <span class="w-8 h-8 flex-none rounded-lg bg-[#E9EAF7] flex items-center justify-center">
+            <iconify-icon :icon="cat.icon || 'tabler:category'" class="text-[17px] text-[#3138B0]"></iconify-icon>
+          </span>
+          <span class="text-sm font-medium capitalize">{{ cat.name }}</span>
+          <span class="ml-auto text-xs text-[#6B7286]">Catégorie</span>
+        </RouterLink>
+        <RouterLink v-for="author in authorResults" :key="'author-' + author.id" :to="{name: 'author', params: {id: author.id}}" class="flex items-center gap-3 p-1">
+          <img v-if="author.avatar" class="w-8 h-8 flex-none rounded-full object-cover" :src="BACK_URL + author.avatar" alt="">
+          <span v-else class="w-8 h-8 flex-none rounded-full bg-[#E9EAF7] flex items-center justify-center font-sora text-xs font-semibold text-[#3138B0]">{{ authorInitials(author) }}</span>
+          <span class="min-w-0">
+            <span class="block text-sm font-medium capitalize truncate">{{ author.name }} {{ author.lastname }}</span>
+            <span class="block text-xs text-[#6B7286]">{{ author.novelCount }} {{ author.novelCount > 1 ? 'romans' : 'roman' }}</span>
+          </span>
+          <span class="ml-auto text-xs text-[#6B7286]">Auteur</span>
+        </RouterLink>
         <RouterLink v-for="(novel, index) in novels" :key="index" :to="{name: 'read_novel', params: {novel_slug: novel.slug}}" class="flex gap-3 p-1">
           <img class="w-12 h-16 object-cover rounded-md flex-none" :src="novel.cover ? (BACK_URL + novel.cover.filepath) : ''" alt="">
           <div class="min-w-0">
@@ -114,17 +146,17 @@
 
     <div class="border-t border-[#EEEFF4]">
       <div class="max-w-[1340px] mx-auto px-4 sm:px-6 flex items-center gap-5 overflow-x-auto">
-        <RouterLink to="/" class="flex-none py-2.5 text-sm font-semibold text-[#3138B0] border-b-2 border-[#3138B0]">Le fil</RouterLink>
-        <RouterLink v-for="cat in homeStore.categories" :key="cat.id" to="/" class="flex-none py-2.5 text-sm font-medium text-[#333B54] border-b-2 border-transparent hover:text-[#3138B0]">{{ cat.name }}</RouterLink>
+        <RouterLink to="/" class="flex-none py-2.5 text-sm border-b-2" :class="route.name === 'home' ? 'font-semibold text-[#3138B0] border-[#3138B0]' : 'font-medium text-[#333B54] border-transparent hover:text-[#3138B0]'">Le fil</RouterLink>
+        <RouterLink v-for="cat in homeStore.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}" class="flex-none py-2.5 text-sm border-b-2 capitalize" :class="isActiveCategory(cat.id) ? 'font-semibold text-[#3138B0] border-[#3138B0]' : 'font-medium text-[#333B54] border-transparent hover:text-[#3138B0]'">{{ cat.name }}</RouterLink>
         <span class="flex-1 min-w-[8px]"></span>
-        <RouterLink :to="{path: '/', hash: '#categories'}" class="flex-none py-2.5 text-sm font-semibold text-[#3138B0]">Toutes les catégories</RouterLink>
+        <RouterLink :to="{name: 'categories'}" class="flex-none py-2.5 text-sm font-semibold text-[#3138B0] border-b-2" :class="route.name === 'categories' ? 'border-[#3138B0]' : 'border-transparent'">Les {{ homeStore.totalCategoriesCount }} catégories</RouterLink>
       </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuth } from '@/stores/auth.js'
 import { useHomeStore } from '@/stores/home.js'
@@ -138,13 +170,25 @@ const { token, coins, user } = storeToRefs(store);
 const { logout } = store;
 
 const homeStore = useHomeStore();
+const route = useRoute();
+
+function isActiveCategory(id) {
+  return route.name === 'category' && Number(route.params.id) === id;
+}
 
 const initials = computed(() => {
   if (!user.value) return '';
   return (user.value.name?.slice(0, 1) ?? '').toUpperCase() + (user.value.lastname?.slice(0, 1) ?? '').toUpperCase();
 });
 
-const novels = ref();
+const novels = ref([]);
+const categoryResults = ref([]);
+const authorResults = ref([]);
+const hasSearchResults = computed(() => novels.value.length > 0 || categoryResults.value.length > 0 || authorResults.value.length > 0);
+
+function authorInitials(author) {
+  return ((author.name?.[0] ?? '') + (author.lastname?.[0] ?? '')).toUpperCase();
+}
 const isSearching = ref(false);
 const debounceTimer = ref(null);
 const search = ref('');
@@ -163,9 +207,17 @@ function toggleSearch(){
 }
 
 function searchNovels(){
-    axios.get('/novel/search?search=' + search.value )
+    if (!search.value.trim()) {
+        novels.value = [];
+        categoryResults.value = [];
+        authorResults.value = [];
+        return;
+    }
+    axios.get('/novel/search', { params: { search: search.value } })
     .then(res => {
-        novels.value = res.data;
+        novels.value = res.data.novels;
+        categoryResults.value = res.data.categories;
+        authorResults.value = res.data.authors;
     })
     .catch(err => {
         console.log(err);

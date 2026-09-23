@@ -42,6 +42,7 @@
               <iconify-icon icon="tabler:coins" class="text-[22px] text-[#B4741A]"></iconify-icon>
               <span class="font-sora text-[32px] font-semibold tracking-[-0.03em] leading-none">{{ fmt(offer.coins) }}</span>
             </span>
+            <span class="block text-sm font-semibold mt-2 min-h-[20px]" style="color: #7A5313;">{{ offer.bonus ? `dont ${fmt(offer.bonus)} offertes` : '' }}</span>
             <span class="block h-px bg-[#EDEFF4] my-4"></span>
             <span class="flex items-baseline gap-2">
               <span class="font-sora text-[22px] font-semibold tracking-[-0.02em]">{{ offer.price.toFixed(2) }} €</span>

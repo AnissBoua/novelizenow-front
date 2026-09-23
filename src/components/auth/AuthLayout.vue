@@ -146,7 +146,7 @@ const otherModeRoute = computed(() => (isLogin.value ? '/register' : '/login'));
 
 const title = computed(() => (isLogin.value ? 'Content de vous revoir' : 'Créez votre compte'));
 const subtitle = computed(() => (isLogin.value
-  ? 'Retrouvez vos lectures en cours, vos pièces et les auteurs que vous suivez.'
+  ? 'Retrouvez vos lectures en cours, vos pièces et votre bibliothèque.'
   : 'Lisez, suivez vos auteurs et publiez vos propres chapitres. C\'est gratuit.'));
 const submitIcon = computed(() => (isLogin.value ? 'tabler:login-2' : 'tabler:user-plus'));
 const headerAside = computed(() => (isLogin.value ? 'Pas encore de compte ?' : 'Vous avez déjà un compte ?'));
@@ -160,12 +160,12 @@ const submitLabel = computed(() => (isLogin.value ? 'Se connecter' : 'Créer mon
 const benefits = [
   { icon: 'tabler:book-2', title: 'Reprenez où vous en étiez', text: 'Vos chapitres en cours suivis sur tous vos appareils.', bgClass: 'bg-[#E9EAF7]', fgClass: 'text-[#3138B0]' },
   { icon: 'tabler:coin', title: 'Un solde, tout le catalogue', text: 'Pas d\'abonnement, rien n\'expire.', bgClass: 'bg-[#FBEEDA]', fgClass: 'text-[#B4741A]' },
-  { icon: 'tabler:bell', title: 'Alertes de nouveaux chapitres', text: 'Suivez un auteur, recevez ses publications.', bgClass: 'bg-[#E9EAF7]', fgClass: 'text-[#3138B0]' },
+  { icon: 'tabler:bookmark', title: 'Votre bibliothèque', text: 'Mettez des romans de côté et retrouvez-les depuis votre compte.', bgClass: 'bg-[#E9EAF7]', fgClass: 'text-[#3138B0]' },
   { icon: 'tabler:pencil', title: 'Publiez vos chapitres', text: 'L\'éditeur est ouvert à tous les comptes, et vous fixez vos prix.', bgClass: 'bg-[#FBEEDA]', fgClass: 'text-[#B4741A]' },
 ];
 
 const stats = computed(() => [
-  { value: store.freeChaptersCount, label: 'romans publiés' },
+  { value: store.publishedNovelsCount, label: 'romans publiés' },
   { value: store.freeChaptersCount, label: 'chapitres gratuits' },
   { value: store.totalCategoriesCount, label: 'catégories' },
 ]);
